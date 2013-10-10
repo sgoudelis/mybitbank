@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+
+.no-margin-bottom {
+     margin-bottom: 0px;
+}
+
+.table-head th {
+    background-color: #f5f5f5;
+}
