@@ -11,63 +11,60 @@
       <div class="panel-heading">
         <h3 class="panel-title">Transfer</h3>
           </div>
-      <div class="panel-body">
-      
-        <form action="{% url 'transfer:send' %}" method="post" role="form">
-        {% csrf_token %}
-    
-        <label for="account_address_from">From</label>
-        <div class="form-group">
-        <div class="input-group">
-          <div class="input-group-btn">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Select <span class="caret"></span></button>
-            <ul class="dropdown-menu">
-            {% for currency, account_list in accounts.items %}
-            <li class="divider"></li>
-                <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
-                    {% for account in account_list %}
-                    <li><a href="javascript: setInputValue('{{ account.address }}', 'account_address_from');" class="{{ account.address }}">{{ account.name }}</a></li>
-                {% endfor %}
-            {% endfor %}
-            </ul>
-          </div><!-- /btn-group -->
-          <input type="text" class="form-control" name="account_address_from" id="account_address_from" style="font-family:courier;">
-        </div><!-- /input-group -->
-        </div>
-    
-        <label for="account_address_to">To</label>
-        <div class="form-group">
-        <div class="input-group">
-          <div class="input-group-btn">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Select <span class="caret"></span></button>
-            <ul class="dropdown-menu">
-            <li role="presentation" class="dropdown-header">Addressbook</li>
-            <li class="divider"></li>
-            <li><a>sdfs</a></li>
-            {% for currency, account_list in accounts.items %}
-            <li class="divider"></li>
-                <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
-                    {% for account in account_list %}
-                    <li><a href="javascript: setInputValue('{{ account.address }}', 'account_address_to');" class="{{ account.address }}">{{ account.name }}</a></li>
-                {% endfor %}
-            {% endfor %}
-            </ul>
-          </div><!-- /btn-group -->
-          <input type="text" class="form-control" name="account_address_to" id="account_address_to">
-        </div><!-- /input-group -->
-        </div>
-    
-        <label for="amount">Amount</label>
-          <div class="form-group">
+          <div class="panel-body">
+            <form action="{% url 'transfer:send' %}" method="post" role="form">
+            {% csrf_token %}
+            <label for="account_address_from">From</label>
+            <div class="form-group">
             <div class="input-group">
-              <span class="input-group-addon">$</span>
-              <input type="text" class="form-control" name="amount" style="text-align:right;">
+              <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Select <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                {% for currency, account_list in accounts.items %}
+                <li class="divider"></li>
+                    <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
+                        {% for account in account_list %}
+                        <li><a href="javascript: setInputValue('{{ account.address }}', 'account_address_from');" class="{{ account.address }}">{{ account.name }}</a></li>
+                    {% endfor %}
+                {% endfor %}
+                </ul>
+              </div><!-- /btn-group -->
+              <input type="text" class="form-control" name="account_address_from" id="account_address_from" style="font-family:courier;">
+            </div><!-- /input-group -->
             </div>
+        
+            <label for="account_address_to">To</label>
+            <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Select <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                <li role="presentation" class="dropdown-header">Addressbook</li>
+                <li class="divider"></li>
+                <li><a>sdfs</a></li>
+                {% for currency, account_list in accounts.items %}
+                <li class="divider"></li>
+                    <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
+                        {% for account in account_list %}
+                        <li><a href="javascript: setInputValue('{{ account.address }}', 'account_address_to');" class="{{ account.address }}">{{ account.name }}</a></li>
+                    {% endfor %}
+                {% endfor %}
+                </ul>
+              </div><!-- /btn-group -->
+              <input type="text" class="form-control" name="account_address_to" id="account_address_to" style="font-family:courier;">
+            </div><!-- /input-group -->
+            </div>
+            <label for="amount">Amount</label>
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <input type="text" class="form-control" name="amount" style="text-align:right;">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-ok"></span>&nbsp;send</button> 
+            </form>
+    
+            <!--   <a class="btn btn-primary" href="{% url 'accounts:add' %}">send</a>-->
           </div>
-          <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-ok"></span>&nbsp;send</button> 
-        </form>
-
-        <!--   <a class="btn btn-primary" href="{% url 'accounts:add' %}">send</a>-->
-      </div>
-    </div>
+        </div>
 {% endblock %}

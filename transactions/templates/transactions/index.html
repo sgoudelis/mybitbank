@@ -8,7 +8,16 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Last transactions</h3>
+                <div class="row">
+                  <div class="col-xs-6"><h3 class="panel-title">Transactions</h3></div>
+                  <div class="col-xs-6 text-right">
+                  {% if show_pager %}
+                    <a href="/transactions" class="btn btn-primary btn-xs text-right">single page</a>
+                  {% else %}
+                    <a href="/transactions/1" class="btn btn-primary btn-xs text-right">multiple pages</a>
+                  {% endif %}
+                  </div>
+                </div>
             </div>
             <div class="panel-body">
                 <table
@@ -39,10 +48,21 @@
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan=5><center><em>No data</em></center></td>
+                        <td colspan=6><center><em>No data</em></center></td>
                     </tr>
                     {% endif %}
                 </table>
+                {% if show_pager %}
+                <div class="text-center">
+                <ul class="pagination">
+                  <li><a href="/transactions/{{ prev_page }}">&laquo;</a></li>
+                  {% for i in pages%}
+                  <li><a href="/transactions/{{ i }}">{{ i }}</a></li>
+                  {% endfor %}
+                  <li><a href="/transactions/{{ next_page }}">&raquo;</a></li>
+                </ul>
+                </div>
+                {% endif %}
             </div>
         </div>
 {% endblock %}

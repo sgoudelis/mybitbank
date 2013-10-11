@@ -11,3 +11,7 @@
 .no-display {
     display: none;
 }
+
+html {
+    overflow-y: scroll; 
+}
