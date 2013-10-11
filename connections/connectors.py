@@ -3,22 +3,7 @@ import datetime
 
 class Connector(object):
     caching_time = 5
-    config = {
-        'btc' :  {
-            'rpcusername': "testuser",
-            'rpcpassword': "testnet",
-            'rpchost': "sunflower",
-            'rpcport': "7000",
-            'currency_name': 'BitCoin (BTC)',
-        },
-        'ltc':  {
-            'rpcusername': "testuser",
-            'rpcpassword': "testnet",
-            'rpchost': "sunflower",
-            'rpcport': "7001",
-            'currency_name': 'LiteCoin (LTC)',
-        },
-    }
+    config = []
     
     '''
         config = {
@@ -49,6 +34,13 @@ class Connector(object):
     
     
     def __init__(self):
+        # load config
+        try:
+            import connections.config
+            self.config = connections.config.config
+        except (AttributeError, ImportError) as e:
+            self.errors.append({'message': 'Error occured while compiling list of accounts (%s)' % (e)})
+        
         for currency in self.config:
             self.services[currency] = ServiceProxy("http://%s:%s@%s:%s" % (self.config[currency]['rpcusername'], 
                                                                            self.config[currency]['rpcpassword'], 
