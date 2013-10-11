@@ -13,11 +13,12 @@
                 <table
                     class="table table-hover table-striped no-margin-bottom">
                     <tr>
-                        <th>Name</th>
-                        <th>Addresses</th>
-                        <th>Last activity</th>
-                        <th class="text-right">Balance</th>
+                        <th style="background-color:#f5f5f5;">Name</th>
+                        <th style="background-color:#f5f5f5;">Addresses</th>
+                        <th style="background-color:#f5f5f5;">Last activity</th>
+                        <th style="background-color:#f5f5f5;" class="text-right">Balance</th>
                     </tr>
+                    {% if accounts %}
                     {% for account in accounts %}
                     <tr>
                         <td>{{ account.name }}</td>
@@ -26,6 +27,11 @@
                         <td class="text-right" style="font-family: courier;">{{ account.amount }} {{ account.currency }}</td>
                     </tr>
                     {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan=4><center><em>No data</em></center></td>
+                    </tr>
+                    {% endif %}
                 </table>
             </div>
         </div>
@@ -38,12 +44,13 @@
                 <table
                     class="table table-hover table-striped no-margin-bottom">
                     <tr>
-                        <th>Account</th>
-                        <th>Type</th>
-                        <th>Confirmations</th>
-                        <th>When</th>
-                        <th class="text-right">Amount</th>
+                        <th style="background-color:#f5f5f5;">Account</th>
+                        <th style="background-color:#f5f5f5;">Type</th>
+                        <th style="background-color:#f5f5f5;">Confirmations</th>
+                        <th style="background-color:#f5f5f5;">When</th>
+                        <th style="background-color:#f5f5f5;" class="text-right">Amount</th>
                     </tr>
+                    {% if accounts %}
                     {% for transaction in transactions %} 
                     {% if transaction.confirmations > 10 %}
                       <tr>
@@ -58,6 +65,11 @@
                             style="font-family: courier;">{{ transaction.amount }} {{ transaction.currency }}</td>
                     </tr>
                     {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan=5><center><em>No data</em></center></td>
+                    </tr>
+                    {% endif %}
                 </table>
             </div>
         </div>

@@ -4,13 +4,6 @@ import datetime
 class Connector(object):
     caching_time = 5
     config = {
-        'ltc':  {
-            'rpcusername': "testuser",
-            'rpcpassword': "testnet",
-            'rpchost': "sunflower",
-            'rpcport': "7001",
-            'currency_name': 'LiteCoin (LTC)',
-        },
         'btc' :  {
             'rpcusername': "testuser",
             'rpcpassword': "testnet",
@@ -18,9 +11,18 @@ class Connector(object):
             'rpcport': "7000",
             'currency_name': 'BitCoin (BTC)',
         },
+        'ltc':  {
+            'rpcusername': "testuser",
+            'rpcpassword': "testnet",
+            'rpchost': "sunflower",
+            'rpcport': "7001",
+            'currency_name': 'LiteCoin (LTC)',
+        },
+
     }
     
     services = {}
+    errors = []
     
     # caching data
     accounts = {'when': 0, 'data': None}
@@ -39,9 +41,13 @@ class Connector(object):
         if self.accounts['data'] is not None and ((datetime.datetime.now() - self.accounts['when']).seconds < self.caching_time):
             return self.accounts['data']
         
-        accounts = {}
-        for currency in self.services.keys():
-            accounts[currency] = self.services[currency].listaccounts()
+        try:
+            accounts = {}
+            for currency in self.services.keys():
+                accounts[currency] = self.services[currency].listaccounts()
+        except Exception as e:
+            # got a timeout
+            self.errors.append({'message': 'Timeout occured when connecting to the %s daemon (%s)' % (currency, e)})
         
         self.accounts['when'] = datetime.datetime.now()
         self.accounts['data'] = accounts
@@ -57,13 +63,17 @@ class Connector(object):
         if self.transactions['data'] is not None and ((datetime.datetime.now() - self.transactions['when']).seconds < self.caching_time):
             return self.transactions['data']
         
-        transactions = {}
-        for currency in self.services.keys():
-            if account is None or account is "":
-                transactions[currency] = self.services[currency].listtransactions()
-            else:
-                transactions[currency] = self.services[currency].listtransactions(account)
-                
+        try:
+            transactions = {}
+            for currency in self.services.keys():
+                if account is None or account is "":
+                    transactions[currency] = self.services[currency].listtransactions()
+                else:
+                    transactions[currency] = self.services[currency].listtransactions(account)
+        except Exception as e:
+            # got a timeout
+            self.errors.append({'message': 'Timeout occured when connecting to the %s daemon (%s)' % (currency, e)})
+            
         self.transactions['when'] = datetime.datetime.now()
         self.transactions['data'] = transactions
         return transactions

@@ -80,6 +80,7 @@ def getSiteSections(active):
     sections = [
                     {'name': 'dashboard', 'path':"/dashboard", 'title': 'Dashboard'},
                     {'name': 'accounts', 'path':"/accounts", 'title': 'Accounts'},
+                    {'name': 'transfer', 'path':"/transfer", 'title': "Transfer"},
                     {'name': 'addressbook', 'path':"/addressbook", 'title': "Addressbook"},
                 ]
     
@@ -87,7 +88,3 @@ def getSiteSections(active):
         if section['name'] == active:
             section['active'] = True
     return sections
-
-
-
-    

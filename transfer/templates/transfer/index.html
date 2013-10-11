@@ -1,0 +1,70 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block site_brand %}{{ globals.site_brand }}{% endblock %}
+
+{% block content %}     
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Transfer</h3>
+          </div>
+      <div class="panel-body">
+      
+      
+    <form action="{% url 'transfer:send' %}" method="post" role="form">
+    {% csrf_token %}
+
+    <label for="account_address">From</label>
+    <div class="form-group">
+    <div class="input-group">
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Select <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+         <li role="presentation" class="dropdown-header">BTC</li>
+          <li><a href="#">j</a></li>
+          <li><a href="#">another account</a></li>
+          <li><a href="#">my btc account</a></li>
+          <li class="divider"></li>
+           <li role="presentation" class="dropdown-header">LTC</li>
+          <li><a href="#">my LTC account</a></li>
+        </ul>
+      </div><!-- /btn-group -->
+      <input type="text" class="form-control" name="account_address">
+    </div><!-- /input-group -->
+    </div>
+
+    <label for="account_address">To</label>
+    <div class="form-group">
+    <div class="input-group">
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Select <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+        
+          <li><a href="#">account 1</a></li>
+          <li><a href="#">account 2</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Separated link</a></li>
+        </ul>
+      </div><!-- /btn-group -->
+      <input type="text" class="form-control" name="account_address">
+    </div><!-- /input-group -->
+    </div>
+
+    <label for="amount">Amount</label>
+      <div class="form-group">
+        <div class="input-group">
+          <span class="input-group-addon">$</span>
+          <input type="text" class="form-control" name="amount" style="text-align:right;">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-ok"></span>&nbsp;send</button> 
+      <a class="btn btn-primary" href="{% url 'accounts:index' %}"><span class="glyphicon glyphicon-remove"></span>&nbsp;cancel</a>
+    </form>
+
+
+        <!--   <a class="btn btn-primary" href="{% url 'accounts:add' %}">send</a>-->
+      </div>
+    </div>
+{% endblock %}

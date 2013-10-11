@@ -10,9 +10,11 @@
         <h3 class="panel-title">Accounts</h3>
           </div>
       <div class="panel-body">
-        <table class="table table-hover table-striped no-margin-bottom">
+        <table class="table table-hover table-striped">
         <tr class="table-head">
-            <th>Name</th><th>Addresses</th><th class="text-right">Balance</th>
+            <th style="background-color:#f5f5f5;">Name</th>
+            <th style="background-color:#f5f5f5;">Addresses</th>
+            <th style="background-color:#f5f5f5;" class="text-right">Balance</th>
         </tr>
         {% for account in accounts %}
             <tr>
@@ -22,7 +24,8 @@
             </tr>
         {% endfor %}
         </table>
-        <a class="btn btn-primary" href="{% url 'accounts:add' %}">create account</a>
+        <a class="btn btn-primary" href="{% url 'accounts:add' %}"><span class="glyphicon glyphicon-plus"></span>&nbsp;create account</a>
+        
       </div>
     </div>
 {% endblock %}

@@ -20,4 +20,10 @@ urlpatterns = patterns('',
     
     # accounts
     url(r'^accounts/', include('accounts.urls', namespace="accounts")),
+    
+    # addressbook
+    url(r'^addressbook/', include('addressbook.urls', namespace="addressbook")),
+    
+    # transfer
+    url(r'^transfer/', include('transfer.urls', namespace="transfer")),
 )

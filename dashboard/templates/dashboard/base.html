@@ -40,9 +40,7 @@
                  <li><a href="{{ section.path }}">{{ section.title }}</a></li>
                 {% endif %}
                 {% endfor %}
-                    <li class="dropdown"><a href="#"
-                        class="dropdown-toggle" data-toggle="dropdown">Dropdown
-                            <b class="caret"></b>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<b class="caret"></b>
                     </a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Action</a></li>
@@ -61,21 +59,24 @@
                     <button type="submit" class="btn btn-primary">search</button>
                 </form>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Link</a></li>
-                    <li class="dropdown"><a href="#"
-                        class="dropdown-toggle" data-toggle="dropdown">Dropdown
-                            <b class="caret"></b>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">User logged in<b class="caret"></b>
                     </a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li><a href="#">Separated link</a></li>
+                            <li><a href="#">Unlock wallet</a></li>
+                            <li><a href="#">Preferences</a></li>
+                            <li><a href="#">Log out</a></li>
                         </ul></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
         </nav>
+   {% if globals.connector_errors %}
+   {% for error in globals.connector_errors %}
+    <div class="alert alert-danger">
+      <span><strong>{{error.message}}</strong></span>
+    </div>
+    {% endfor %}
+   {% endif %}
    
    {% block content %}{% endblock %}
 

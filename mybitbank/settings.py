@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'dashboard',
     'accounts',
     'addressbook',
+    'transfer',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
