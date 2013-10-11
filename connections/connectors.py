@@ -72,9 +72,8 @@ class Connector(object):
                 accounts[currency] = []
                 accounts_for_currency = self.services[currency].listaccounts()
                 for account_name, account_balance in accounts_for_currency.items():
-                    if account_name != "":
-                        account_address = self.getaddressesbyaccount(account_name)[0]
-                        accounts[currency].append({'name': account_name, 'balance': self.longNumber(account_balance), 'address': account_address})
+                    account_address = self.getaddressesbyaccount(account_name)[0]
+                    accounts[currency].append({'name': account_name, 'balance': self.longNumber(account_balance), 'address': account_address})
                     
         except Exception as e:
             # got a timeout

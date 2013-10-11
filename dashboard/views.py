@@ -10,7 +10,7 @@ def index(request):
     '''
     page_title = "Dashboard"
     
-    accounts = getAccountsWithNames(connector)
+    accounts = getAllAccounts(connector)
     transactions = getTransactions(connector = connector, reverse_order = True)
     
     # find the first transaction for each account
