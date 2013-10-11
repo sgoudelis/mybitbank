@@ -20,7 +20,7 @@
                     class="table table-hover table-striped">
                     <tr>
                         <th style="background-color:#f5f5f5;">Name</th>
-                        <th style="background-color:#f5f5f5;">Addresses</th>
+                        <th class="hidden-xs" style="background-color:#f5f5f5;">Addresses</th>
                         <th style="background-color:#f5f5f5;">Last activity</th>
                         <th style="background-color:#f5f5f5;" class="text-right">Balance</th>
                     </tr>
@@ -29,7 +29,7 @@
                     
                     <tr {% if account.name == "" %}class="no-display" name="hidden_account"{% endif %}>
                         <td>{{ account.name }}</td>
-                        <td style="font-family: courier;">{{ account.address.0 }}{% if account.address.1 %} (+1){% endif %}</td>
+                        <td class="hidden-xs" style="font-family: courier;">{{ account.address.0 }}{% if account.address.1 %} (+1){% endif %}</td>
                         <td>{{ account.last_activity }}</td>
                         <td class="text-right" style="font-family: courier;"><strong>{{ account.balance }}</strong> {{ account.currency|upper }}</td>
                     </tr>
