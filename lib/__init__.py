@@ -82,8 +82,10 @@ def getSiteSections(active):
     sections = [
                     {'name': 'dashboard', 'path':"/dashboard", 'title': 'Dashboard'},
                     {'name': 'accounts', 'path':"/accounts", 'title': 'Accounts'},
+                    {'name': 'transactions', 'path':"/transactions", 'title': "Transactions"},
                     {'name': 'transfer', 'path':"/transfer", 'title': "Transfer"},
                     {'name': 'addressbook', 'path':"/addressbook", 'title': "Addressbook"},
+                    
                 ]
     
     for section in sections:

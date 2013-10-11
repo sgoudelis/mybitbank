@@ -14,7 +14,6 @@ def index(request):
     transactions = getTransactions(connector = connector, reverse_order = True)
     
     # find the first transaction for each account
-    last_activity = {}
     for account in accounts:
         for transaction in transactions:
             if account['name'] == transaction['account']:

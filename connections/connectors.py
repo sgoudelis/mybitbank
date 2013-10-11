@@ -36,8 +36,8 @@ class Connector(object):
     def __init__(self):
         # load config
         try:
-            import connections.config
-            self.config = connections.config.config
+            import config
+            self.config = config.config
         except (AttributeError, ImportError) as e:
             self.errors.append({'message': 'Error occured while compiling list of accounts (%s)' % (e)})
         
@@ -76,7 +76,6 @@ class Connector(object):
         return accounts
     
     def getaddressesbyaccount(self, name, currency):
-        addresses = []
         addresses = self.services[currency].getaddressesbyaccount(name)
         return addresses
     

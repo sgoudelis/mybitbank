@@ -26,4 +26,7 @@ urlpatterns = patterns('',
     
     # transfer
     url(r'^transfer/', include('transfer.urls', namespace="transfer")),
+    
+    # transactions
+    url(r'^transactions/', include('transactions.urls', namespace="transactions")),
 )

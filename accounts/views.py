@@ -14,7 +14,16 @@ def index(request):
     # add a list of pages in the view
     globals['sections'] = getSiteSections('accounts')
     
-    accounts = getAccountsWithNames(connector)
+    accounts = getAllAccounts(connector)
+    transactions = getTransactions(connector = connector, reverse_order = True)
+    
+    # find the first transaction for each account
+    for account in accounts:
+        for transaction in transactions:
+            if account['name'] == transaction['account']:
+                account['last_activity'] = twitterizeDate(transaction['time'])
+                break
+    
     page_title = "View accounts"
     context = {'globals': globals, 'page_title': page_title, 'accounts': accounts}
     return render(request, 'accounts/index.html', context)
