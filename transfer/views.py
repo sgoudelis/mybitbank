@@ -1,8 +1,9 @@
 from connections import connector
 from globals import globals
 from lib import *
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+import forms
 
 def index(request):
     '''
@@ -23,16 +24,19 @@ def send(request):
     '''
     handler for the transfers
     '''
-    try:
-        account_name = request.POST['account_name']
-        currency = request.POST['currency']
-        if not account_name:
-            raise Exception('Account name not provided')
-    except (Exception, KeyError) as e:
-        context = getAddAccountFormContext(account_name=account_name, currency=currency, error=e)
-        return render(request, 'accounts/add.html', context)
+    if request.method == 'POST': # If the form has been submitted...
+        form = forms.SendCurrencyForm(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            # Process the data in form.cleaned_data
+            # ...
+            return HttpResponseRedirect('/thanks/') # Redirect after POST
     else:
-        # all ok, create account
-        new_address = connector.getnewaddress(currency, account_name)
-        return HttpResponseRedirect(reverse('accounts:index'))
+        form = forms.SendCurrencyForm() # An unbound form
+    
+    page_title = "Transfer"
+    
+    # get a list of source accounts
+    accounts = connector.listaccounts()
+    context = {'globals': globals, 'page_title': page_title, 'accounts': accounts, 'form': form}
+    return render(request, 'transfer/index.html', context)
     

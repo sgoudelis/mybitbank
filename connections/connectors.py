@@ -18,8 +18,27 @@ class Connector(object):
             'rpcport': "7001",
             'currency_name': 'LiteCoin (LTC)',
         },
-
     }
+    
+    '''
+        config = {
+        'btc' :  {
+            'rpcusername': "testuser",
+            'rpcpassword': "testnet",
+            'rpchost': "sunflower",
+            'rpcport': "7000",
+            'currency_name': 'BitCoin (BTC)',
+        },
+        'ltc':  {
+            'rpcusername': "testuser",
+            'rpcpassword': "testnet",
+            'rpchost': "sunflower",
+            'rpcport': "7001",
+            'currency_name': 'LiteCoin (LTC)',
+        },
+    }
+    '''
+    
     
     services = {}
     errors = []
@@ -53,9 +72,9 @@ class Connector(object):
                 accounts[currency] = []
                 accounts_for_currency = self.services[currency].listaccounts()
                 for account_name, account_balance in accounts_for_currency.items():
-                    if account_name == "":
-                        account_name = "(no name)" 
-                    accounts[currency].append({'name': account_name, 'balance': self.longNumber(account_balance)})
+                    if account_name != "":
+                        account_address = self.getaddressesbyaccount(account_name)[0]
+                        accounts[currency].append({'name': account_name, 'balance': self.longNumber(account_balance), 'address': account_address})
                     
         except Exception as e:
             # got a timeout

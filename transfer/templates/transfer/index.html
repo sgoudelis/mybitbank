@@ -4,6 +4,8 @@
 
 {% block site_brand %}{{ globals.site_brand }}{% endblock %}
 
+{{ form }}
+
 {% block content %}     
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -24,12 +26,12 @@
             <li class="divider"></li>
                 <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
                     {% for account in account_list %}
-                    <li><a href="#" address="{{ account.address }}">{{ account.name }}</a></li>
+                    <li><a href="javascript: setInputValue('{{ account.address }}', 'account_address_from');" class="{{ account.address }}">{{ account.name }}</a></li>
                 {% endfor %}
             {% endfor %}
             </ul>
           </div><!-- /btn-group -->
-          <input type="text" class="form-control" name="account_address_from">
+          <input type="text" class="form-control" name="account_address_from" id="account_address_from" style="font-family:courier;">
         </div><!-- /input-group -->
         </div>
     
@@ -39,15 +41,19 @@
           <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Select <span class="caret"></span></button>
             <ul class="dropdown-menu">
-            
-              <li><a href="#">account 1</a></li>
-              <li><a href="#">account 2</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Separated link</a></li>
+            <li role="presentation" class="dropdown-header">Addressbook</li>
+            <li class="divider"></li>
+            <li><a>sdfs</a></li>
+            {% for currency, account_list in accounts.items %}
+            <li class="divider"></li>
+                <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
+                    {% for account in account_list %}
+                    <li><a href="javascript: setInputValue('{{ account.address }}', 'account_address_to');" class="{{ account.address }}">{{ account.name }}</a></li>
+                {% endfor %}
+            {% endfor %}
             </ul>
           </div><!-- /btn-group -->
-          <input type="text" class="form-control" name="account_address_to">
+          <input type="text" class="form-control" name="account_address_to" id="account_address_to">
         </div><!-- /input-group -->
         </div>
     
