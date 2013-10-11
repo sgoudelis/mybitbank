@@ -19,8 +19,8 @@
         {% for account in accounts %}
             <tr>
                 <td>{{ account.name }}</td>
-                <td style="font-family:courier;">{{ account.address }}</td>
-                <td class="text-right" style="font-family:courier;">{{ account.amount }} {{ account.currency }}</td>
+                <td style="font-family:courier;">{{ account.address.0 }}{% if account.address.1 %} (+1){% endif %}</td>
+                <td class="text-right" style="font-family:courier;">{{ account.balance }} {{ account.currency }}</td>
             </tr>
         {% endfor %}
         </table>

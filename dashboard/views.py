@@ -6,11 +6,9 @@ from django.shortcuts import render
 
 def index(request):
     '''
-    URLconf handler for the dashboard
+    Handler for the dashboard
     '''
     page_title = "Dashboard"
-    
-
     
     accounts = getAccountsWithNames(connector)
     transactions = getTransactions(connector = connector, reverse_order = True)
@@ -22,6 +20,12 @@ def index(request):
             if account['name'] == transaction['account']:
                 account['last_activity'] = twitterizeDate(transaction['time'])
                 break
+    
+    for transaction in transactions:
+        if transaction['category'] == 'receive':
+            transaction['icon'] = 'glyphicon-circle-arrow-down'
+        elif transaction['category'] == 'send':
+            transaction['icon'] = 'glyphicon-circle-arrow-up'
     
     # add a list of pages in the view
     globals['sections'] = getSiteSections('dashboard')

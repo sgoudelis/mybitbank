@@ -13,7 +13,10 @@ def index(request):
     # add a list of pages in the view
     globals['sections'] = getSiteSections('transfer')
     
-    context = {'globals': globals, 'page_title': page_title}
+    # get a list of source accounts
+    accounts = connector.listaccounts()
+    
+    context = {'globals': globals, 'page_title': page_title, 'accounts': accounts}
     return render(request, 'transfer/index.html', context)
 
 def send(request):

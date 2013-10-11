@@ -40,10 +40,12 @@ def getAllAccounts(connector):
     accounts = []
     accounts_by_name = connector.listaccounts()
     for currency in accounts_by_name.keys():
-        for name in accounts_by_name[currency]:
-            address = connector.getaddressesbyaccount(name)
-            accounts.append({'name': name, 'address': ", ".join(address), 'amount': longNumber(accounts_by_name[currency][name]), 'currency': currency.upper()})
-        
+        for account in accounts_by_name[currency]:
+            address = connector.getaddressesbyaccount(account['name'])
+            account['address'] = address
+            account['currency'] = currency
+            accounts.append(account)
+
     return accounts
 
 def getAccountsWithNames(connector):
@@ -53,7 +55,7 @@ def getAccountsWithNames(connector):
     a = getAllAccounts(connector)
     accounts_with_names = []
     for acc in a:
-        if  acc['name']:
+        if acc['name']:
             accounts_with_names.append(acc);
             
     return accounts_with_names

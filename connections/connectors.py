@@ -37,6 +37,12 @@ class Connector(object):
                                                                            self.config[currency]['rpcport'])
                                                   )
 
+    def longNumber(self, x):
+        '''
+        Convert number coming from the JSON-RPC to a human readable format with 8 decimal
+        '''
+        return "{:.8f}".format(x)
+    
     def listaccounts(self):
         if self.accounts['data'] is not None and ((datetime.datetime.now() - self.accounts['when']).seconds < self.caching_time):
             return self.accounts['data']
@@ -44,11 +50,17 @@ class Connector(object):
         try:
             accounts = {}
             for currency in self.services.keys():
-                accounts[currency] = self.services[currency].listaccounts()
+                accounts[currency] = []
+                accounts_for_currency = self.services[currency].listaccounts()
+                for account_name, account_balance in accounts_for_currency.items():
+                    if account_name == "":
+                        account_name = "(no name)" 
+                    accounts[currency].append({'name': account_name, 'balance': self.longNumber(account_balance)})
+                    
         except Exception as e:
             # got a timeout
-            self.errors.append({'message': 'Timeout occured when connecting to the %s daemon (%s)' % (currency, e)})
-        
+            self.errors.append({'message': 'Error occured while compiling list of accounts (%s)' % (e)})
+
         self.accounts['when'] = datetime.datetime.now()
         self.accounts['data'] = accounts
         return accounts
