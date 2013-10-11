@@ -64,7 +64,7 @@ class Connector(object):
                 accounts[currency] = []
                 accounts_for_currency = self.services[currency].listaccounts()
                 for account_name, account_balance in accounts_for_currency.items():
-                    account_address = self.getaddressesbyaccount(account_name)[0]
+                    account_address = self.getaddressesbyaccount(account_name, currency)[0]
                     accounts[currency].append({'name': account_name, 'balance': self.longNumber(account_balance), 'address': account_address})
                     
         except Exception as e:
@@ -75,10 +75,9 @@ class Connector(object):
         self.accounts['data'] = accounts
         return accounts
     
-    def getaddressesbyaccount(self, name):
+    def getaddressesbyaccount(self, name, currency):
         addresses = []
-        for currency in self.services.keys():
-            addresses = addresses + self.services[currency].getaddressesbyaccount(name)
+        addresses = self.services[currency].getaddressesbyaccount(name)
         return addresses
     
     def listtransactions(self, account=None):

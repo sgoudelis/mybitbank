@@ -41,7 +41,7 @@ def getAllAccounts(connector):
     accounts_by_name = connector.listaccounts()
     for currency in accounts_by_name.keys():
         for account in accounts_by_name[currency]:
-            address = connector.getaddressesbyaccount(account['name'])
+            address = connector.getaddressesbyaccount(account['name'], currency)
             account['address'] = address
             account['currency'] = currency
             accounts.append(account)
