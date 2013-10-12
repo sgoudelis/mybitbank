@@ -60,7 +60,7 @@
                 <ul class="pagination">
                   <li><a href="/transactions/{{ prev_page }}">&laquo;</a></li>
                   {% for i in pages%}
-                  <li><a href="/transactions/{{ i }}">{{ i }}</a></li>
+                  <li {% if current_page == i %}class="active"{% endif %}><a href="/transactions/{{ i }}">{{ i }}</a></li>
                   {% endfor %}
                   <li><a href="/transactions/{{ next_page }}">&raquo;</a></li>
                 </ul>

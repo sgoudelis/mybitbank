@@ -39,6 +39,6 @@ def index(request, page=0):
     # add a list of pages in the view
     globals['sections'] = getSiteSections('transactions')
     globals['connector_errors'] = connector.errors
-    context = {'globals': globals, 'page_title': page_title, 'transactions': selected_transactions, 'show_pager': show_pager, 'next_page': len(pages), 'prev_page': max(1, page-1), 'pages': pages}
+    context = {'globals': globals, 'page_title': page_title, 'transactions': selected_transactions, 'show_pager': show_pager, 'next_page': len(pages), 'prev_page': max(1, page-1), 'pages': pages, 'current_page': page}
     return render(request, 'transactions/index.html', context)
 
