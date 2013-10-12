@@ -58,11 +58,11 @@
                 {% if show_pager %}
                 <div class="text-center">
                 <ul class="pagination">
-                  <li><a href="/transactions/{{ prev_page }}">&laquo;</a></li>
+                  <li {% if current_page == prev_page %}class="disabled"{% endif %}><a href="/transactions/{{ prev_page }}">&laquo;</a></li>
                   {% for i in pages%}
                   <li {% if current_page == i %}class="active"{% endif %}><a href="/transactions/{{ i }}">{{ i }}</a></li>
                   {% endfor %}
-                  <li><a href="/transactions/{{ next_page }}">&raquo;</a></li>
+                  <li {% if current_page == next_page %}class="disabled"{% endif %}><a href="/transactions/{{ next_page }}">&raquo;</a></li>
                 </ul>
                 </div>
                 {% endif %}

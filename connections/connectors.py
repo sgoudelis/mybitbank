@@ -23,7 +23,6 @@ class Connector(object):
         },
     }
     '''
-    
     services = {}
     errors = []
     
