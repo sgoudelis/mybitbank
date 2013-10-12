@@ -27,11 +27,15 @@ html {
     border-radius: 0.25em 0.25em 0.25em 0.25em;
     color: #FFFFFF;
     display: inline;
-    font-size: 95%;
+    font-size: 99%;
     font-weight: normal;
     line-height: 1;
-    padding: 0.2em 0.6em 0.3em;
+    padding: 0.2em 0.6em 0.2em;
     text-align: center;
     vertical-align: baseline;
     white-space: nowrap;
+}
+
+.table thead > tr > th {
+    border-bottom: 0px;
 }
