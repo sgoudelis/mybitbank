@@ -94,10 +94,14 @@ def getSiteSections(active):
             section['active'] = True
     return sections
 
-def getCurrencySymbol(currency):
+def getCurrencySymbol(currency='*'):
     currencies = {
-                  'btc': "B⃦",
-                  'ltc': "Ł",
-                  'nmc': "ℕ"
-                  }
-    return currencies[currency]
+              'btc': "B⃦",
+              'ltc': "Ł",
+              'nmc': "ℕ"
+              }
+    if currency == '*':
+        return currencies
+    else:
+        return currencies[currency]
+

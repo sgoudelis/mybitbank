@@ -1,5 +1,6 @@
 from jsonrpc import ServiceProxy
 import datetime
+from lib import longNumber
 
 class Connector(object):
     caching_time = 5
@@ -29,7 +30,7 @@ class Connector(object):
     # caching data
     accounts = {'when': datetime.datetime.fromtimestamp(0), 'data': []}
     transactions = {'when': datetime.datetime.fromtimestamp(0), 'data': {}}
-    
+    balances = {'when': datetime.datetime.fromtimestamp(0), 'data': {}}
     
     def __init__(self):
         # load config
@@ -113,4 +114,24 @@ class Connector(object):
         else:
             new_address = None
         return new_address
+    
+    def getbalance(self):
+        if self.balances['data'] is not None and ((datetime.datetime.now() - self.balances['when']).seconds < self.caching_time):
+            return self.balances['data']
+        
+        try:
+        
+            balances = {}
+            for currency in self.services.keys():
+                balances[currency] = longNumber(self.services[currency].getbalance())
+        except Exception as e:
+            self.errors.append({'message': 'Error occured while getting balances (currency: %s, error: %s)' % (currency, e)})
+            self.removeCurrencyService(currency)
+            return self.transactions['data']
+        
+        self.balances['when'] = datetime.datetime.now()
+        self.balances['data'] = balances
+        return balances
+        
+        
     
