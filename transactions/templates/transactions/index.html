@@ -38,7 +38,7 @@
                       <tr style="color: #bbb;">
                     {% endif %}
                         <td>{{ transaction.account }}</td>
-                        <td class="hidden-xs" style="font-family:courier;">{{ transaction.address }}</td>
+                        <td class="hidden-xs" style="font-family:courier;"><span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span></td>
                         <td>
                         <div class="hidden-xs"><span class="glyphicon {{ transaction.icon }}"></span> {{ transaction.category }}</div>
                         <div class="visible-xs"><span class="glyphicon {{ transaction.icon }}"></span></div>

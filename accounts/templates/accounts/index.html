@@ -5,11 +5,8 @@
 {% block site_brand %}{{ globals.site_brand }}{% endblock %}
 
 {% block content %}   
-
-
         <div class="panel panel-default">
             <div class="panel-heading">
-                
                 <div class="row">
                   <div class="col-xs-6"><h3 class="panel-title">Accounts</h3></div>
                   <div class="col-xs-6 text-right"><button type="button" onclick="showHideAllAccounts('hidden_account')" class="btn btn-primary btn-xs text-right">show/hide all accounts</button></div>
@@ -29,7 +26,7 @@
                     
                     <tr {% if account.name == "" %}class="no-display" name="hidden_account"{% endif %}>
                         <td>{{ account.name }}</td>
-                        <td class="hidden-xs" style="font-family: courier;">{{ account.address.0 }}{% if account.address.1 %} (+1){% endif %}</td>
+                        <td class="hidden-xs" style="font-family: courier;"><span class="address-label label-default">{{ account.currency_symbol }} {{ account.address.0 }}</span>{% if account.address.1 %} (+1){% endif %}</td>
                         <td class="hidden-xs">{{ account.last_activity }}</td>
                         <td class="text-right" style="font-family: courier;"><strong>{{ account.balance }}</strong> {{ account.currency|upper }}</td>
                     </tr>

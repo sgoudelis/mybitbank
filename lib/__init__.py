@@ -1,3 +1,4 @@
+# -*- coding: UTF8 -*-
 import datetime
 
 def longNumber(x):
@@ -44,6 +45,7 @@ def getAllAccounts(connector):
             address = connector.getaddressesbyaccount(account['name'], currency)
             account['address'] = address
             account['currency'] = currency
+            account['currency_symbol'] = getCurrencySymbol(currency)
             accounts.append(account)
 
     return accounts
@@ -91,3 +93,11 @@ def getSiteSections(active):
         if section['name'] == active:
             section['active'] = True
     return sections
+
+def getCurrencySymbol(currency):
+    currencies = {
+                  'btc': "B⃦",
+                  'ltc': "Ł",
+                  'nmc': "ℕ"
+                  }
+    return currencies[currency]

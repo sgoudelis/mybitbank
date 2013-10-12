@@ -14,8 +14,8 @@ def index(request, page=0):
     page_title = "Transactions"
     
     transactions = getTransactions(connector = connector, sort_by = 'timereceived', reverse_order = True)
-
     for transaction in transactions:
+        transaction['currency_symbol'] = getCurrencySymbol(transaction['currency'].lower())
         if transaction['category'] == 'receive':
             transaction['icon'] = 'glyphicon-circle-arrow-down'
         elif transaction['category'] == 'send':

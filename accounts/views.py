@@ -23,6 +23,8 @@ def index(request):
             if account['name'] == transaction['account']:
                 account['last_activity'] = twitterizeDate(transaction['time'])
                 break
+        else:
+            account['last_activity'] = "never"
     
     page_title = "View accounts"
     context = {'globals': globals, 'page_title': page_title, 'accounts': accounts}
