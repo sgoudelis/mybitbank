@@ -24,13 +24,12 @@ class Connector(object):
     }
     '''
     
-    
     services = {}
     errors = []
     
     # caching data
-    accounts = {'when': 0, 'data': None}
-    transactions = {'when': 0, 'data': None}
+    accounts = {'when': datetime.datetime.fromtimestamp(0), 'data': []}
+    transactions = {'when': datetime.datetime.fromtimestamp(0), 'data': {}}
     
     
     def __init__(self):
@@ -47,6 +46,9 @@ class Connector(object):
                                                                            self.config[currency]['rpchost'], 
                                                                            self.config[currency]['rpcport'])
                                                   )
+
+    def removeCurrencyService(self, currency):
+        del self.services[currency]
 
     def longNumber(self, x):
         '''
@@ -68,15 +70,19 @@ class Connector(object):
                     accounts[currency].append({'name': account_name, 'balance': self.longNumber(account_balance), 'address': account_address})
                     
         except Exception as e:
-            # got a timeout
-            self.errors.append({'message': 'Error occured while compiling list of accounts (%s)' % (e)})
-
+            self.errors.append({'message': 'Error occured while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})
+            self.removeCurrencyService(currency)
+            return self.accounts['data']
+        
         self.accounts['when'] = datetime.datetime.now()
         self.accounts['data'] = accounts
         return accounts
     
     def getaddressesbyaccount(self, name, currency):
-        addresses = self.services[currency].getaddressesbyaccount(name)
+        if self.services[currency]:
+            addresses = self.services[currency].getaddressesbyaccount(name)
+        else:
+            addresses = []
         return addresses
     
     def listtransactions(self, account=None):
@@ -91,9 +97,10 @@ class Connector(object):
                 else:
                     transactions[currency] = self.services[currency].listtransactions(account)
         except Exception as e:
-            # got a timeout
-            self.errors.append({'message': 'Timeout occured when connecting to the %s daemon (%s)' % (currency, e)})
-            
+            self.errors.append({'message': 'Error occured while compiling list of accounts (%s)' % (e)})
+            self.removeCurrencyService(currency)
+            return self.transactions['data']
+        
         self.transactions['when'] = datetime.datetime.now()
         self.transactions['data'] = transactions
         return transactions
@@ -102,6 +109,9 @@ class Connector(object):
         '''
         Create a new address
         '''
-        new_address = self.services[currency].getnewaddress(account_name)
+        if self.services[currency]:
+            new_address = self.services[currency].getnewaddress(account_name)
+        else:
+            new_address = None
         return new_address
     
