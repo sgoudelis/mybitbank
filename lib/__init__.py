@@ -1,5 +1,6 @@
 # -*- coding: UTF8 -*-
 import datetime
+import connections
 
 def longNumber(x):
     '''
@@ -87,21 +88,21 @@ def getSiteSections(active):
                     {'name': 'transactions', 'path':"/transactions/1", 'title': "Transactions"},
                     {'name': 'transfer', 'path':"/transfer", 'title': "Transfer"},
                     {'name': 'addressbook', 'path':"/addressbook", 'title': "Addressbook"},
-                ]
+               ]
     
     for section in sections:
         if section['name'] == active:
             section['active'] = True
     return sections
 
-def getCurrencySymbol(currency='*'):
-    currencies = {
-              'btc': "B⃦",
-              'ltc': "Ł",
-              'nmc': "ℕ"
-              }
-    if currency == '*':
+def getCurrencySymbol(for_currency='*'):
+    currencies = {}
+    connection_config = connections.connector.config
+    for currency in connection_config.keys():
+        currencies[currency] = connections.connector.config[currency]['symbol']
+    
+    if for_currency == '*':
         return currencies
     else:
-        return currencies[currency]
+        return currencies[for_currency]
 
