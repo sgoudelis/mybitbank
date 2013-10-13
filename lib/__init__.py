@@ -72,7 +72,7 @@ def getTransactions(connector, account_name = None, sort_by = 'timereceived', re
     Return transactions by account name
     '''
     transactions_ordered = []
-    transactions = connector.listtransactions(account_name)
+    transactions = connector.listtransactions()
     for currency in transactions.keys():
         for transaction in transactions[currency]:
             transaction['currency'] = currency.upper()

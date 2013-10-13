@@ -80,7 +80,6 @@ class Connector(object):
         
         self.accounts['when'] = datetime.datetime.now()
         self.accounts['data'] = accounts
-        print accounts
         return accounts
     
     def getaddressesbyaccount(self, name, currency):
@@ -90,19 +89,31 @@ class Connector(object):
             addresses = []
         return addresses
     
-    def listtransactions(self, account=None):
+    def listtransactionsbyaccount(self, account, currency):      
+        transactions = []
+        try:
+            transactions = self.services[currency].listtransactions(account, 1000000, 0)
+        except Exception as e:
+            self.errors.append({'message': 'Error occured while compiling list of transactions (%s)' % (e)})
+            self.removeCurrencyService(currency)
+            
+        return transactions
+    
+    def listtransactions(self):
         if self.transactions['data'] is not None and ((datetime.datetime.now() - self.transactions['when']).seconds < self.caching_time):
             return self.transactions['data']
         
+        accounts = self.listaccounts()
+        
         try:
             transactions = {}
-            for currency in self.services.keys():
-                if account is None or account is "":
-                    transactions[currency] = self.services[currency].listtransactions()
-                else:
-                    transactions[currency] = self.services[currency].listtransactions(account)
+            for currency in accounts.keys():
+                transactions[currency] = []
+                for account in accounts[currency]:
+                    # append list
+                    transactions[currency] = transactions[currency] + self.listtransactionsbyaccount(account['name'], currency)
         except Exception as e:
-            self.errors.append({'message': 'Error occured while compiling list of accounts (%s)' % (e)})
+            self.errors.append({'message': 'Error occured while compiling list of transactions (%s)' % (e)})
             self.removeCurrencyService(currency)
             return self.transactions['data']
         
