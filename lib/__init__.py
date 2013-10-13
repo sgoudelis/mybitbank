@@ -67,7 +67,7 @@ def getAccountsWithNames(connector):
             
     return accounts_with_names
     
-def getTransactions(connector, account_name = None, sort_by = 'timereceived', reverse_order = False):
+def getTransactions(connector, account_name = None, sort_by = 'time', reverse_order = False):
     '''
     Return transactions by account name
     '''
