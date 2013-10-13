@@ -80,6 +80,7 @@ class Connector(object):
         
         self.accounts['when'] = datetime.datetime.now()
         self.accounts['data'] = accounts
+        print accounts
         return accounts
     
     def getaddressesbyaccount(self, name, currency):

@@ -14,34 +14,51 @@
           <div class="panel-body">
             <form action="{% url 'transfer:send' %}" method="post" role="form">
             {% csrf_token %}
-            <label for="account_address_from">From</label>
-            <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Select <span class="caret"></span></button>
-                <ul class="dropdown-menu">
+            
+            <div class="row">
+              <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="from_account">From</label>
+                    <input type="email" class="form-control" id="from_account" name="from_account" placeholder="account address">
+                  </div>
+
+              </div>
+              <div class="col-md-6">
+              <label for="">or</label>
+              <div class="input-group">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">select account <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
                 {% for currency, account_list in accounts.items %}
-                <li class="divider"></li>
                     <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
-                        {% for account in account_list %}
-                        <li><a href="javascript: setInputValue('{{ account.address }}', 'account_address_from');" class="{{ account.address }}">{{ account.name }}</a></li>
+                    {% for account in account_list %}
+                    {% if account.name %}
+                      <li><a href="javascript:setInputValue('{{ account.address }}', 'account_address_from');" class="{{ account.address }}">{{ account.name }}</a></li>
+                    {% endif %}
                     {% endfor %}
                 {% endfor %}
                 </ul>
               </div><!-- /btn-group -->
-              <input type="text" class="form-control" name="account_address_from" id="account_address_from" style="font-family:courier;">
             </div><!-- /input-group -->
+              
+              
+              </div>
             </div>
-        
-            <label for="account_address_to">To</label>
-            <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Select <span class="caret"></span></button>
-                <ul class="dropdown-menu">
+            <div class="row">
+              <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="to_account">To</label>
+                    <input type="email" class="form-control" id="to_account" name="to_account" placeholder="account address">
+                  </div>
+              </div>
+              <div class="col-md-6">
+              <label for="">or</label>
+              <div class="input-group">
+               <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">select account <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
                 <li role="presentation" class="dropdown-header">Addressbook</li>
                 <li class="divider"></li>
-                <li><a>sdfs</a></li>
                 {% for currency, account_list in accounts.items %}
                 <li class="divider"></li>
                     <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
@@ -51,16 +68,22 @@
                 {% endfor %}
                 </ul>
               </div><!-- /btn-group -->
-              <input type="text" class="form-control" name="account_address_to" id="account_address_to" style="font-family:courier;">
-            </div><!-- /input-group -->
+              </div>
+              </div>
             </div>
-            <label for="amount">Amount</label>
+            
+            <div class="row">
+              <div class="col-md-6">
+              <label for="amount">Amount</label>
               <div class="form-group">
                 <div class="input-group">
                   <span class="input-group-addon">$</span>
                   <input type="text" class="form-control" name="amount" style="text-align:right;">
                 </div>
-              </div>
+              </div></div>
+              <div class="col-md-6"></div>
+            </div>
+            
               <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-ok"></span>&nbsp;send</button> 
             </form>
     

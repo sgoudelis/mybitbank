@@ -16,7 +16,6 @@ def index(request):
     
     # get a list of source accounts
     accounts = connector.listaccounts()
-    print accounts
     context = {'globals': globals, 'page_title': page_title, 'accounts': accounts}
     return render(request, 'transfer/index.html', context)
 
