@@ -78,7 +78,7 @@ def getTransactions(connector, account_name = None, sort_by = 'timereceived', re
             transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 0))
             transactions_ordered.append(transaction)
     
-    transactions_ordered = sorted(transactions_ordered, key=lambda k: k[sort_by], reverse=reverse_order)
+    transactions_ordered = sorted(transactions_ordered, key=lambda k: k.get(sort_by,0), reverse=reverse_order)
     return transactions_ordered
 
 def getSiteSections(active): 
