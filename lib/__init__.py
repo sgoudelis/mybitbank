@@ -13,7 +13,7 @@ def twitterizeDate(ts):
     Make a timestamp prettier
     '''
     
-    if type(ts) is not int and type(ts) is not float:
+    if type(ts) is str:
         return ts
     
     mydate = datetime.datetime.fromtimestamp(ts)
@@ -78,8 +78,8 @@ def getTransactions(connector, account_name = None, sort_by = 'timereceived', re
             transaction['currency'] = currency.upper()
             transaction['timereceived_pretty'] = twitterizeDate(transaction.get('timereceived', 'never'))
             transaction['time_pretty'] = twitterizeDate(transaction.get('time', 'never'))
-            transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction.get('timereceived', 'never'))
-            transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 'never'))
+            transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction.get('timereceived', 0))
+            transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 0))
             transactions_ordered.append(transaction)
     
     transactions_ordered = sorted(transactions_ordered, key=lambda k: k.get(sort_by,0), reverse=reverse_order)
