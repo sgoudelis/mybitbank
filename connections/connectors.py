@@ -28,7 +28,7 @@ class Connector(object):
     errors = []
     
     # caching data
-    accounts = {'when': datetime.datetime.fromtimestamp(0), 'data': []}
+    accounts = {'when': datetime.datetime.fromtimestamp(0), 'data': {}}
     transactions = {'when': datetime.datetime.fromtimestamp(0), 'data': {}}
     balances = {'when': datetime.datetime.fromtimestamp(0), 'data': {}}
     
