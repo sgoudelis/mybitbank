@@ -12,6 +12,10 @@ def twitterizeDate(ts):
     '''
     Make a timestamp prettier
     '''
+    
+    if type(ts) is not int and type(ts) is not float:
+        return ts
+    
     mydate = datetime.datetime.fromtimestamp(ts)
     difference = datetime.datetime.now() - mydate
     s = difference.seconds
