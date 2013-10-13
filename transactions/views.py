@@ -13,7 +13,7 @@ def index(request, page=0):
     items_per_page = 10
     page_title = "Transactions"
     
-    transactions = getTransactions(connector = connector, sort_by = 'timereceived', reverse_order = True)
+    transactions = getTransactions(connector = connector, sort_by = 'time', reverse_order = True)
     for transaction in transactions:
         transaction['currency_symbol'] = getCurrencySymbol(transaction['currency'].lower())
         if transaction['category'] == 'receive':
