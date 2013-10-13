@@ -33,7 +33,7 @@
                     <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
                     {% for account in account_list %}
                     {% if account.name %}
-                      <li><a href="javascript:setInputValue('{{ account.address }}', 'account_address_from');" class="{{ account.address }}">{{ account.name }}</a></li>
+                      <li><a href="javascript:setInputValue('{{ account.address }}', 'from_account');" class="{{ account.address }}">{{ account.name }}</a></li>
                     {% endif %}
                     {% endfor %}
                 {% endfor %}
@@ -63,7 +63,7 @@
                 <li class="divider"></li>
                     <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
                         {% for account in account_list %}
-                        <li><a href="javascript: setInputValue('{{ account.address }}', 'account_address_to');" class="{{ account.address }}">{{ account.name }}</a></li>
+                        <li><a href="javascript: setInputValue('{{ account.address }}', 'to_account');" class="{{ account.address }}">{{ account.name }}</a></li>
                     {% endfor %}
                 {% endfor %}
                 </ul>
