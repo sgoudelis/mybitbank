@@ -72,10 +72,10 @@ def getTransactions(connector, account_name = None, sort_by = 'timereceived', re
     for currency in transactions.keys():
         for transaction in transactions[currency]:
             transaction['currency'] = currency.upper()
-            transaction['timereceived_pretty'] = twitterizeDate(transaction['timereceived'])
-            transaction['time_pretty'] = twitterizeDate(transaction['time'])
-            transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction['timereceived'])
-            transaction['time_human'] = datetime.datetime.fromtimestamp(transaction['time'])
+            transaction['timereceived_pretty'] = twitterizeDate(transaction.get('timereceived', 0))
+            transaction['time_pretty'] = twitterizeDate(transaction.get('time', 0))
+            transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction.get('timereceived', 0))
+            transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 0))
             transactions_ordered.append(transaction)
     
     transactions_ordered = sorted(transactions_ordered, key=lambda k: k[sort_by], reverse=reverse_order)
