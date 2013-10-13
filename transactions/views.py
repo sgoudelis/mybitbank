@@ -20,6 +20,8 @@ def index(request, page=0):
             transaction['icon'] = 'glyphicon-circle-arrow-down'
         elif transaction['category'] == 'send':
             transaction['icon'] = 'glyphicon-circle-arrow-up'
+        elif transaction['category'] == 'move':
+            transaction['icon'] = 'glyphicon-circle-arrow-right'
     
     # pagify
     if page is 0:

@@ -45,8 +45,7 @@
                         </td>
                         <td class="hidden-xs">{{ transaction.confirmations }}</td>
                         <td>{{ transaction.timereceived_pretty }}</td>
-                        <td class="text-right"
-                            style="font-family: courier;"><strong>{{ transaction.amount }}</strong> {{ transaction.currency|upper }}</td>
+                        <td class="text-right" style="font-family: courier;"><strong>{{ transaction.amount }}</strong> {{ transaction.currency|upper }}</td>
                     </tr>
                     {% endfor %}
                     {% else %}
