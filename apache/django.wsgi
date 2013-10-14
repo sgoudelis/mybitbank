@@ -1,7 +1,7 @@
 import os
 import sys
 
-path = '/path/to/mysite'
+path = os.path.realpath(__file__)+'../'
 if path not in sys.path:
     sys.path.append(path)
 
