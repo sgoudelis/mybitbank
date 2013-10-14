@@ -1,6 +1,8 @@
 from jsonrpc import ServiceProxy
 import datetime
 from lib import longNumber
+from accounts.models import accountFilter
+import unicodedata
 
 class Connector(object):
     caching_time = 5
@@ -60,6 +62,18 @@ class Connector(object):
         if self.accounts['data'] is not None and ((datetime.datetime.now() - self.accounts['when']).seconds < self.caching_time):
             return self.accounts['data']
         
+        # get a list of archived address
+        ignore_list = accountFilter.objects.filter(status=1)
+        address_ignore_list = []
+        for ignored_account in ignore_list:
+            address_ignore_list.append(ignored_account.address.encode('ascii'))
+        
+        # get a list of hidden accounts
+        hidden_list = accountFilter.objects.filter(status=2)
+        address_hidden_list = []
+        for hidden_account in hidden_list:
+            address_hidden_list.append(hidden_account.address.encode('ascii'))
+        
         try:
             accounts = {}
             for currency in self.services.keys():
@@ -67,11 +81,21 @@ class Connector(object):
                 accounts_for_currency = self.services[currency].listaccounts()
                 for account_name, account_balance in accounts_for_currency.items():
                     account_addresses = self.getaddressesbyaccount(account_name, currency)
+                    
+                    # check all address if they are in the archive list
+                    for ignored_address in address_ignore_list:
+                        if ignored_address in account_addresses:
+                            del account_addresses[account_addresses.index(ignored_address)]
+                    
+                    # check all address if they are in the hidden list
+                    hidden_flag = False
+                    for hidden_address in address_hidden_list:
+                        if hidden_address in account_addresses:
+                            hidden_flag = True
+                    
+                    # if there any address left then add it to the list
                     if account_addresses:
-                        account_address = account_addresses[0]
-                    else:
-                        account_address = ""
-                    accounts[currency].append({'name': account_name, 'balance': self.longNumber(account_balance), 'address': account_address})
+                        accounts[currency].append({'name': account_name, 'balance': self.longNumber(account_balance), 'addresses': account_addresses, 'hidden': hidden_flag})
                     
         except Exception as e:
             self.errors.append({'message': 'Error occured while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})
@@ -80,14 +104,18 @@ class Connector(object):
         
         self.accounts['when'] = datetime.datetime.now()
         self.accounts['data'] = accounts
+        
         return accounts
     
     def getaddressesbyaccount(self, name, currency):
         if self.services[currency]:
             addresses = self.services[currency].getaddressesbyaccount(name)
+            address_str = []
+            for address in addresses:
+                address_str.append(address.encode('ascii','ignore'))
         else:
-            addresses = []
-        return addresses
+            address_str = []
+        return address_str
     
     def listtransactionsbyaccount(self, account, currency):      
         transactions = []
