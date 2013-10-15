@@ -190,7 +190,7 @@ class Connector(object):
             for currency in self.services.keys():
                 balances[currency] = longNumber(self.services[currency].getbalance())
         except Exception as e:
-            self.errors.append({'message': 'Error occured while getting balances (currency: %s, error: %s)' % (currency, e)})
+            self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e)})
             self.removeCurrencyService(currency)
             return self.transactions['data']
         

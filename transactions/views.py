@@ -4,6 +4,7 @@ from lib import *
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 import math
+import pprint 
 
 def index(request, page=0):
     '''
@@ -14,6 +15,10 @@ def index(request, page=0):
     page_title = "Transactions"
     
     transactions = getTransactions(connector = connector, sort_by = 'time', reverse_order = True)
+    
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(transactions)
+    
     for transaction in transactions:
         transaction['currency_symbol'] = getCurrencySymbol(transaction['currency'].lower())
         if transaction['category'] == 'receive':
