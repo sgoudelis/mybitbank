@@ -2,7 +2,6 @@ from jsonrpc import ServiceProxy
 import datetime
 from lib import longNumber
 from accounts.models import accountFilter
-import unicodedata
 
 class Connector(object):
     caching_time = 5
