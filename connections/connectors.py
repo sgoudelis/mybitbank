@@ -34,7 +34,9 @@ class Connector(object):
     balances = {'when': datetime.datetime.fromtimestamp(0), 'data': {}}
     
     def __init__(self):
-        # load config
+        '''
+        Constructor, load config 
+        '''
         try:
             import config
             self.config = config.config
@@ -49,6 +51,9 @@ class Connector(object):
                                                   )
 
     def removeCurrencyService(self, currency):
+        '''
+        Remove the ServiceProxy objet from the list of service in case of a xxxcoind daemon not responding in time
+        '''
         del self.services[currency]
 
     def longNumber(self, x):
@@ -58,6 +63,9 @@ class Connector(object):
         return "{:.8f}".format(x)
     
     def listaccounts(self):
+        '''
+        Get a list of accounts. This method also add filtering, fetches address for each account etc.
+        '''
         if self.accounts['data'] is not None and ((datetime.datetime.now() - self.accounts['when']).seconds < self.caching_time):
             return self.accounts['data']
         
@@ -107,6 +115,9 @@ class Connector(object):
         return accounts
     
     def getaddressesbyaccount(self, name, currency):
+        '''
+        Get the address of an account name
+        '''
         if self.services[currency]:
             addresses = self.services[currency].getaddressesbyaccount(name)
             address_str = []
@@ -116,7 +127,10 @@ class Connector(object):
             address_str = []
         return address_str
     
-    def listtransactionsbyaccount(self, account, currency):      
+    def listtransactionsbyaccount(self, account, currency):    
+        '''
+        Get a list of transactions by account and currency
+        '''  
         transactions = []
         try:
             transactions = self.services[currency].listtransactions(account, 1000000, 0)
@@ -127,6 +141,10 @@ class Connector(object):
         return transactions
     
     def listtransactions(self):
+        ''' 
+        Get a list of transactions
+        '''
+        
         if self.transactions['data'] is not None and ((datetime.datetime.now() - self.transactions['when']).seconds < self.caching_time):
             return self.transactions['data']
         
@@ -159,6 +177,10 @@ class Connector(object):
         return new_address
     
     def getbalance(self):
+        '''
+        Get balance for each currency
+        '''
+        
         if self.balances['data'] is not None and ((datetime.datetime.now() - self.balances['when']).seconds < self.caching_time):
             return self.balances['data']
         
@@ -175,6 +197,3 @@ class Connector(object):
         self.balances['when'] = datetime.datetime.now()
         self.balances['data'] = balances
         return balances
-        
-        
-    
