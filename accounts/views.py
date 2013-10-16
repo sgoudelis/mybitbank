@@ -35,7 +35,6 @@ def add(request):
     '''
     context = getAddAccountFormContext()
     context['breadcrumbs'] = generic.buildBreadcrumbs(current_section, 'add')
-    print context['breadcrumbs']
     return render(request, 'accounts/add.html', context)
 
 def getAddAccountFormContext(account_name='', currency='btc', error=None):

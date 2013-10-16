@@ -109,7 +109,6 @@ def getCurrencySymbol(for_currency='*'):
 def buildBreadcrumbs(current_section='dashboard', currect_subsection='', current_activesection=''):
     # this is kind of stupid but it is 12 AM and I am sleepy
     breadcrumbs = []
-    print config.MainConfig['site_sections']
     for section in config.MainConfig['site_sections']:
         if section['name'] == current_section:
             breadcrumbs.append({'name': section['title'], 'path': section['path']})
