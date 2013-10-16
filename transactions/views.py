@@ -1,10 +1,10 @@
 from connections import connector
-from globals import globals
-from lib import *
-from django.http import HttpResponse, HttpResponseRedirect
+import config
+import generic
 from django.shortcuts import render
 import math
-import pprint 
+
+current_section = 'transactions'
 
 def index(request, page=0):
     '''
@@ -14,13 +14,10 @@ def index(request, page=0):
     items_per_page = 10
     page_title = "Transactions"
     
-    transactions = getTransactions(connector = connector, sort_by = 'time', reverse_order = True)
-    
-    #pp = pprint.PrettyPrinter(indent=4)
-    #pp.pprint(transactions)
+    transactions = generic.getTransactions(connector = connector, sort_by = 'time', reverse_order = True)
     
     for transaction in transactions:
-        transaction['currency_symbol'] = getCurrencySymbol(transaction['currency'].lower())
+        transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
         if transaction['category'] == 'receive':
             transaction['icon'] = 'glyphicon-circle-arrow-down'
         elif transaction['category'] == 'send':
@@ -35,6 +32,7 @@ def index(request, page=0):
         max_page = 0
         pages = []
         show_pager = False
+        current_subsection = 'all'
     else:
         # pager on
         page_id = page-1
@@ -42,10 +40,11 @@ def index(request, page=0):
         max_page = int(math.ceil(len(transactions)/items_per_page))+1
         pages = [i+1 for i in range(max_page)]
         show_pager = True
+        current_subsection = 'pages'
     
     # add a list of pages in the view
-    globals['sections'] = getSiteSections('transactions')
-    globals['connector_errors'] = connector.errors
-    context = {'globals': globals, 'page_title': page_title, 'transactions': selected_transactions, 'show_pager': show_pager, 'next_page': min((page+1), len(pages)), 'prev_page': max(1, page-1), 'pages': pages, 'current_page': page}
+    sections = generic.getSiteSections(current_section)
+    
+    context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(current_section, current_subsection),'page_title': page_title, 'page_sections': sections, 'transactions': selected_transactions, 'show_pager': show_pager, 'next_page': min((page+1), len(pages)), 'prev_page': max(1, page-1), 'pages': pages, 'current_page': page}
     return render(request, 'transactions/index.html', context)
 

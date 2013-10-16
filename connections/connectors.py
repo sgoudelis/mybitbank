@@ -1,6 +1,6 @@
 from jsonrpc import ServiceProxy
 import datetime
-from lib import longNumber
+import generic
 from accounts.models import accountFilter
 
 class Connector(object):
@@ -188,10 +188,9 @@ class Connector(object):
             return self.balances['data']
         
         try:
-        
             balances = {}
             for currency in self.services.keys():
-                balances[currency] = longNumber(self.services[currency].getbalance())
+                balances[currency] = generic.longNumber(self.services[currency].getbalance())
         except Exception as e:
             self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e)})
             self.removeCurrencyService(currency)
@@ -200,3 +199,19 @@ class Connector(object):
         self.balances['when'] = datetime.datetime.now()
         self.balances['data'] = balances
         return balances
+    
+    
+    def getaccountdetailsbyaddress(self, address):
+        
+        accounts = self.listaccounts(gethidden=True, getarchived=True)
+        
+        target_account = None
+        for currency in accounts.keys():
+            for account in accounts[currency]:
+                if address in account['addresses']:
+                    target_account = account
+                    break
+        return target_account
+            
+        
+        

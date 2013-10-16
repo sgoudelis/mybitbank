@@ -1,9 +1,11 @@
 from connections import connector
-from globals import globals
-from lib import *
-from django.http import HttpResponse, HttpResponseRedirect
+import config
+import generic
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import forms
+
+current_section = 'transfer'
 
 def index(request):
     '''
@@ -12,11 +14,11 @@ def index(request):
     page_title = "Transfer"
     
     # add a list of pages in the view
-    globals['sections'] = getSiteSections('transfer')
+    sections = generic.getSiteSections('transfer')
     
     # get a list of source accounts
     accounts = connector.listaccounts()
-    context = {'globals': globals, 'page_title': page_title, 'accounts': accounts}
+    context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(current_section), 'page_sections':sections, 'page_title': page_title, 'accounts': accounts}
     return render(request, 'transfer/index.html', context)
 
 def send(request):
@@ -36,6 +38,6 @@ def send(request):
     
     # get a list of source accounts
     accounts = connector.listaccounts()
-    context = {'globals': globals, 'page_title': page_title, 'accounts': accounts, 'form': form}
+    context = {'globals': config.MainConfig['globals'], 'page_title': page_title, 'accounts': accounts, 'form': form}
     return render(request, 'transfer/index.html', context)
     

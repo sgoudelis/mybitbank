@@ -6,4 +6,5 @@ urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^add/', views.add, name='add'),
     url(r'^create/', views.create, name='create'),
+    url(r'^details/(?P<account_address>\w+)/', views.details, name='details'),
 )

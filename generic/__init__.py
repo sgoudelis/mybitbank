@@ -1,6 +1,7 @@
 # -*- coding: UTF8 -*-
 import datetime
 import connections
+import config
 
 def longNumber(x):
     '''
@@ -84,17 +85,14 @@ def getTransactions(connector, account_name = None, sort_by = 'time', reverse_or
     return transactions_ordered
 
 def getSiteSections(active): 
-    sections = [
-                    {'name': 'dashboard', 'path':"/dashboard", 'title': 'Dashboard'},
-                    {'name': 'accounts', 'path':"/accounts", 'title': 'Accounts'},
-                    {'name': 'transactions', 'path':"/transactions/1", 'title': "Transactions"},
-                    {'name': 'transfer', 'path':"/transfer", 'title': "Transfer"},
-                    {'name': 'addressbook', 'path':"/addressbook", 'title': "Addressbook"},
-               ]
+    sections = config.MainConfig['site_sections']
     
     for section in sections:
         if section['name'] == active:
             section['active'] = True
+        else:
+            section['active'] = False
+            
     return sections
 
 def getCurrencySymbol(for_currency='*'):
@@ -108,3 +106,16 @@ def getCurrencySymbol(for_currency='*'):
     else:
         return currencies[for_currency]
 
+def buildBreadcrumbs(current_section='dashboard', currect_subsection=''):
+    # this is kind of stupid but it is 12 AM and I am sleepy
+    breadcrumbs = []
+    print config.MainConfig['site_sections']
+    for section in config.MainConfig['site_sections']:
+        if section['name'] == current_section:
+            breadcrumbs.append({'name': section['title'], 'path': section['path']})
+            for subsection in section.get('subsections', []):
+                if subsection['name'] == currect_subsection:
+                    breadcrumbs.append({'name': subsection['title'], 'path': subsection['path']})
+    return breadcrumbs
+    
+    

@@ -33,12 +33,12 @@
                 <ul class="nav navbar-nav">
                 <!--  page sections start -->
                 
-                {% for section in globals.sections %}
-                {% if section.active  %}
-                 <li class="active"><a href="{{ section.path }}">{{ section.title }}</a></li>
-                {% else %}
-                 <li><a href="{{ section.path }}">{{ section.title }}</a></li>
-                {% endif %}
+                {% for section in page_sections %}
+	                {% if section.active  %}
+	                 <li class="active"><a href="{{ section.path }}">{{ section.title }}</a></li>
+	                {% else %}
+	                 <li><a href="{{ section.path }}">{{ section.title }}</a></li>
+	                {% endif %}
                 {% endfor %}
                 <!--  page sections stop -->
                 </ul>
@@ -55,6 +55,13 @@
             </div>
             <!-- /.navbar-collapse -->
         </nav>
+   
+    <ol class="breadcrumb">
+    {% for page_section in breadcrumbs %}
+	  <li><a href="{{ page_section.path }}">{{ page_section.name }}</a></li>
+	{% endfor %}
+	</ol>
+   
    {% if globals.connector_errors %}
    {% for error in globals.connector_errors %}
     <div class="alert alert-danger">
@@ -62,6 +69,9 @@
     </div>
     {% endfor %}
    {% endif %}
+   
+   
+   
    
    {% block content %}{% endblock %}
 

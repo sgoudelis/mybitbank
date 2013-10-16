@@ -1,8 +1,8 @@
-from connections import connector
-from globals import globals
-from lib import *
-from django.http import HttpResponse
+import config
+import generic
 from django.shortcuts import render
+
+current_section = 'addressbook'
 
 def index(request):
     '''
@@ -11,7 +11,7 @@ def index(request):
     page_title = "Addressbook"
     
     # add a list of pages in the view
-    globals['sections'] = getSiteSections('addressbook')
+    sections = generic.getSiteSections('addressbook')
     
-    context = {'globals': globals, 'page_title': page_title}
+    context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(current_section), 'page_sections': sections, 'page_title': page_title}
     return render(request, 'addressbook/index.html', context)
