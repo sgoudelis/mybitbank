@@ -54,7 +54,8 @@ class Connector(object):
         '''
         Remove the ServiceProxy objet from the list of service in case of a xxxcoind daemon not responding in time
         '''
-        del self.services[currency]
+        if self.services[currency]:
+            del self.services[currency]
 
     def longNumber(self, x):
         '''

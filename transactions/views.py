@@ -16,8 +16,8 @@ def index(request, page=0):
     
     transactions = getTransactions(connector = connector, sort_by = 'time', reverse_order = True)
     
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(transactions)
+    #pp = pprint.PrettyPrinter(indent=4)
+    #pp.pprint(transactions)
     
     for transaction in transactions:
         transaction['currency_symbol'] = getCurrencySymbol(transaction['currency'].lower())
