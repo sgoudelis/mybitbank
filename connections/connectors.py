@@ -41,7 +41,7 @@ class Connector(object):
             import config
             self.config = config.config
         except (AttributeError, ImportError) as e:
-            self.errors.append({'message': 'Error occured while compiling list of accounts (%s)' % (e)})
+            self.errors.append({'message': 'Error occurred while compiling list of accounts (%s)' % (e)})
         
         for currency in self.config:
             self.services[currency] = ServiceProxy("http://%s:%s@%s:%s" % (self.config[currency]['rpcusername'], 
@@ -63,24 +63,26 @@ class Connector(object):
         '''
         return "{:.8f}".format(x)
     
-    def listaccounts(self):
+    def listaccounts(self, gethidden=False, getarchived=False):
         '''
         Get a list of accounts. This method also add filtering, fetches address for each account etc.
         '''
         if self.accounts['data'] is not None and ((datetime.datetime.now() - self.accounts['when']).seconds < self.caching_time):
             return self.accounts['data']
         
-        # get a list of archived address
-        ignore_list = accountFilter.objects.filter(status=1)
-        address_ignore_list = []
-        for ignored_account in ignore_list:
-            address_ignore_list.append(ignored_account.address.encode('ascii'))
+        if getarchived:
+            # get a list of archived address
+            address_ignore_list = []
+            ignore_list = accountFilter.objects.filter(status=1)
+            for ignored_account in ignore_list:
+                address_ignore_list.append(ignored_account.address.encode('ascii'))
         
-        # get a list of hidden accounts
-        hidden_list = accountFilter.objects.filter(status=2)
-        address_hidden_list = []
-        for hidden_account in hidden_list:
-            address_hidden_list.append(hidden_account.address.encode('ascii'))
+        if gethidden:
+            # get a list of hidden accounts
+            address_hidden_list = []
+            hidden_list = accountFilter.objects.filter(status=2)
+            for hidden_account in hidden_list:
+                address_hidden_list.append(hidden_account.address.encode('ascii'))
         
         try:
             accounts = {}
@@ -106,7 +108,7 @@ class Connector(object):
                         accounts[currency].append({'name': account_name, 'balance': self.longNumber(account_balance), 'addresses': account_addresses, 'hidden': hidden_flag})
                     
         except Exception as e:
-            self.errors.append({'message': 'Error occured while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})
+            self.errors.append({'message': 'Error occurred while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})
             self.removeCurrencyService(currency)
             return self.accounts['data']
         
@@ -149,7 +151,7 @@ class Connector(object):
         if self.transactions['data'] is not None and ((datetime.datetime.now() - self.transactions['when']).seconds < self.caching_time):
             return self.transactions['data']
         
-        accounts = self.listaccounts()
+        accounts = self.listaccounts(gethidden=True, getarchived=True)
         
         try:
             transactions = {}
@@ -159,7 +161,7 @@ class Connector(object):
                     # append list
                     transactions[currency] = transactions[currency] + self.listtransactionsbyaccount(account['name'], currency)
         except Exception as e:
-            self.errors.append({'message': 'Error occured while compiling list of transactions (%s)' % (e)})
+            self.errors.append({'message': 'Error occurred while compiling list of transactions (%s)' % (e)})
             self.removeCurrencyService(currency)
             return self.transactions['data']
         
