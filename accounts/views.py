@@ -10,7 +10,6 @@ def index(request):
     '''
     Handler for the accounts
     '''
-    
     # add a list of pages in the view
     globals['sections'] = getSiteSections('accounts')
     
@@ -38,7 +37,9 @@ def add(request):
     return render(request, 'accounts/add.html', context)
 
 def getAddAccountFormContext(account_name='', currency='btc', error=None):
-    
+    '''
+    Provide a common context between the account view and create account view
+    '''
     # get available currencies
     currencies_available = []
     currencies = connector.services.keys()
@@ -50,6 +51,9 @@ def getAddAccountFormContext(account_name='', currency='btc', error=None):
     return context
 
 def create(request):
+    '''
+    Handler for POST of create account form
+    '''
     try:
         account_name = request.POST['account_name']
         currency = request.POST['currency']
