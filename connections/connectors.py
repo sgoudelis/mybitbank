@@ -70,16 +70,16 @@ class Connector(object):
         if self.accounts['data'] is not None and ((datetime.datetime.now() - self.accounts['when']).seconds < self.caching_time):
             return self.accounts['data']
         
+        address_ignore_list = []
         if not getarchived:
             # get a list of archived address
-            address_ignore_list = []
             ignore_list = accountFilter.objects.filter(status=1)
             for ignored_account in ignore_list:
                 address_ignore_list.append(ignored_account.address.encode('ascii'))
         
+        address_hidden_list = []
         if not gethidden:
             # get a list of hidden accounts
-            address_hidden_list = []
             hidden_list = accountFilter.objects.filter(status=2)
             for hidden_account in hidden_list:
                 address_hidden_list.append(hidden_account.address.encode('ascii'))
