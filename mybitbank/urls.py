@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.http.response import HttpResponseRedirect
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -6,7 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'mybitbank.views.home', name='home'),
+    url(r'^$', lambda r : HttpResponseRedirect('dashboard/')),
     # url(r'^mybitbank/', include('mybitbank.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
