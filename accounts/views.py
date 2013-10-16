@@ -79,6 +79,6 @@ def details(request, account_address="pipes"):
     account = connector.getaccountdetailsbyaddress(account_address)
 
     page_title = "Account details for %s" % account['name']
-    context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(current_section, 'details'), 'page_title': page_title, 'page_sections': sections, 'account': account}
+    context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(current_section, '', account['name']), 'page_title': page_title, 'page_sections': sections, 'account': account}
     return render(request, 'accounts/details.html', context)
     

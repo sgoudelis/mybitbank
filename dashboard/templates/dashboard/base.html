@@ -58,7 +58,11 @@
    
     <ol class="breadcrumb">
     {% for page_section in breadcrumbs %}
-	  <li><a href="{{ page_section.path }}">{{ page_section.name }}</a></li>
+      {% if page_section.active %}
+	  <li class="active">{{ page_section.name }}</li>
+	  {% else %}
+	  <li><a href="{{ page_section.path }}" >{{ page_section.name }}</a></li>
+	  {% endif %}
 	{% endfor %}
 	</ol>
    
@@ -69,8 +73,6 @@
     </div>
     {% endfor %}
    {% endif %}
-   
-   
    
    
    {% block content %}{% endblock %}

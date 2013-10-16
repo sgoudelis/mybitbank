@@ -33,6 +33,7 @@ def index(request, page=0):
         pages = []
         show_pager = False
         current_subsection = 'all'
+        current_activesession = ''
     else:
         # pager on
         page_id = page-1
@@ -41,10 +42,11 @@ def index(request, page=0):
         pages = [i+1 for i in range(max_page)]
         show_pager = True
         current_subsection = 'pages'
+        current_activesession = 'Page %s' % page
     
     # add a list of pages in the view
     sections = generic.getSiteSections(current_section)
     
-    context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(current_section, current_subsection),'page_title': page_title, 'page_sections': sections, 'transactions': selected_transactions, 'show_pager': show_pager, 'next_page': min((page+1), len(pages)), 'prev_page': max(1, page-1), 'pages': pages, 'current_page': page}
+    context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(current_section, '', current_activesession), 'page_title': page_title, 'page_sections': sections, 'transactions': selected_transactions, 'show_pager': show_pager, 'next_page': min((page+1), len(pages)), 'prev_page': max(1, page-1), 'pages': pages, 'current_page': page}
     return render(request, 'transactions/index.html', context)
 
