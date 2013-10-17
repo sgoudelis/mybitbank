@@ -67,9 +67,7 @@ class Connector(object):
         '''
         Get a list of accounts. This method also add filtering, fetches address for each account etc.
         '''
-        if self.accounts['data'] is not None and ((datetime.datetime.now() - self.accounts['when']).seconds < self.caching_time):
-            return self.accounts['data']
-        
+
         address_ignore_list = []
         if not getarchived:
             # get a list of archived address
@@ -84,20 +82,33 @@ class Connector(object):
             for hidden_account in hidden_list:
                 address_hidden_list.append(hidden_account.address.encode('ascii'))
         
+        # check for cached data, use that or get it again
+        if self.accounts['data'] is not None and ((datetime.datetime.now() - self.accounts['when']).seconds < self.caching_time):
+            cached_accounts = self.accounts['data']
+        else:
+            cached_accounts = {}
+            for currency in self.services.keys():
+                cached_accounts[currency] = self.services[currency].listaccounts()
+            
+            # caching result
+            self.accounts['when'] = datetime.datetime.now()
+            self.accounts['data'] = cached_accounts
+        
         try:
             accounts = {}
             for currency in self.services.keys():
                 accounts[currency] = []
-                accounts_for_currency = self.services[currency].listaccounts()
+                accounts_for_currency = self.accounts['data'][currency]
+        
                 for account_name, account_balance in accounts_for_currency.items():
                     account_addresses = self.getaddressesbyaccount(account_name, currency)
                     
-                    # check all address if they are in the archive list
+                    # check all addresses if they are in the archive list
                     for ignored_address in address_ignore_list:
                         if ignored_address in account_addresses:
                             del account_addresses[account_addresses.index(ignored_address)]
                     
-                    # check all address if they are in the hidden list
+                    # check all addresses if they are in the hidden list
                     hidden_flag = False
                     for hidden_address in address_hidden_list:
                         if hidden_address in account_addresses:
@@ -111,9 +122,6 @@ class Connector(object):
             self.errors.append({'message': 'Error occurred while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})
             self.removeCurrencyService(currency)
             return self.accounts['data']
-        
-        self.accounts['when'] = datetime.datetime.now()
-        self.accounts['data'] = accounts
         
         return accounts
     
