@@ -36,4 +36,13 @@ config = {
         'symbol': "Ᵽ",
         'code': 'PPC'
     },
+    'ftc':  {
+        'rpcusername': "testuser",
+        'rpcpassword': "testnet",
+        'rpchost': "localhost",
+        'rpcport': "7003",
+        'currency_name': 'FeatherCoin (FTC)',
+        'symbol': "F",
+        'code': 'FTC'
+    },
 }
