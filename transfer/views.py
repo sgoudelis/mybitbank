@@ -13,12 +13,15 @@ def index(request):
     '''
     page_title = "Transfer"
     
-    # add a list of pages in the view
-    sections = generic.getSiteSections('transfer')
-    
     # get a list of source accounts
     accounts = connector.listaccounts()
-    context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(current_section), 'page_sections':sections, 'page_title': page_title, 'accounts': accounts}
+    context = {
+               'globals': config.MainConfig['globals'], 
+               'breadcrumbs': generic.buildBreadcrumbs(current_section), 
+               'page_sections': generic.getSiteSections('transfer'), 
+               'page_title': page_title, 
+               'accounts': accounts
+               }
     return render(request, 'transfer/index.html', context)
 
 def send(request):
@@ -38,6 +41,13 @@ def send(request):
     
     # get a list of source accounts
     accounts = connector.listaccounts()
-    context = {'globals': config.MainConfig['globals'], 'page_title': page_title, 'accounts': accounts, 'form': form}
+    context = {
+               'globals': config.MainConfig['globals'], 
+               'breadcrumbs': generic.buildBreadcrumbs(current_section), 
+               'page_sections': generic.getSiteSections('transfer'), 
+               'page_title': page_title, 
+               'accounts': accounts, 
+               'form': form
+               }
     return render(request, 'transfer/index.html', context)
     

@@ -33,7 +33,7 @@
                     <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
                     {% for account in account_list %}
                     {% if account.name %}
-                      <li><a href="javascript:setInputValue('{{ account.address }}', 'from_account');" class="{{ account.address }}">{{ account.name }}</a></li>
+                      <li><a href="javascript:setInputValue('{{ account.addresses.0 }}', 'from_account');" class="">{{ account.name }}</a></li>
                     {% endif %}
                     {% endfor %}
                 {% endfor %}
@@ -60,10 +60,10 @@
                 <li role="presentation" class="dropdown-header">Addressbook</li>
                 <li class="divider"></li>
                 {% for currency, account_list in accounts.items %}
-                <li class="divider"></li>
+                    <li class="divider"></li>
                     <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
-                        {% for account in account_list %}
-                        <li><a href="javascript: setInputValue('{{ account.address }}', 'to_account');" class="{{ account.address }}">{{ account.name }}</a></li>
+                    {% for account in account_list %}
+                        <li><a href="javascript: setInputValue('{{ account.addresses.0 }}', 'to_account');" class="">{{ account.name }}</a></li>
                     {% endfor %}
                 {% endfor %}
                 </ul>
