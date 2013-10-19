@@ -25,7 +25,7 @@ def index(request):
         else:
             account['last_activity'] = "never"
     
-    page_title = "View accounts"
+    page_title = "Accounts"
     context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(current_section, 'all'), 'page_title': page_title, 'page_sections': sections, 'accounts': accounts}
     return render(request, 'accounts/index.html', context)
 
@@ -82,9 +82,9 @@ def details(request, account_address="pipes"):
         
     # get transaction details
     transactions = generic.getTransactionsByAccount(connector, account['name'], account['currency'], reverse_order=True)
-    generic.prettyPrint(transactions)
+    generic.prettyPrint(account)
     
-    page_title = "Account details for %s" % account['name']
+    page_title = "Account details for %s" % (account['name'] or account['alternative_name'])
     context = {
                'globals': config.MainConfig['globals'], 
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', account['name'] or account['alternative_name']), 

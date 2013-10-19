@@ -10,11 +10,58 @@
     <h3 class="panel-title">{% if account.name %}{{ account.name }}{% else %}{{ account.alternative_name }}{% endif %}</h3>
   </div>
   <div class="panel-body">
+  <h4>Details</h4>
+  
+  
+  
+<div class="row">
+  <div class="col-md-6">
+  <table class="table">
+  <tr>
+  	<td class="no-top-solid-border" width="10%">Addresses</td>
+  	<td class="no-top-solid-border" width="40%">
+  	{% for address in account.addresses %}
+  	<div class="fixed-width-font text-right"><span>{{ address }}</span><span style="float:right;"></span></div>
+  	{% endfor %}
+  	</td>
+  </tr>
+	<tr>
+		<td width="10%">Last activity</td>
+	 	<td width="40%" class="text-right fixed-font-width">{{ transactions.0.time_pretty }}</td>
+	</tr>
+  </table>
+  </div>
+  <div class="col-md-6">
+		<table class="table">
+		<tr>
+	 	<td class="no-top-solid-border" width="10%"><h4>Balance</h4></td>
+	  	<td class="no-top-solid-border text-right fixed-font-width" width="40%"><h3>{{ account.balance }} {{ account.currency|upper }}</h3></td>
+		</tr>
+		</table>
+  </div>
+</div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
     <h4>Transactions</h4>
      <table class="table table-hover table-striped table-condensed">
       <thead>
-        <tr>
-            <th nowrap width="300" style="background-color:#f5f5f5;">Address</th>
+        <tr class="top-solid-border">
+            <th nowrap width="300" style="background-color:#f5f5f5;" >Address</th>
             <th width="200" style="background-color:#f5f5f5;">To</th>
             <th width="200" style="background-color:#f5f5f5;">Comment</th>
             <th style="background-color:#f5f5f5;">Type</th>
