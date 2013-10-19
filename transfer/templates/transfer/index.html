@@ -19,11 +19,11 @@
             
             
             <ul class="nav nav-tabs">
-            {% for currency in accounts.keys %}
+            {% for currency in currency_codes %}
 			  <li {% if selected_currency == currency %}class="active"{% endif %}><a href="{% url 'transfer:index' %}{{ currency }}"><strong>{{ currency_names|keyvalue:currency }}</strong></a></li>
 			{% endfor %}
 			</ul>
-            <div clas="row">&nbsp;</div>
+            <div class="row">&nbsp;</div>
             
             
             
@@ -44,7 +44,7 @@
 
               <div class="col-md-6">
               <label for="">&nbsp;</label>
-                <select class="form-control">
+                <select class="form-control fixed-width-font">
                 <option>select an account</option>
                 {% for account in accounts|keyvalue:selected_currency %}
                     {% if account.name %}
@@ -64,7 +64,7 @@
               </div>
               <div class="col-md-6">
               <label for="">&nbsp;</label>
-                <select class="form-control">
+                <select class="form-control fixed-width-font">
                 <option>select an account</option>
                 {% for account in accounts|keyvalue:selected_currency %}
                     {% if account.name %}
@@ -74,6 +74,20 @@
                 </select>
               </div>
             </div>
+            
+            <div class="row">
+              <div class="col-md-6">
+              <label for="amount">Comment</label>
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><span class="glyphicon glyphicon-comment"></span></span>
+                  <input type="text" class="form-control" name="comment" style="">
+                </div>
+              </div></div>
+              <div class="col-md-6"></div>
+            </div>
+            
+            
             
             <div class="row">
               <div class="col-md-4">
