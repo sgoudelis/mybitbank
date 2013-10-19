@@ -1,5 +1,6 @@
 function setInputValue(value, targetId) {
-	document.getElementById(targetId).setAttribute("value", value);
+	//document.getElementById(targetId).setAttribute("value", value);
+	$('#'+targetId).val(value);
 }
 
 function showHideAllAccounts(id) {

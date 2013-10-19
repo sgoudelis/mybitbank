@@ -7,20 +7,30 @@ import forms
 
 current_section = 'transfer'
 
-def index(request):
+def index(request, selected_currency='btc'):
     '''
     handler for the transfers
     '''
     page_title = "Transfer"
     
+    currency_names = {}
+    currency_symbols = {}
+    for currency in connector.config:
+        currency_names[currency] = connector.config[currency]['currency_name']
+        currency_symbols[currency] = connector.config[currency]['symbol']
+            
+    
     # get a list of source accounts
     accounts = connector.listaccounts()
     context = {
                'globals': config.MainConfig['globals'], 
-               'breadcrumbs': generic.buildBreadcrumbs(current_section), 
+               'breadcrumbs': generic.buildBreadcrumbs(current_section, '', currency_names[selected_currency]), 
                'page_sections': generic.getSiteSections('transfer'), 
-               'page_title': page_title, 
-               'accounts': accounts
+               'page_title': page_title,
+               'currency_names': currency_names,
+               'currency_symbols': currency_symbols,
+               'accounts': accounts,
+               'selected_currency': selected_currency
                }
     return render(request, 'transfer/index.html', context)
 

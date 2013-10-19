@@ -1,5 +1,7 @@
 {% extends "dashboard/base.html" %}
-{% load url from future %}
+
+{% load dashboard_extras %}
+
 {% block page_title %}{{ page_title }}{% endblock %}
 
 {% block site_brand %}{{ globals.site_brand }}{% endblock %}
@@ -7,77 +9,78 @@
 {{ form }}
 
 {% block content %}     
+
     <div class="panel panel-danger">
       <div class="panel-heading">
         <h3 class="panel-title">Transfer</h3>
           </div>
           <div class="panel-body">
+            
+            
+            
+            <ul class="nav nav-tabs">
+            {% for currency in accounts.keys %}
+			  <li {% if selected_currency == currency %}class="active"{% endif %}><a href="{% url 'transfer:index' %}{{ currency }}"><strong>{{ currency|upper }}</strong></a></li>
+			{% endfor %}
+			</ul>
+            <div clas="row">&nbsp;</div>
+            
+            
+            
+            
+            
+            
+            
             <form action="{% url 'transfer:send' %}" method="post" role="form">
             {% csrf_token %}
             
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
                   <div class="form-group">
                     <label for="from_account">From</label>
-                    <input type="email" class="form-control" id="from_account" name="from_account" placeholder="account address">
+                    <input type="text" class="form-control fixed-width-font" id="from_account" name="from_account" placeholder="address">
                   </div>
-
               </div>
+
               <div class="col-md-6">
               <label for="">or</label>
-              <div class="input-group">
-              <div class="btn-group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">select account <span class="caret"></span></button>
-                <ul class="dropdown-menu" role="menu">
-                {% for currency, account_list in accounts.items %}
-                    <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
-                    {% for account in account_list %}
+                <select class="form-control">
+                <option>select an account</option>
+                {% for account in accounts|keyvalue:selected_currency %}
                     {% if account.name %}
-                      <li><a href="javascript:setInputValue('{{ account.addresses.0 }}', 'from_account');" class="">{{ account.name }}</a></li>
+                      <option onclick="javascript:setInputValue('{{ account.addresses.0 }}', 'from_account');" >{{ account.name }}</option>
                     {% endif %}
-                    {% endfor %}
                 {% endfor %}
-                </ul>
-              </div><!-- /btn-group -->
-            </div><!-- /input-group -->
-              
+                </select>
               
               </div>
             </div>
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
                   <div class="form-group">
                     <label for="to_account">To</label>
-                    <input type="email" class="form-control" id="to_account" name="to_account" placeholder="account address">
+                    <input type="text" class="form-control fixed-width-font" id="to_account" name="to_account" placeholder="address">
                   </div>
               </div>
               <div class="col-md-6">
               <label for="">or</label>
-              <div class="input-group">
-               <div class="btn-group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">select account <span class="caret"></span></button>
-                <ul class="dropdown-menu" role="menu">
-                <li role="presentation" class="dropdown-header">Addressbook</li>
-                <li class="divider"></li>
-                {% for currency, account_list in accounts.items %}
-                    <li class="divider"></li>
-                    <li role="presentation" class="dropdown-header">{{ currency|upper }}</li>
-                    {% for account in account_list %}
-                        <li><a href="javascript: setInputValue('{{ account.addresses.0 }}', 'to_account');" class="">{{ account.name }}</a></li>
-                    {% endfor %}
+                <select class="form-control">
+                <option>select an account</option>
+                {% for account in accounts|keyvalue:selected_currency %}
+                    {% if account.name %}
+                      <option onclick="javascript:setInputValue('{{ account.addresses.0 }}', 'to_account');" >{{ account.name }}</option>
+                    {% endif %}
                 {% endfor %}
-                </ul>
-              </div><!-- /btn-group -->
-              </div>
+                </select>
               </div>
             </div>
             
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
               <label for="amount">Amount</label>
               <div class="form-group">
                 <div class="input-group">
-                  <span class="input-group-addon">$</span>
+                  <span class="input-group-addon">{{ currency_symbols|keyvalue:selected_currency }}</span>
                   <input type="text" class="form-control" name="amount" style="text-align:right;">
                 </div>
               </div></div>
