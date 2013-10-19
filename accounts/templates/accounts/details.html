@@ -10,7 +10,52 @@
     <h3 class="panel-title">{{ account.name }}</h3>
   </div>
   <div class="panel-body">
-    Panel content
+    <h4>Transactions</h4>
+     <table class="table table-hover table-striped table-condensed">
+      <thead>
+        <tr>
+            <th nowrap width="300" style="background-color:#f5f5f5;">Address</th>
+            <th width="200" style="background-color:#f5f5f5;">To</th>
+            <th width="200" style="background-color:#f5f5f5;">Comment</th>
+            <th style="background-color:#f5f5f5;">Type</th>
+            <th class="hidden-xs" style="background-color:#f5f5f5;">Conf.</th>
+            <th style="background-color:#f5f5f5;">When</th>
+            <th width="150"style="background-color:#f5f5f5;" class="text-right">Amount</th>
+        </tr>
+       </thead>
+        {% if transactions %}
+        {% for transaction in transactions %} 
+        {% if transaction.confirmations > 6 %}
+          <tr>
+        {% else %}
+          <tr style="color: #bbb;">
+        {% endif %}
+            <td class="fixed-width-font">{{ transaction.address }}</td>
+            <td>{% if transaction.to %}{{ transaction.to }}{% else %}-{% endif %}</td>
+            <td>{% if transaction.comment %}{{ transaction.comment }}{% else %}-{% endif %}</td>    
+            <td>
+            <div class="hidden-xs">
+            {% if transaction.category = 'receive' %}
+            <span class="glyphicon glyphicon-circle-arrow-down"></span> 
+            {% elif transaction.category = 'send' %}
+            <span class="glyphicon glyphicon-circle-arrow-up"></span>
+            {% elif transaction.category = 'move' %}
+            <span class="glyphicon glyphicon-circle-arrow-right"></span>
+            {% endif %}
+            {{ transaction.category }}</div>
+            <div class="visible-xs"><span class="glyphicon {{ transaction.icon }}"></span></div>
+            </td>
+            <td class="hidden-xs">{{ transaction.confirmations }}</td>
+            <td>{{ transaction.time_pretty }}</td>
+            <td class="text-right" style="font-family: courier;"><strong>{{ transaction.amount }}</strong> {{ transaction.currency|upper }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan=6><center><em>No data</em></center></td>
+        </tr>
+        {% endif %}
+    </table>
   </div>
 </div>
 {% endblock %}

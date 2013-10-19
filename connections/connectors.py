@@ -138,13 +138,19 @@ class Connector(object):
             address_str = []
         return address_str
     
-    def listtransactionsbyaccount(self, account, currency):    
+    def listtransactionsbyaccount(self, account_name, currency):    
         '''
         Get a list of transactions by account and currency
         '''  
         transactions = []
         try:
-            transactions = self.services[currency].listtransactions(account, 1000000, 0)
+            transactions = self.services[currency].listtransactions(account_name, 1000000, 0)
+            for transaction in transactions:
+                transaction['timereceived_pretty'] = generic.twitterizeDate(transaction.get('timereceived', 'never'))
+                transaction['time_pretty'] = generic.twitterizeDate(transaction.get('time', 'never'))
+                transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction.get('timereceived', 0))
+                transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 0))
+                transaction['currency'] = currency
         except Exception as e:
             self.errors.append({'message': 'Error occurred while compiling list of transactions (%s)' % (e)})
             self.removeCurrencyService(currency)
@@ -210,6 +216,9 @@ class Connector(object):
     
     
     def getaccountdetailsbyaddress(self, address):
+        '''
+        Return account details 
+        '''
         
         accounts = self.listaccounts(gethidden=True, getarchived=True)
         
@@ -218,6 +227,7 @@ class Connector(object):
             for account in accounts[currency]:
                 if address in account['addresses']:
                     target_account = account
+                    target_account['currency'] = currency
                     break
         return target_account
             

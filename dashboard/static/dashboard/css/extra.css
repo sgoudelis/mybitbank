@@ -39,3 +39,7 @@ html {
 .table thead > tr > th {
     border-bottom: 0px;
 }
+
+.fixed-width-font {
+	font-family: courier;
+}

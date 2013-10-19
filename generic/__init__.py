@@ -66,22 +66,25 @@ def getAccountsWithNames(connector):
             
     return accounts_with_names
     
-def getTransactions(connector, account_name = None, sort_by = 'time', reverse_order = False):
+def getTransactions(connector, sort_by = 'time', reverse_order = False):
     '''
-    Return transactions by account name
+    Return transactions
     '''
     transactions_ordered = []
     transactions = connector.listtransactions()
     for currency in transactions.keys():
         for transaction in transactions[currency]:
-            transaction['currency'] = currency.upper()
-            transaction['timereceived_pretty'] = twitterizeDate(transaction.get('timereceived', 'never'))
-            transaction['time_pretty'] = twitterizeDate(transaction.get('time', 'never'))
-            transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction.get('timereceived', 0))
-            transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 0))
             transactions_ordered.append(transaction)
     
     transactions_ordered = sorted(transactions_ordered, key=lambda k: k.get(sort_by,0), reverse=reverse_order)
+    return transactions_ordered
+
+def getTransactionsByAccount(connector, account_name, currency, sort_by = 'time', reverse_order = False):
+    '''
+    Return transactions by account name and currency
+    '''
+    transactions = connector.listtransactionsbyaccount(account_name, currency)
+    transactions_ordered = sorted(transactions, key=lambda k: k.get(sort_by,0), reverse=reverse_order)
     return transactions_ordered
 
 def getSiteSections(active): 
@@ -121,4 +124,11 @@ def buildBreadcrumbs(current_section='dashboard', currect_subsection='', current
         
     return breadcrumbs
     
+def prettyPrint(o):
+    try:
+        import pprint 
+        pp = pprint.PrettyPrinter(indent=4)
+        pp.pprint(o)
+    except:
+        print o
     

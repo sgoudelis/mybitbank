@@ -32,7 +32,6 @@ def index(request, page=0):
         max_page = 0
         pages = []
         show_pager = False
-        current_subsection = 'all'
         current_activesession = ''
     else:
         # pager on
@@ -41,7 +40,6 @@ def index(request, page=0):
         max_page = int(math.ceil(len(transactions)/items_per_page))+1
         pages = [i+1 for i in range(max_page)]
         show_pager = True
-        current_subsection = 'pages'
         current_activesession = 'Page %s' % page
     
     # add a list of pages in the view
