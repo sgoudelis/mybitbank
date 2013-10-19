@@ -114,9 +114,21 @@ class Connector(object):
                         if hidden_address in account_addresses:
                             hidden_flag = True
                     
+                    # catch default address without name
+                    if account_name == "":
+                        alternative_name = '(no name)'
+                    else:
+                        alternative_name = account_name
+                    
                     # if there any address left then add it to the list
                     if account_addresses:
-                        accounts[currency].append({'name': account_name, 'balance': self.longNumber(account_balance), 'addresses': account_addresses, 'hidden': hidden_flag})
+                        accounts[currency].append({
+                                                   'name': account_name, 
+                                                   'balance': self.longNumber(account_balance), 
+                                                   'addresses': account_addresses, 
+                                                   'hidden': hidden_flag,
+                                                   'alternative_name': alternative_name,
+                                                   })
                     
         except Exception as e:
             self.errors.append({'message': 'Error occurred while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})

@@ -73,14 +73,13 @@ def details(request, account_address="pipes"):
     '''
     Handler for the account details
     '''
-    import pprint
-    
+
     # add a list of pages in the view
     sections = generic.getSiteSections(current_section)
     
     # get account details
     account = connector.getaccountdetailsbyaddress(account_address)
-    
+        
     # get transaction details
     transactions = generic.getTransactionsByAccount(connector, account['name'], account['currency'], reverse_order=True)
     generic.prettyPrint(transactions)
@@ -88,7 +87,7 @@ def details(request, account_address="pipes"):
     page_title = "Account details for %s" % account['name']
     context = {
                'globals': config.MainConfig['globals'], 
-               'breadcrumbs': generic.buildBreadcrumbs(current_section, '', account['name']), 
+               'breadcrumbs': generic.buildBreadcrumbs(current_section, '', account['name'] or account['alternative_name']), 
                'page_title': page_title, 
                'page_sections': sections, 
                'account': account,
