@@ -45,15 +45,21 @@
               <div class="col-md-6">
               <label for="">&nbsp;</label>
                 <select class="form-control fixed-width-font">
-                <option>select an account</option>
+                <option onclick="javascript:updateTransferDialog('', '0.00000000', 'from_account');">select an account</option>
                 {% for account in accounts|keyvalue:selected_currency %}
                     {% if account.name %}
-                      <option class="fixed-width-font" onclick="javascript:setInputValue('{{ account.addresses.0 }}', 'from_account');" >{{ account.name }} - {{ account.addresses.0 }}</option>
+                      <option class="fixed-width-font" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'from_account');" >{{ account.name }} - {{ account.addresses.0 }}</option>
                     {% endif %}
                 {% endfor %}
                 </select>
-              
               </div>
+			  
+			  <div class="col-md-2">
+			  <div class="row">&nbsp;</div>
+			  <div class="row"><span class="large-text-1" id="from_account_currency">{{ currency_symbols|keyvalue:selected_currency }}</span> <span class="large-text-1" id="from_account_balance">0.00000000</span></div>
+			  </div>
+
+
             </div>
             <div class="row">
               <div class="col-md-4">
@@ -65,15 +71,22 @@
               <div class="col-md-6">
               <label for="">&nbsp;</label>
                 <select class="form-control fixed-width-font">
-                <option>select an account</option>
+                <option onclick="javascript:updateTransferDialog('', '0.00000000', 'to_account');">select an account</option>
                 {% for account in accounts|keyvalue:selected_currency %}
                     {% if account.name %}
-                      <option class="fixed-width-font" onclick="javascript:setInputValue('{{ account.addresses.0 }}', 'to_account');" >{{ account.name }} - {{ account.addresses.0 }}</option>
+                      <option class="fixed-width-font" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'to_account');" >{{ account.name }} - {{ account.addresses.0 }}</option>
                     {% endif %}
                 {% endfor %}
                 </select>
               </div>
+             <div class="col-md-2">
+			  <div class="row">&nbsp;</div>
+			  <div class="row"><span class="large-text-1" id="to_account_currency">{{ currency_symbols|keyvalue:selected_currency }}</span> <span class="large-text-1" id="to_account_balance">0.00000000</span></div>
+			  </div>
             </div>
+            
+            
+            
             
             <div class="row">
               <div class="col-md-6">

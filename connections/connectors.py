@@ -128,6 +128,7 @@ class Connector(object):
                                                    'addresses': account_addresses, 
                                                    'hidden': hidden_flag,
                                                    'alternative_name': alternative_name,
+                                                   'currency': currency.upper(),
                                                    })
                     
         except Exception as e:

@@ -4,6 +4,7 @@ import generic
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import forms
+from twisted.mail.test.test_imap import Account
 
 current_section = 'transfer'
 
@@ -21,10 +22,17 @@ def index(request, selected_currency='btc'):
         currency_symbols[currency] = connector.config[currency]['symbol']
         currency_codes.append(currency)
     
+    # sort in reverse
     currency_codes = sorted(currency_codes)
     
     # get a list of source accounts
     accounts = connector.listaccounts()
+    
+    # adding currency symbol sto accounts dict
+    for currency in accounts.keys():
+        for account in accounts[currency]:
+            account['currency_symbol'] = currency_symbols[currency]
+    
     context = {
                'globals': config.MainConfig['globals'], 
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', currency_names[selected_currency]), 
@@ -36,7 +44,7 @@ def index(request, selected_currency='btc'):
                'accounts': accounts,
                'selected_currency': selected_currency
                }
-    
+    generic.prettyPrint(accounts)
     return render(request, 'transfer/index.html', context)
 
 def send(request):

@@ -51,3 +51,11 @@ html {
 .fixed-width-font {
 	font-family: courier;
 }
+
+.large-text-1 {
+	font-size: 25px;
+}
+
+.large-text-2 {
+	font-size: 20px;
+}
