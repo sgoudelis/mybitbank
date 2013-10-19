@@ -20,7 +20,7 @@
             
             <ul class="nav nav-tabs">
             {% for currency in accounts.keys %}
-			  <li {% if selected_currency == currency %}class="active"{% endif %}><a href="{% url 'transfer:index' %}{{ currency }}"><strong>{{ currency|upper }}</strong></a></li>
+			  <li {% if selected_currency == currency %}class="active"{% endif %}><a href="{% url 'transfer:index' %}{{ currency }}"><strong>{{ currency_names|keyvalue:currency }}</strong></a></li>
 			{% endfor %}
 			</ul>
             <div clas="row">&nbsp;</div>
@@ -43,12 +43,12 @@
               </div>
 
               <div class="col-md-6">
-              <label for="">or</label>
+              <label for="">&nbsp;</label>
                 <select class="form-control">
                 <option>select an account</option>
                 {% for account in accounts|keyvalue:selected_currency %}
                     {% if account.name %}
-                      <option onclick="javascript:setInputValue('{{ account.addresses.0 }}', 'from_account');" >{{ account.name }}</option>
+                      <option class="fixed-width-font" onclick="javascript:setInputValue('{{ account.addresses.0 }}', 'from_account');" >{{ account.name }} - {{ account.addresses.0 }}</option>
                     {% endif %}
                 {% endfor %}
                 </select>
@@ -63,12 +63,12 @@
                   </div>
               </div>
               <div class="col-md-6">
-              <label for="">or</label>
+              <label for="">&nbsp;</label>
                 <select class="form-control">
                 <option>select an account</option>
                 {% for account in accounts|keyvalue:selected_currency %}
                     {% if account.name %}
-                      <option onclick="javascript:setInputValue('{{ account.addresses.0 }}', 'to_account');" >{{ account.name }}</option>
+                      <option class="fixed-width-font" onclick="javascript:setInputValue('{{ account.addresses.0 }}', 'to_account');" >{{ account.name }} - {{ account.addresses.0 }}</option>
                     {% endif %}
                 {% endfor %}
                 </select>

@@ -18,7 +18,6 @@ def index(request, selected_currency='btc'):
     for currency in connector.config:
         currency_names[currency] = connector.config[currency]['currency_name']
         currency_symbols[currency] = connector.config[currency]['symbol']
-            
     
     # get a list of source accounts
     accounts = connector.listaccounts()
@@ -32,6 +31,7 @@ def index(request, selected_currency='btc'):
                'accounts': accounts,
                'selected_currency': selected_currency
                }
+    
     return render(request, 'transfer/index.html', context)
 
 def send(request):
