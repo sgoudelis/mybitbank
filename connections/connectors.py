@@ -320,8 +320,8 @@ class Connector(object):
         transaction_details = None
         try:
             transaction_details = self.services[currency].getrawtransaction(txid, 1)
-        except JSONRPCException, e:
-            return e.error
+        except JSONRPCException:
+            return {}
         
         return {'sender_address': self.decodeScriptSig(transaction_details, currency, self.getNet(currency))}
         
