@@ -42,7 +42,7 @@ config = {
         'rpchost': "localhost",
         'rpcport': "7003",
         'currency_name': 'FeatherCoin (FTC)',
-        'symbol': "F",
+        'symbol': "ƒ",
         'code': 'FTC'
     },
 }
