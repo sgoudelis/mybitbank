@@ -186,10 +186,12 @@ class Connector(object):
             transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction.get('timereceived', 0))
             transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 0))
             transaction['currency'] = currency
-            transaction['txid'] = transaction.get('txid', "")
-            transaction_details = self.gettransactiondetails(transaction['txid'], currency)
-            if not transaction_details.get('code', False):
-                transaction['details'] = transaction_details
+            if transaction.get('txid', False):
+                transaction_details = self.gettransactiondetails(transaction['txid'], currency)
+                if not transaction_details.get('code', False):
+                    transaction['details'] = transaction_details
+                else:
+                    self.errors.append({'message': transaction_details})
             
         return transactions
     
