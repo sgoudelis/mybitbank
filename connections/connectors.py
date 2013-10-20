@@ -243,6 +243,4 @@ class Connector(object):
                     target_account['currency'] = currency
                     break
         return target_account
-            
-        
-        
+                    

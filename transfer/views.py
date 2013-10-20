@@ -4,13 +4,22 @@ import generic
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import forms
-from twisted.mail.test.test_imap import Account
+from django.core.urlresolvers import reverse
+from django.forms.forms import Form
+from lxml.html.builder import FORM
 
 current_section = 'transfer'
 
 def index(request, selected_currency='btc'):
     '''
     handler for the transfers
+    '''
+    context = commonContext(selected_currency)
+    return render(request, 'transfer/index.html', context)
+
+def commonContext(selected_currency='btc', form=None):
+    '''
+    This constructs a common context between the two views: index and send
     '''
     page_title = "Transfer"
     
@@ -28,7 +37,7 @@ def index(request, selected_currency='btc'):
     # get a list of source accounts
     accounts = connector.listaccounts()
     
-    # adding currency symbol sto accounts dict
+    # adding currency symbol to accounts dictionary
     for currency in accounts.keys():
         for account in accounts[currency]:
             account['currency_symbol'] = currency_symbols[currency]
@@ -42,35 +51,31 @@ def index(request, selected_currency='btc'):
                'currency_names': currency_names,
                'currency_symbols': currency_symbols,
                'accounts': accounts,
-               'selected_currency': selected_currency
+               'selected_currency': selected_currency,
+               'form': form,
                }
-    generic.prettyPrint(accounts)
-    return render(request, 'transfer/index.html', context)
+    
+    return context
 
 def send(request):
     '''
     handler for the transfers
     '''
-    if request.method == 'POST': # If the form has been submitted...
-        form = forms.SendCurrencyForm(request.POST) # A form bound to the POST data
+    if request.method == 'POST': 
+        # we have a POST request
+        form = forms.SendCurrencyForm(request.POST)
+        
         if form.is_valid(): # All validation rules pass
-            # Process the data in form.cleaned_data
-            # ...
-            return HttpResponseRedirect('/thanks/') # Redirect after POST
+            
+            
+            
+            
+            
+            # process the data in form.cleaned_data
+            return HttpResponseRedirect('/transfer/') # Redirect after POST
     else:
         form = forms.SendCurrencyForm() # An unbound form
+        
+    context = commonContext(form=form)
     
-    page_title = "Transfer"
-    
-    # get a list of source accounts
-    accounts = connector.listaccounts()
-    context = {
-               'globals': config.MainConfig['globals'], 
-               'breadcrumbs': generic.buildBreadcrumbs(current_section), 
-               'page_sections': generic.getSiteSections('transfer'), 
-               'page_title': page_title, 
-               'accounts': accounts, 
-               'form': form
-               }
     return render(request, 'transfer/index.html', context)
-    

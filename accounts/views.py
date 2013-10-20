@@ -78,7 +78,7 @@ def details(request, account_address="pipes"):
     sections = generic.getSiteSections(current_section)
     
     # get account details
-    account = connector.getaccountdetailsbyaddress(account_address)
+    account = connector.getAccountDetailsByAddress(account_address)
         
     # get transaction details
     transactions = generic.getTransactionsByAccount(connector, account['name'], account['currency'], reverse_order=True)

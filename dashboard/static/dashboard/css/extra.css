@@ -59,3 +59,7 @@ html {
 .large-text-2 {
 	font-size: 20px;
 }
+
+ul.errorlist {
+	color: #B94A48;
+}
