@@ -316,12 +316,12 @@ class Connector(object):
             import hashlib
             import base58
         except:
-            return None
+            return "need base58"
         
         try:
             script_sig = rawtransaction['vin'][0]['scriptSig']['asm']
         except:
-            return None
+            return "not enough info"
         
         script = script_sig.split()
         
