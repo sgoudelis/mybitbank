@@ -213,7 +213,7 @@ class Connector(object):
                     # append list
                     transactions[currency] = transactions[currency] + self.listtransactionsbyaccount(account['name'], currency)
         except Exception as e:
-            self.errors.append({'message': 'Error occurred while compiling list of transactions (%s)' % (e)})
+            self.errors.append({'message': 'Error occurred while compiling list of transactions for currency %s (%s) %s' % (currency, e.error, e.message)})
             self.removeCurrencyService(currency)
             return self.transactions['data']
         
