@@ -148,7 +148,7 @@ class Connector(object):
                                                    })
                     
         except Exception as e:
-            raise
+            #raise
             self.errors.append({'message': 'Error occurred while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})
             self.removeCurrencyService(currency)
             return self.accounts['data']
@@ -176,7 +176,7 @@ class Connector(object):
         try:
             transactions = self.services[currency].listtransactions(account_name, 1000000, 0)
         except Exception as e:
-            raise
+            #raise
             self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listtransactions()' % (e.error)})
             self.removeCurrencyService(currency)
             
@@ -239,7 +239,7 @@ class Connector(object):
             for currency in self.services.keys():
                 balances[currency] = generic.longNumber(self.services[currency].getbalance())
         except Exception as e:
-            raise
+            #raise
             self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e)})
             self.removeCurrencyService(currency)
             return self.transactions['data']
