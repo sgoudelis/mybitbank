@@ -42,7 +42,7 @@
 	                        {% elif transaction.category == "send" %}
 	                        <a href="/accounts/details/{{ transaction.source_address.0 }}" class="btn btn-default btn-xs"><strong>{% if transaction.account %}{{ transaction.account }}{% else %}{{ transaction.source_address.0 }}{% endif %}</strong></a>
 	                        {% else %}
-	                        <a href="/accounts/details/{% if not transaction.address %}{{ transaction.source_address.0 }}{% else %}{{ transaction.address }}{% endif %}" class="btn btn-default btn-xs"><strong>{{ transaction.account }}</strong></a>
+	                        <a href="/accounts/details/{% if not transaction.address %}{{ transaction.source_address.0 }}{% else %}{{ transaction.address }}{% endif %}" class="btn btn-default btn-xs"><strong>{% if not transaction.account %}{{ transaction.alternative_name }}{% else %}{{ transaction.account }}{% endif %}</strong></a>
 	                        {% endif %}
 	                    </td>
                         <td class="hidden-xs">
