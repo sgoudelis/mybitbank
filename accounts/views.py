@@ -79,10 +79,14 @@ def details(request, account_address="pipes"):
     
     # get account details
     account = connector.getaccountdetailsbyaddress(account_address)
-        
-    # get transaction details
-    transactions = generic.getTransactionsByAccount(connector, account['name'], account['currency'], reverse_order=True)
-    generic.prettyPrint(account)
+    
+    if account:
+        # get transaction details
+        transactions = generic.getTransactionsByAccount(connector, account['name'], account['currency'], reverse_order=True)
+    else:
+        account = {}
+        account['name'] = 'no such account'
+        transactions = []
     
     page_title = "Account details for %s" % (account['name'] or account['alternative_name'])
     context = {
@@ -93,5 +97,6 @@ def details(request, account_address="pipes"):
                'account': account,
                'transactions': transactions,
                }
+    
     return render(request, 'accounts/details.html', context)
     

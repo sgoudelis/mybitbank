@@ -19,12 +19,18 @@ def index(request, page=0):
     for transaction in transactions:
         transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
         if transaction['category'] == 'receive':
+            transaction['source_address'] = transaction.get('details', {}).get('sender_address', '(no sender address)')
+            transaction['destination_address'] = transaction['address']
             transaction['icon'] = 'glyphicon-circle-arrow-down'
         elif transaction['category'] == 'send':
+            transaction['source_address'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
+            transaction['destination_address'] = transaction['address']
             transaction['icon'] = 'glyphicon-circle-arrow-up'
         elif transaction['category'] == 'move':
+            transaction['source_address'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
+            transaction['destination_address'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['currency'])
             transaction['icon'] = 'glyphicon-circle-arrow-right'
-    
+            
     # pagify
     if page is 0:
         # pager off
@@ -45,6 +51,16 @@ def index(request, page=0):
     # add a list of pages in the view
     sections = generic.getSiteSections(current_section)
     
-    context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(current_section, '', current_activesession), 'page_title': page_title, 'page_sections': sections, 'transactions': selected_transactions, 'show_pager': show_pager, 'next_page': min((page+1), len(pages)), 'prev_page': max(1, page-1), 'pages': pages, 'current_page': page}
+    context = {
+               'globals': config.MainConfig['globals'], 
+               'breadcrumbs': generic.buildBreadcrumbs(current_section, '', current_activesession), 
+               'page_title': page_title, 
+               'page_sections': sections, 
+               'transactions': selected_transactions, 
+               'show_pager': show_pager, 
+               'next_page': min((page+1), len(pages)), 
+               'prev_page': max(1, page-1), 
+               'pages': pages, 
+               'current_page': page
+               }
     return render(request, 'transactions/index.html', context)
-

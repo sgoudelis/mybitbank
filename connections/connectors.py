@@ -3,9 +3,11 @@ import datetime
 import generic
 from accounts.models import accountFilter
 from bitcoinrpc.authproxy import JSONRPCException
+from django.template.defaultfilters import time
 
 class Connector(object):
-    caching_time = 5
+    # how long to cache responses
+    caching_time = 3 
     config = []
     
     '''
@@ -29,6 +31,16 @@ class Connector(object):
     services = {}
     errors = []
     
+    # source: https://github.com/zamgo/PHPCoinAddress/blob/master/README.md
+    prefixes = {
+                'btc': {'mainnet': '\x00', 'testnet': '\x6f'},
+                'ltc': {'mainnet': '\x30', 'testnet': '\x6f'},
+                'ftc': {'mainnet': '\x0E', 'testnet': '\x6f'},
+                'ppc': {'mainnet': '\x37', 'testnet': '\x6f'},
+                'nmc': {'mainnet': '\x34', 'testnet': '\x6f'},
+                'nvc': {'mainnet': '\x08', 'testnet': '\x6f'},
+               }
+    
     # caching data
     accounts = {'when': datetime.datetime.fromtimestamp(0), 'data': {}}
     transactions = {'when': datetime.datetime.fromtimestamp(0), 'data': {}}
@@ -50,6 +62,9 @@ class Connector(object):
                                                                            self.config[currency]['rpchost'], 
                                                                            self.config[currency]['rpcport'])
                                                   )
+
+    def getNet(self, currency):
+        return self.config[currency].get('network', 'testnet')
 
     def removeCurrencyService(self, currency):
         '''
@@ -159,15 +174,20 @@ class Connector(object):
         transactions = []
         try:
             transactions = self.services[currency].listtransactions(account_name, 1000000, 0)
-            for transaction in transactions:
-                transaction['timereceived_pretty'] = generic.twitterizeDate(transaction.get('timereceived', 'never'))
-                transaction['time_pretty'] = generic.twitterizeDate(transaction.get('time', 'never'))
-                transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction.get('timereceived', 0))
-                transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 0))
-                transaction['currency'] = currency
         except Exception as e:
             self.errors.append({'message': 'Error occurred while compiling list of transactions (%s)' % (e)})
             self.removeCurrencyService(currency)
+            
+        for transaction in transactions:
+            transaction['timereceived_pretty'] = generic.twitterizeDate(transaction.get('timereceived', 'never'))
+            transaction['time_pretty'] = generic.twitterizeDate(transaction.get('time', 'never'))
+            transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction.get('timereceived', 0))
+            transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 0))
+            transaction['currency'] = currency
+            transaction['txid'] = transaction.get('txid', "")
+            transaction_details = self.gettransactiondetails(transaction['txid'], currency)
+            if not transaction_details.get('code', False):
+                transaction['details'] = transaction_details
             
         return transactions
     
@@ -244,7 +264,7 @@ class Connector(object):
                     target_account['currency'] = currency
                     break
         return target_account
-            
+
     def moveamount(self, from_account, to_account, currency, amount, minconf=1, comment=""):
         if not from_account or not to_account or not currency:
             return {'message': 'invalid input data'}
@@ -286,8 +306,60 @@ class Connector(object):
             except JSONRPCException, e: 
                 return e.error
             except ValueError, e:
-                return {'message': e, 'code':-1}
+                return {'message': e, 'code': -1}
             return reply
         else:
             # account not found
             return {'message': 'source account not found'}
+
+
+    def gettransactiondetails(self, txid, currency):
+        if not txid or not currency:
+            return {}
+        
+        transaction_details = None
+        try:
+            transaction_details = self.services[currency].getrawtransaction(txid, 1)
+        except JSONRPCException, e:
+            return e.error
+        
+        return {'sender_address': self.decodeScriptSig(transaction_details, currency, self.getNet(currency))}
+        
+    def decodeScriptSig(self, rawtransaction, currency, net='testnet'):
+        '''
+        Decode input script signature, courtesy of:
+        http://bitcoin.stackexchange.com/questions/7838/why-does-gettransaction-report-me-only-the-receiving-address/8864#8864
+        '''
+        try:
+            import hashlib
+            import base58
+        except:
+            return None
+        
+        try:
+            script_sig = rawtransaction['vin'][0]['scriptSig']['asm']
+        except:
+            return None
+        
+        script = script_sig.split()
+        
+        h = hashlib.sha256(script[1].decode("hex")).digest()
+        ripe160 =  hashlib.new('ripemd160')
+        ripe160.update(h)
+        d = ripe160.digest()
+        
+        prefix = self.prefixes[currency][net]
+        address = (prefix + d)
+        
+        # calculate checksum
+        checksum = hashlib.sha256(hashlib.sha256(address).digest()).digest()[:4]
+        
+        # build the raw address
+        address += checksum
+        
+        # encode the address in base58
+        encoded_address = base58.b58encode(address)
+        #print "resolved address: %s" % encoded_address
+        
+        return encoded_address
+        
