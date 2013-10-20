@@ -31,7 +31,7 @@
                    </thead>
                     {% if transactions %}
                     {% for transaction in transactions %} 
-                    {% if transaction.confirmations > 6 or transaction.category == "move"%}
+                    {% if transaction.confirmations > 6 or transaction.category == "move" %}
                       <tr>
                     {% else %}
                       <tr style="color: #bbb;">

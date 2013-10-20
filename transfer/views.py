@@ -5,8 +5,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import forms
 from django.core.urlresolvers import reverse
-from django.forms.forms import Form
-from lxml.html.builder import FORM
 
 current_section = 'transfer'
 
@@ -17,7 +15,7 @@ def index(request, selected_currency='btc'):
     context = commonContext(selected_currency)
     return render(request, 'transfer/index.html', context)
 
-def commonContext(selected_currency='btc', form=None):
+def commonContext(selected_currency='btc', form=None, errors=[]):
     '''
     This constructs a common context between the two views: index and send
     '''
@@ -53,6 +51,7 @@ def commonContext(selected_currency='btc', form=None):
                'accounts': accounts,
                'selected_currency': selected_currency,
                'form': form,
+               'errors': errors,
                }
     
     return context
@@ -61,16 +60,53 @@ def send(request):
     '''
     handler for the transfers
     '''
+    post_errors = []
+    
     if request.method == 'POST': 
         # we have a POST request
         form = forms.SendCurrencyForm(request.POST)
         
         if form.is_valid(): # All validation rules pass
-            
-            
-            
-            
-            
+            from_address = form.cleaned_data['from_address']
+            to_address = form.cleaned_data['to_address']
+            comment = form.cleaned_data['comment']
+            comment_to = form.cleaned_data['comment_to']
+            amount = form.cleaned_data['amount']
+            selected_currency = form.cleaned_data['selected_currency']
+
+            # get account details
+            from_account = connector.getaccountdetailsbyaddress(from_address)
+            to_account = connector.getaccountdetailsbyaddress(to_address)
+            if to_account:
+                # this address/account is hosted locally, do a move
+                move_exit = connector.moveamount(from_account=from_account['name'], 
+                                                 to_account=to_account['name'], 
+                                                 currency=selected_currency, 
+                                                 amount=amount, 
+                                                 comment=comment
+                                                 )
+                
+                # if there are errors, show them in the UI
+                if move_exit is not True:
+                    post_errors.append({'message': move_exit['message']})
+                    context = commonContext(selected_currency=selected_currency, form=form, errors=post_errors)
+                    return render(request, 'transfer/index.html', context)
+                
+            else:
+                # to_address not local, do a send
+                sendfrom_exit = connector.sendfrom(from_account=from_account['name'], 
+                                                   to_address=to_address, 
+                                                   amount=amount, 
+                                                   currency=selected_currency, 
+                                                   comment=comment, 
+                                                   comment_to=comment_to
+                                                   )
+                # if there are errors, show them in the UI
+                if type(sendfrom_exit) is str:
+                    post_errors.append({'message': sendfrom_exit['message']})
+                    context = commonContext(selected_currency=selected_currency, form=form, errors=post_errors)
+                    return render(request, 'transfer/index.html', context)
+                
             # process the data in form.cleaned_data
             return HttpResponseRedirect('/transfer/') # Redirect after POST
     else:

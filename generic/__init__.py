@@ -132,3 +132,10 @@ def prettyPrint(o):
     except:
         print o
     
+    
+def isFloat(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False

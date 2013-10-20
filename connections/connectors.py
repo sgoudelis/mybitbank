@@ -2,6 +2,7 @@ from jsonrpc import ServiceProxy
 import datetime
 import generic
 from accounts.models import accountFilter
+from bitcoinrpc.authproxy import JSONRPCException
 
 class Connector(object):
     caching_time = 5
@@ -243,4 +244,50 @@ class Connector(object):
                     target_account['currency'] = currency
                     break
         return target_account
-                    
+            
+    def moveamount(self, from_account, to_account, currency, amount, minconf=1, comment=""):
+        if not from_account or not to_account or not currency:
+            return {'message': 'invalid input data'}
+        
+        account_list = self.listaccounts(True, True)
+        
+        account_names = []
+        for account in account_list[currency]:
+            account_names.append(account['name'])
+        
+        if from_account in account_names and to_account in account_names:
+            # both accounts have being found, perform the move
+            try:
+                reply = self.services[currency].move(from_account, to_account, amount, minconf, comment)
+            except JSONRPCException, e: 
+                return e.error
+            except ValueError, e:
+                return {'message': e, 'code':-1}
+            
+            return reply
+        else:
+            # account not found
+            return {'message': 'source account not found'}
+              
+    def sendfrom(self, from_account, to_address, amount, currency, minconf=1, comment="", comment_to=""):
+        if not from_account or not to_address or not currency:
+            return {'message': 'invalid input data'}
+        
+        account_list = self.listaccounts(True, True)
+        
+        account_names = []
+        for account in account_list[currency]:
+            account_names.append(account['name'])
+            
+        if from_account in account_names:
+            # account given exists, continue
+            try:
+                reply = self.services[currency].sendfrom(from_account, to_address, amount, minconf, comment, comment_to)
+            except JSONRPCException, e: 
+                return e.error
+            except ValueError, e:
+                return {'message': e, 'code':-1}
+            return reply
+        else:
+            # account not found
+            return {'message': 'source account not found'}
