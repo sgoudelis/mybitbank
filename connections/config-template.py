@@ -7,7 +7,8 @@ config = {
         'rpcport': "7000",
         'currency_name': 'BitCoin (BTC)',
         'symbol': "B⃦",
-        'code': 'BTC'
+        'code': 'BTC',
+        'network': "mainnet",
     },
     'ltc':  {
         'rpcusername': "testuser",
@@ -16,7 +17,8 @@ config = {
         'rpcport': "7001",
         'currency_name': 'LiteCoin (LTC)',
         'symbol': "Ł",
-        'code': 'LTC'
+        'code': 'LTC',
+        'network': "mainnet",
     },
     'nmc':  {
         'rpcusername': "testuser",
@@ -25,7 +27,8 @@ config = {
         'rpcport': "7002",
         'currency_name': 'NameCoin (NMC)',
         'symbol': "ℕ",
-        'code': 'NMC'
+        'code': 'NMC',
+        'network': "mainnet",
     },
     'ppc':  {
         'rpcusername': "testuser",
@@ -34,7 +37,8 @@ config = {
         'rpcport': "7003",
         'currency_name': 'PPCoin (PPC)',
         'symbol': "Ᵽ",
-        'code': 'PPC'
+        'code': 'PPC',
+        'network': "mainnet",
     },
     'ftc':  {
         'rpcusername': "testuser",
@@ -43,6 +47,7 @@ config = {
         'rpcport': "7003",
         'currency_name': 'FeatherCoin (FTC)',
         'symbol': "ƒ",
-        'code': 'FTC'
+        'code': 'FTC',
+        'network': "mainnet",
     },
 }

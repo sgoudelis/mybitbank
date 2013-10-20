@@ -3,7 +3,6 @@ import datetime
 import generic
 from accounts.models import accountFilter
 from bitcoinrpc.authproxy import JSONRPCException
-from django.template.defaultfilters import time
 
 class Connector(object):
     # how long to cache responses
