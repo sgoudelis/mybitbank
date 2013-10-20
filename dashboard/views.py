@@ -13,5 +13,13 @@ def index(request):
     currency_symbols = generic.getCurrencySymbol('*')
     page_title = "Dashboard"
     sections = generic.getSiteSections('dashboard')
-    context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(currect_section), 'page_title': page_title, 'page_sections': sections, 'balances': balances, 'currency_symbols': currency_symbols}
+    context = {
+               'globals': config.MainConfig['globals'], 
+               'system_errors': connector.errors,
+               'breadcrumbs': generic.buildBreadcrumbs(currect_section), 
+               'page_title': page_title, 
+               'page_sections': sections, 
+               'balances': balances, 
+               'currency_symbols': currency_symbols
+               }
     return render(request, 'dashboard/index.html', context)

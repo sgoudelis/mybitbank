@@ -66,8 +66,8 @@
 	{% endfor %}
 	</ol>
    
-   {% if globals.connector_errors %}
-   {% for error in globals.connector_errors %}
+   {% if system_errors %}
+   {% for error in system_errors %}
     <div class="alert alert-danger">
       <span><strong>{{error.message}}</strong></span>
     </div>

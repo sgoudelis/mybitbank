@@ -52,7 +52,8 @@ def index(request, page=0):
     sections = generic.getSiteSections(current_section)
     
     context = {
-               'globals': config.MainConfig['globals'], 
+               'globals': config.MainConfig['globals'],
+               'system_errors': connector.errors,
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', current_activesession), 
                'page_title': page_title, 
                'page_sections': sections, 
