@@ -177,7 +177,7 @@ class Connector(object):
             transactions = self.services[currency].listtransactions(account_name, 1000000, 0)
         except Exception as e:
             raise
-            self.errors.append({'message': 'Error occurred while compiling list of transactions (%s)' % (e)})
+            self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listtransactions()' % (e.error)})
             self.removeCurrencyService(currency)
             
         for transaction in transactions:
@@ -204,19 +204,14 @@ class Connector(object):
             return self.transactions['data']
         
         accounts = self.listaccounts(gethidden=True, getarchived=True)
-        
-        try:
-            transactions = {}
-            for currency in accounts.keys():
-                transactions[currency] = []
-                for account in accounts[currency]:
-                    # append list
-                    transactions[currency] = transactions[currency] + self.listtransactionsbyaccount(account['name'], currency)
-        except Exception as e:
-            self.errors.append({'message': 'Error occurred while compiling list of transactions for currency %s (%s) %s' % (currency, e.error, e.message)})
-            self.removeCurrencyService(currency)
-            return self.transactions['data']
-        
+
+        transactions = {}
+        for currency in accounts.keys():
+            transactions[currency] = []
+            for account in accounts[currency]:
+                # append list
+                transactions[currency] = transactions[currency] + self.listtransactionsbyaccount(account['name'], currency)
+
         self.transactions['when'] = datetime.datetime.now()
         self.transactions['data'] = transactions
         return transactions
