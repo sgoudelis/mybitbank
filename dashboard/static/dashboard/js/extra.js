@@ -9,6 +9,6 @@ function showHideAllAccounts(id) {
 }
 
 function updateTransferDialog(address, balance, targetId) {
-	$('#'+targetId+'_balance').html(balance);
-	$('#'+targetId).val(address);
+	$('span#'+targetId+'_balance').html(balance);
+	$('input#'+targetId).val(address);
 }

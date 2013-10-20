@@ -8,25 +8,6 @@ class Connector(object):
     # how long to cache responses
     caching_time = 3 
     config = []
-    
-    '''
-        config = {
-        'btc' :  {
-            'rpcusername': "testuser",
-            'rpcpassword': "testnet",
-            'rpchost': "sunflower",
-            'rpcport': "7000",
-            'currency_name': 'BitCoin (BTC)',
-        },
-        'ltc':  {
-            'rpcusername': "testuser",
-            'rpcpassword': "testnet",
-            'rpchost': "sunflower",
-            'rpcport': "7001",
-            'currency_name': 'LiteCoin (LTC)',
-        },
-    }
-    '''
     services = {}
     errors = []
     
@@ -67,7 +48,7 @@ class Connector(object):
 
     def removeCurrencyService(self, currency):
         '''
-        Remove the ServiceProxy objet from the list of service in case of a xxxcoind daemon not responding in time
+        Remove the ServiceProxy object from the list of service in case of a xxxcoind daemon not responding in time
         '''
         if self.services[currency]:
             del self.services[currency]
