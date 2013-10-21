@@ -107,7 +107,7 @@ def send(request):
                                                   )
 
                 # if there are errors, show them in the UI
-                if sendfrom_exit['code'] < 0:
+                if type(sendfrom_exit) is dict and sendfrom_exit['code'] < 0:
                     post_errors.append({'message': sendfrom_exit['message']})
                     context = commonContext(selected_currency=selected_currency, form=form, errors=post_errors)
                     return render(request, 'transfer/index.html', context)
