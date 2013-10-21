@@ -67,7 +67,8 @@ def send(request):
         # we have a POST request
         form = forms.SendCurrencyForm(request.POST)
         
-        if form.is_valid(): # All validation rules pass
+        if form.is_valid(): 
+            # all validation rules pass
             from_address = form.cleaned_data['from_address']
             to_address = form.cleaned_data['to_address']
             comment = form.cleaned_data['comment']
@@ -80,12 +81,13 @@ def send(request):
             to_account = connector.getaccountdetailsbyaddress(to_address)
             if to_account:
                 # this address/account is hosted locally, do a move
-                move_exit = connector.moveamount(from_account=from_account['name'], 
+                move_exit = connector.moveamount(
+                                                 from_account=from_account['name'], 
                                                  to_account=to_account['name'], 
                                                  currency=selected_currency, 
                                                  amount=amount, 
                                                  comment=comment
-                                                 )
+                                                )
                 
                 # if there are errors, show them in the UI
                 if move_exit is not True:
@@ -95,23 +97,25 @@ def send(request):
                 
             else:
                 # to_address not local, do a send
-                sendfrom_exit = connector.sendfrom(from_account=from_account['name'], 
+                sendfrom_exit = connector.sendfrom(
+                                                   from_account=from_account['name'], 
                                                    to_address=to_address, 
                                                    amount=amount, 
                                                    currency=selected_currency, 
                                                    comment=comment, 
                                                    comment_to=comment_to
-                                                   )
+                                                  )
+
                 # if there are errors, show them in the UI
-                if type(sendfrom_exit) is str:
+                if sendfrom_exit['code'] < 0:
                     post_errors.append({'message': sendfrom_exit['message']})
                     context = commonContext(selected_currency=selected_currency, form=form, errors=post_errors)
                     return render(request, 'transfer/index.html', context)
                 
             # process the data in form.cleaned_data
-            return HttpResponseRedirect('/transfer/') # Redirect after POST
+            return HttpResponseRedirect('/transactions/') # Redirect after POST
     else:
-        form = forms.SendCurrencyForm() # An unbound form
+        form = forms.SendCurrencyForm()
         
     context = commonContext(form=form)
     

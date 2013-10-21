@@ -283,6 +283,7 @@ class Connector(object):
             # account given exists, continue
             try:
                 reply = self.services[currency].sendfrom(from_account, to_address, amount, minconf, comment, comment_to)
+                print reply
             except JSONRPCException, e: 
                 return e.error
             except ValueError, e:
