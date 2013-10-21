@@ -288,6 +288,9 @@ class Connector(object):
                 return e.error
             except ValueError, e:
                 return {'message': e, 'code': -1}
+            except Exception, e: 
+                return e.error
+            
             return reply
         else:
             # account not found
