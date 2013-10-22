@@ -330,7 +330,7 @@ class ConnectorsTests(TestCase):
         move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
        
-    def test_moveamount_nonexistant_to_account_invalid_currency(self):
+    def test_moveamount_invalid_currency(self):
         '''
         Test moveamount() method testing non-existant from account
         '''
@@ -345,7 +345,7 @@ class ConnectorsTests(TestCase):
         move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
          
-    def test_moveamount_nonexistant_to_account_non_number_amount_1(self):
+    def test_moveamount_non_number_amount_1(self):
         '''
         Test moveamount() method testing non-existant from account
         '''
@@ -360,19 +360,7 @@ class ConnectorsTests(TestCase):
         move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
-        amount = True
-        move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
-        self.assertNotEquals(move_result, True)
-        
-        amount = ""
-        move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
-        self.assertNotEquals(move_result, True)
-        
-        amount = u""
-        move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
-        self.assertNotEquals(move_result, True)
-        
-    def test_moveamount_nonexistant_to_account_non_number_amount_2(self):
+    def test_moveamount_non_number_amount_2(self):
         '''
         Test moveamount() method testing non-existant from account
         '''
@@ -387,7 +375,7 @@ class ConnectorsTests(TestCase):
         move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
 
-    def test_moveamount_nonexistant_to_account_non_number_amount_3(self):
+    def test_moveamount_non_number_amount_3(self):
         '''
         Test moveamount() method testing non-existant from account
         '''
@@ -402,7 +390,7 @@ class ConnectorsTests(TestCase):
         move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
-    def test_moveamount_nonexistant_to_account_non_number_amount_4(self):
+    def test_moveamount_non_number_amount_4(self):
         '''
         Test moveamount() method testing non-existant from account
         '''
@@ -416,5 +404,148 @@ class ConnectorsTests(TestCase):
         
         move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    def test_sendfrom_nonexistant_from_account(self):
+        '''
+        Test sendfrom() method testing non-existant from account
+        '''
+        
+        from_account = "Idontexistretsakalia"
+        address = "address for sdfsdfs account"
+        currency = 'btc'
+        amount = "1"
+        minconf = 1
+        comment = "test comment from django test"
+        
+        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        self.assertNotEquals(move_result, True)
+        
+    def test_sendfrom_nonexistant_address(self):
+        '''
+        Test sendfrom() method testing non-existant from account
+        '''
+        
+        from_account = "pipes"
+        address = "Idontexistretsakalia"
+        currency = 'btc'
+        amount = "1"
+        minconf = 1
+        comment = "test comment from django test"
+        
+        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        self.assertNotEquals(move_result, True)
+       
+    def test_sendfrom_invalid_currency(self):
+        '''
+        Test sendfrom() method testing non-existant from account
+        '''
+        
+        from_account = "pipes"
+        address = "address for sdfsdfs account"
+        currency = 'INV'
+        amount = "1"
+        minconf = 1
+        comment = "test comment from django test"
+        
+        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        self.assertNotEquals(move_result, True)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    def test_sendfrom_non_number_amount_1(self):
+        '''
+        Test sendfrom() method testing non-existant from account
+        '''
+        
+        from_account = "pipes"
+        address = "address for sdfsdfs account"
+        currency = 'btc'
+        amount = {}
+        minconf = 1
+        comment = "test comment from django test"
+        
+        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        self.assertNotEquals(move_result, True)
+        
+    def test_sendfrom_non_number_amount_2(self):
+        '''
+        Test sendfrom() method testing non-existant from account
+        '''
+        
+        from_account = "pipes"
+        address = "address for sdfsdfs account"
+        currency = 'btc'
+        amount = True
+        minconf = 1
+        comment = "test comment from django test"
+        
+        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        self.assertNotEquals(move_result, True)
+
+    def test_sendfrom_non_number_amount_3(self):
+        '''
+        Test sendfrom() method testing non-existant from account
+        '''
+        
+        from_account = "pipes"
+        address = "address for sdfsdfs account"
+        currency = 'btc'
+        amount = ""
+        minconf = 1
+        comment = "test comment from django test"
+
+        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        self.assertNotEquals(move_result, True)
+        
+    def test_sendfrom_non_number_amount_4(self):
+        '''
+        Test sendfrom() method testing non-existant from account
+        '''
+        
+        from_account = "pipes"
+        address = "address for sdfsdfs account"
+        currency = 'btc'
+        amount = u""
+        minconf = 1
+        comment = "test comment from django test"
+        
+        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        self.assertNotEquals(move_result, True)
+        
+        
         
         

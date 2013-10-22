@@ -326,7 +326,16 @@ class Connector(object):
               
     def sendfrom(self, from_account, to_address, amount, currency, minconf=1, comment="", comment_to=""):
         if not from_account or not to_address or not currency:
-            return {'message': 'invalid input data'}
+            return {'message': 'Invalid input data from account or address', 'code':-101}
+        
+        if currency not in self.services.keys():
+            return {'message': 'Non-existant currency %s' % currency, 'code': -100}
+        
+        if not generic.isFloat(amount) or type(amount) is bool:
+            return {'message': 'Amount is not a number', 'code':-102}
+        
+        if type(comment) is not str or type(comment_to) is not str:
+            return {'message': 'Comment is not valid', 'code':-104}
         
         account_list = self.listaccounts(True, True)
         
@@ -348,8 +357,7 @@ class Connector(object):
             return reply
         else:
             # account not found
-            return {'message': 'source account not found'}
-
+            return {'message': 'Source account not found', 'code': -106}
 
     def gettransactiondetails(self, txid, currency):
         if not txid or not currency:
