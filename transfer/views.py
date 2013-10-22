@@ -12,7 +12,7 @@ def index(request, selected_currency='btc'):
     '''
     handler for the transfers
     '''
-    context = commonContext(selected_currency)
+    context = commonContext(selected_currency=selected_currency)
     return render(request, 'transfer/index.html', context)
 
 def commonContext(selected_currency='btc', form=None, errors=[]):
@@ -57,7 +57,7 @@ def commonContext(selected_currency='btc', form=None, errors=[]):
     
     return context
 
-def send(request):
+def send(request, currency):
     '''
     handler for the transfers
     '''
@@ -117,6 +117,6 @@ def send(request):
     else:
         form = forms.SendCurrencyForm()
         
-    context = commonContext(form=form)
+    context = commonContext(selected_currency=currency, form=form)
     
     return render(request, 'transfer/index.html', context)

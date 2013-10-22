@@ -28,7 +28,7 @@
             <div class="alert alert-danger">{{ errors }}</div>
             {% endif %}
             
-            <form action="{% url 'transfer:send' %}" method="post" role="form">
+            <form action="{% url 'transfer:send' selected_currency %}" method="post" role="form" id="transfer_form">
             {% csrf_token %}
             <input type="hidden" name="selected_currency" value="{{ selected_currency }}"/>
             <div class="row">
@@ -44,11 +44,13 @@
               <label for="">&nbsp;</label>
                 <select class="form-control fixed-width-font">
                 <option onclick="javascript:updateTransferDialog('', '0.00000000', 'from_address');">select an account</option>
+                {% if accounts|keyvalue:selected_currency %}
                 {% for account in accounts|keyvalue:selected_currency %}
                     {% if account.name %}
                       <option class="fixed-width-font" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'from_address');" >{{ account.name }} - {{ account.addresses.0 }}</option>
                     {% endif %}
                 {% endfor %}
+                {% endif %}
                 </select>
               </div>
 			  
@@ -56,7 +58,6 @@
 			  <div class="row">&nbsp;</div>
 			  <div class="row"><span class="large-text-1" id="from_address_currency">{{ currency_symbols|keyvalue:selected_currency }}</span> <span class="large-text-1" id="from_address_balance">0.00000000</span></div>
 			  </div>
-
 
             </div>
             <div class="row">
@@ -71,11 +72,13 @@
               <label for="">&nbsp;</label>
                 <select class="form-control fixed-width-font">
                 <option onclick="javascript:updateTransferDialog('', '0.00000000', 'to_address');">select an account</option>
+                {% if accounts|keyvalue:selected_currency %}
                 {% for account in accounts|keyvalue:selected_currency %}
                     {% if account.name %}
                       <option class="fixed-width-font" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'to_address');" >{{ account.name }} - {{ account.addresses.0 }}</option>
                     {% endif %}
                 {% endfor %}
+                {% endif %}
                 </select>
               </div>
              <div class="col-md-2">
@@ -128,7 +131,12 @@
               <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-ok"></span>&nbsp;send</button> 
             </form>
     
-            <!--   <a class="btn btn-primary" href="{% url 'accounts:add' %}">send</a>-->
           </div>
         </div>
+        {% if not accounts|keyvalue:selected_currency %}
+        <script type="text/javascript">
+        $('form#transfer_form :input').attr("disabled", "disabled");
+        </script>
+        {% endif %}
+        
 {% endblock %}

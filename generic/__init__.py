@@ -68,7 +68,7 @@ def getAccountsWithNames(connector):
     
 def getTransactions(connector, sort_by = 'time', reverse_order = False):
     '''
-    Return transactions
+    Return transactions with ordering and sorting options
     '''
     transactions_ordered = []
     transactions = connector.listtransactions()

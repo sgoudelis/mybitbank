@@ -3,6 +3,7 @@ import datetime
 import generic
 from accounts.models import accountFilter
 from bitcoinrpc.authproxy import JSONRPCException
+import hashlib
 
 class Connector(object):
     # how long to cache responses
@@ -22,9 +23,11 @@ class Connector(object):
                }
     
     # caching data
-    accounts = {'when': datetime.datetime.fromtimestamp(0), 'data': {}}
-    transactions = {'when': datetime.datetime.fromtimestamp(0), 'data': {}}
-    balances = {'when': datetime.datetime.fromtimestamp(0), 'data': {}}
+    cache = {
+             'accounts': {},
+             'transactions': {},
+             'balances': {},
+             }
     
     def __init__(self):
         '''
@@ -61,79 +64,99 @@ class Connector(object):
     
     def listaccounts(self, gethidden=False, getarchived=False):
         '''
-        Get a list of accounts. This method also add filtering, fetches address for each account etc.
+        Get a list of accounts. This method also supports filtering, fetches address for each account etc.
         '''
-
+        
+        # check for cached data, use that or get it again
+        cache_hash = self.getParamHash("gethidden=%s&getarchived=%s" % (gethidden, getarchived))
+        try:
+            cache_object = self.cache['accounts'].get(cache_hash, None)
+            if ((datetime.datetime.now() - cache_object['when']).seconds) < self.caching_time:
+                cached_accounts = self.cache['accounts'][cache_hash]['data']
+                return cached_accounts
+        except:
+            pass
+        
+        # get data from the connector (coind)
+        try:
+            fresh_accounts = {}
+            for currency in self.services.keys():
+                fresh_accounts[currency] = self.services[currency].listaccounts()
+        except Exception, e:
+            # in case of an error, store the error, remove the service and move on
+            self.errors.append({'message': 'Error occurred while getting a list of accounts (currency: %s, error:%s)' % (currency, e)})
+            self.removeCurrencyService(currency)
+            
+        # get a list of archived address
         address_ignore_list = []
         if not getarchived:
-            # get a list of archived address
             ignore_list = accountFilter.objects.filter(status=1)
             for ignored_account in ignore_list:
                 address_ignore_list.append(ignored_account.address.encode('ascii'))
         
+        # get a list of hidden accounts
         address_hidden_list = []
         if not gethidden:
-            # get a list of hidden accounts
             hidden_list = accountFilter.objects.filter(status=2)
             for hidden_account in hidden_list:
                 address_hidden_list.append(hidden_account.address.encode('ascii'))
-        
-        # check for cached data, use that or get it again
-        if self.accounts['data'] is not None and ((datetime.datetime.now() - self.accounts['when']).seconds < self.caching_time):
-            cached_accounts = self.accounts['data']
-        else:
-            cached_accounts = {}
-            for currency in self.services.keys():
-                cached_accounts[currency] = self.services[currency].listaccounts()
-            
-            # caching result
-            self.accounts['when'] = datetime.datetime.now()
-            self.accounts['data'] = cached_accounts
         
         try:
             accounts = {}
             for currency in self.services.keys():
                 accounts[currency] = []
-                accounts_for_currency = self.accounts['data'][currency]
+                if fresh_accounts.get(currency, False):
+                    accounts_for_currency = fresh_accounts[currency]
         
-                for account_name, account_balance in accounts_for_currency.items():
-                    account_addresses = self.getaddressesbyaccount(account_name, currency)
-                    
-                    # check all addresses if they are in the archive list
-                    for ignored_address in address_ignore_list:
-                        if ignored_address in account_addresses:
-                            del account_addresses[account_addresses.index(ignored_address)]
-                    
-                    # check all addresses if they are in the hidden list
-                    hidden_flag = False
-                    for hidden_address in address_hidden_list:
-                        if hidden_address in account_addresses:
-                            hidden_flag = True
-                    
-                    # catch default address without name
-                    if account_name == "":
-                        alternative_name = '(no name)'
-                    else:
-                        alternative_name = account_name
-                    
-                    # if there any address left then add it to the list
-                    if account_addresses:
-                        accounts[currency].append({
-                                                   'name': account_name, 
-                                                   'balance': self.longNumber(account_balance), 
-                                                   'addresses': account_addresses, 
-                                                   'hidden': hidden_flag,
-                                                   'alternative_name': alternative_name,
-                                                   'currency': currency.upper(),
-                                                   })
+                    for account_name, account_balance in accounts_for_currency.items():
+                        account_addresses = self.getaddressesbyaccount(account_name, currency)
+                        
+                        # check all addresses if they are in the archive list
+                        for ignored_address in address_ignore_list:
+                            if ignored_address in account_addresses:
+                                del account_addresses[account_addresses.index(ignored_address)]
+                        
+                        # check all addresses if they are in the hidden list
+                        hidden_flag = False
+                        for hidden_address in address_hidden_list:
+                            if hidden_address in account_addresses:
+                                hidden_flag = True
+                        
+                        # catch default address without name
+                        if account_name == "":
+                            alternative_name = '(no name)'
+                        else:
+                            alternative_name = account_name
+                        
+                        # if there any address left then add it to the list
+                        if account_addresses:
+                            accounts[currency].append({
+                                                       'name': account_name, 
+                                                       'balance': self.longNumber(account_balance), 
+                                                       'addresses': account_addresses, 
+                                                       'hidden': hidden_flag,
+                                                       'alternative_name': alternative_name,
+                                                       'currency': currency.upper(),
+                                                       })
                     
         except Exception as e:
-            #raise
+            raise
             self.errors.append({'message': 'Error occurred while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})
             self.removeCurrencyService(currency)
-            return self.accounts['data']
+        
+        # cache the result
+        self.cache['accounts'][cache_hash] = {'data': accounts, 'when': datetime.datetime.now()}
         
         return accounts
+    
+    def getParamHash(self, param=""):
+        '''
+        This function takes a string and calculates a sha224 hash out of it. 
+        It is used to hash the input parameters of functions/method in order to uniquely identify a cached result based only
+        on the input parameters of the function/method call.
+        '''
+        cache_hash = hashlib.sha224(param).hexdigest()
+        return cache_hash
     
     def getaddressesbyaccount(self, name, currency):
         '''
@@ -151,7 +174,18 @@ class Connector(object):
     def listtransactionsbyaccount(self, account_name, currency):    
         '''
         Get a list of transactions by account and currency
-        '''  
+        '''
+        
+        # check for cached data, use that or get it again
+        cache_hash = self.getParamHash("account_name=%s&currency=%s" % (account_name, currency))
+        try:
+            cache_object = self.cache['transactions'].get(cache_hash, None)
+            if ((datetime.datetime.now() - cache_object['when']).seconds) < self.caching_time:
+                cached_transactions = self.cache['transactions'][cache_hash]['data']
+                return cached_transactions
+        except:
+            pass
+        
         transactions = []
         try:
             transactions = self.services[currency].listtransactions(account_name, 1000000, 0)
@@ -173,16 +207,15 @@ class Connector(object):
                 else:
                     self.errors.append({'message': transaction_details})
             
+        # cache the result
+        self.cache['transactions'][cache_hash] = {'data': transactions, 'when': datetime.datetime.now()}
+        
         return transactions
     
     def listtransactions(self):
         ''' 
         Get a list of transactions
-        '''
-        
-        if self.transactions['data'] is not None and ((datetime.datetime.now() - self.transactions['when']).seconds < self.caching_time):
-            return self.transactions['data']
-        
+        '''        
         accounts = self.listaccounts(gethidden=True, getarchived=True)
 
         transactions = {}
@@ -192,8 +225,6 @@ class Connector(object):
                 # append list
                 transactions[currency] = transactions[currency] + self.listtransactionsbyaccount(account['name'], currency)
 
-        self.transactions['when'] = datetime.datetime.now()
-        self.transactions['data'] = transactions
         return transactions
     
     def getnewaddress(self, currency, account_name):
@@ -211,21 +242,27 @@ class Connector(object):
         Get balance for each currency
         '''
         
-        if self.balances['data'] is not None and ((datetime.datetime.now() - self.balances['when']).seconds < self.caching_time):
-            return self.balances['data']
+        # check for cached data, use that or get it again
+        cache_hash = self.getParamHash("" % ())
+        try:
+            cache_object = self.cache['balances'].get(cache_hash, None)
+            if ((datetime.datetime.now() - cache_object['when']).seconds) < self.caching_time:
+                cached_balances = self.cache['balances'][cache_hash]['data']
+                return cached_balances
+        except:
+            pass
         
         try:
             balances = {}
             for currency in self.services.keys():
                 balances[currency] = generic.longNumber(self.services[currency].getbalance())
         except Exception as e:
-            #raise
+            # in case of an Exception continue on to the next currency service (xxxcoind)
             self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e)})
             self.removeCurrencyService(currency)
-            return self.transactions['data']
         
-        self.balances['when'] = datetime.datetime.now()
-        self.balances['data'] = balances
+        self.cache['balances'][cache_hash] = {'data': balances, 'when': datetime.datetime.now()}
+        
         return balances
     
     
@@ -246,6 +283,7 @@ class Connector(object):
         return target_account
 
     def moveamount(self, from_account, to_account, currency, amount, minconf=1, comment=""):
+        print from_account
         if not from_account or not to_account or not currency:
             return {'message': 'invalid input data'}
         
@@ -267,7 +305,7 @@ class Connector(object):
             return reply
         else:
             # account not found
-            return {'message': 'source account not found'}
+            return {'message': 'source or destication account not found'}
               
     def sendfrom(self, from_account, to_address, amount, currency, minconf=1, comment="", comment_to=""):
         if not from_account or not to_address or not currency:

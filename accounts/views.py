@@ -26,7 +26,14 @@ def index(request):
             account['last_activity'] = "never"
     
     page_title = "Accounts"
-    context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(current_section, 'all'), 'page_title': page_title, 'page_sections': sections, 'accounts': accounts}
+    context = {
+               'globals': config.MainConfig['globals'], 
+               'breadcrumbs': generic.buildBreadcrumbs(current_section, 'all'), 
+               'system_errors': connector.errors,
+               'page_title': page_title, 
+               'page_sections': sections, 
+               'accounts': accounts
+               }
     return render(request, 'accounts/index.html', context)
 
 def add(request):
