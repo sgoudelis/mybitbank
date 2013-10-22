@@ -252,14 +252,14 @@ class Connector(object):
         except:
             pass
         
-        try:
-            balances = {}
-            for currency in self.services.keys():
-                balances[currency] = generic.longNumber(self.services[currency].getbalance())
-        except Exception as e:
-            # in case of an Exception continue on to the next currency service (xxxcoind)
-            self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e)})
-            self.removeCurrencyService(currency)
+        balances = {}
+        for currency in self.services.keys():
+            try:
+                    balances[currency] = generic.longNumber(self.services[currency].getbalance())
+            except Exception as e:
+                # in case of an Exception continue on to the next currency service (xxxcoind)
+                self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e)})
+                self.removeCurrencyService(currency)
         
         self.cache['balances'][cache_hash] = {'data': balances, 'when': datetime.datetime.now()}
         
