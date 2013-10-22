@@ -108,12 +108,12 @@ class Connector(object):
                 if fresh_accounts.get(currency, False):
                     accounts_for_currency = fresh_accounts[currency]
         
-                    try:
-                        for account_name, account_balance in accounts_for_currency.items():
+                    for account_name, account_balance in accounts_for_currency.items():
+                        try:
                             account_addresses = self.getaddressesbyaccount(account_name, currency)
-                    except Exception, e:
-                        self.errors.append({'message': 'Error getting addresses for account %s (currency: %s, error:%s)' % (account_name, currency, e)})
-                        
+                        except Exception, e:
+                            self.errors.append({'message': 'Error getting addresses for account %s (currency: %s, error:%s)' % (account_name, currency, e)})
+                            
                         # check all addresses if they are in the archive list
                         for ignored_address in address_ignore_list:
                             if ignored_address in account_addresses:
