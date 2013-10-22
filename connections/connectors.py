@@ -83,6 +83,7 @@ class Connector(object):
             try:
                 fresh_accounts[currency] = self.services[currency].listaccounts()
             except Exception, e:
+                raise
                 # in case of an error, store the error, remove the service and move on
                 self.errors.append({'message': 'Error occurred while getting a list of accounts (currency: %s, error:%s)' % (currency, e)})
                 self.removeCurrencyService(currency)
@@ -143,12 +144,13 @@ class Connector(object):
                                                        })
                     
         except Exception as e:
+            raise
             self.errors.append({'message': 'Error occurred while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})
             self.removeCurrencyService(currency)
         
         # cache the result
         self.cache['accounts'][cache_hash] = {'data': accounts, 'when': datetime.datetime.now()}
-        
+
         return accounts
     
     def getParamHash(self, param=""):
@@ -192,7 +194,7 @@ class Connector(object):
         try:
             transactions = self.services[currency].listtransactions(account_name, 1000000, 0)
         except Exception as e:
-            #raise
+            raise
             self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listtransactions()' % (e.error)})
             self.removeCurrencyService(currency)
             
@@ -233,7 +235,7 @@ class Connector(object):
         '''
         Create a new address
         '''
-        if self.services[currency]:
+        if self.services[currency] and account_name:
             new_address = self.services[currency].getnewaddress(account_name)
         else:
             new_address = None
@@ -259,6 +261,7 @@ class Connector(object):
             try:
                 balances[currency] = generic.longNumber(self.services[currency].getbalance())
             except Exception as e:
+                raise
                 # in case of an Exception continue on to the next currency service (xxxcoind)
                 self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e)})
                 self.removeCurrencyService(currency)
@@ -266,7 +269,6 @@ class Connector(object):
         self.cache['balances'][cache_hash] = {'data': balances, 'when': datetime.datetime.now()}
         
         return balances
-    
     
     def getaccountdetailsbyaddress(self, address):
         '''
