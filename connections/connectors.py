@@ -78,14 +78,14 @@ class Connector(object):
             pass
         
         # get data from the connector (coind)
-        try:
-            fresh_accounts = {}
-            for currency in self.services.keys():
+        fresh_accounts = {}
+        for currency in self.services.keys():
+            try:
                 fresh_accounts[currency] = self.services[currency].listaccounts()
-        except Exception, e:
-            # in case of an error, store the error, remove the service and move on
-            self.errors.append({'message': 'Error occurred while getting a list of accounts (currency: %s, error:%s)' % (currency, e)})
-            self.removeCurrencyService(currency)
+            except Exception, e:
+                # in case of an error, store the error, remove the service and move on
+                self.errors.append({'message': 'Error occurred while getting a list of accounts (currency: %s, error:%s)' % (currency, e)})
+                self.removeCurrencyService(currency)
             
         # get a list of archived address
         address_ignore_list = []
@@ -108,8 +108,11 @@ class Connector(object):
                 if fresh_accounts.get(currency, False):
                     accounts_for_currency = fresh_accounts[currency]
         
-                    for account_name, account_balance in accounts_for_currency.items():
-                        account_addresses = self.getaddressesbyaccount(account_name, currency)
+                    try:
+                        for account_name, account_balance in accounts_for_currency.items():
+                            account_addresses = self.getaddressesbyaccount(account_name, currency)
+                    except Exception, e:
+                        self.errors.append({'message': 'Error getting addresses for account %s (currency: %s, error:%s)' % (account_name, currency, e)})
                         
                         # check all addresses if they are in the archive list
                         for ignored_address in address_ignore_list:
@@ -140,7 +143,6 @@ class Connector(object):
                                                        })
                     
         except Exception as e:
-            raise
             self.errors.append({'message': 'Error occurred while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})
             self.removeCurrencyService(currency)
         
@@ -321,7 +323,6 @@ class Connector(object):
             # account given exists, continue
             try:
                 reply = self.services[currency].sendfrom(from_account, to_address, amount, minconf, comment, comment_to)
-                print reply
             except JSONRPCException, e: 
                 return e.error
             except ValueError, e:
@@ -355,7 +356,6 @@ class Connector(object):
         http://bitcoin.stackexchange.com/questions/7838/why-does-gettransaction-report-me-only-the-receiving-address/8864#8864
         '''
         try:
-            import hashlib
             import base58
         except:
             return "need base58"
