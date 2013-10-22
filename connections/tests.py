@@ -1,7 +1,7 @@
 from django.test import TestCase
 from decimal import Decimal
 from connections import Connector
-import generic
+#import generic
 
 rawData = {
            'new_account_address': "new account address",
