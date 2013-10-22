@@ -83,6 +83,7 @@ class Connector(object):
             try:
                 fresh_accounts[currency] = self.services[currency].listaccounts()
             except Exception, e:
+                raise
                 # in case of an error, store the error, remove the service and move on
                 self.errors.append({'message': 'Error occurred while getting a list of accounts (currency: %s, error:%s)' % (currency, e)})
                 self.removeCurrencyService(currency)
@@ -143,12 +144,13 @@ class Connector(object):
                                                        })
                     
         except Exception as e:
+            raise
             self.errors.append({'message': 'Error occurred while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})
             self.removeCurrencyService(currency)
         
         # cache the result
         self.cache['accounts'][cache_hash] = {'data': accounts, 'when': datetime.datetime.now()}
-        
+
         return accounts
     
     def getParamHash(self, param=""):
@@ -192,7 +194,7 @@ class Connector(object):
         try:
             transactions = self.services[currency].listtransactions(account_name, 1000000, 0)
         except Exception as e:
-            #raise
+            raise
             self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listtransactions()' % (e.error)})
             self.removeCurrencyService(currency)
             
@@ -233,7 +235,7 @@ class Connector(object):
         '''
         Create a new address
         '''
-        if self.services[currency]:
+        if self.services.get(currency, False) and type(account_name) is str and len(account_name):
             new_address = self.services[currency].getnewaddress(account_name)
         else:
             new_address = None
@@ -259,6 +261,7 @@ class Connector(object):
             try:
                 balances[currency] = generic.longNumber(self.services[currency].getbalance())
             except Exception as e:
+                raise
                 # in case of an Exception continue on to the next currency service (xxxcoind)
                 self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e)})
                 self.removeCurrencyService(currency)
@@ -266,7 +269,6 @@ class Connector(object):
         self.cache['balances'][cache_hash] = {'data': balances, 'when': datetime.datetime.now()}
         
         return balances
-    
     
     def getaccountdetailsbyaddress(self, address):
         '''
@@ -285,9 +287,22 @@ class Connector(object):
         return target_account
 
     def moveamount(self, from_account, to_account, currency, amount, minconf=1, comment=""):
-        print from_account
         if not from_account or not to_account or not currency:
-            return {'message': 'invalid input data'}
+            return {'message': 'Invalid input data from/to account name', 'code':-101}
+        
+        if currency not in self.services.keys():
+            return {'message': 'Non-existant currency %s' % currency, 'code':-100}
+        
+        if not generic.isFloat(amount) or type(amount) is bool:
+            return {'message': 'Amount is not a number', 'code':-102}
+        
+        if type(comment) is not str:
+            return {'message': 'Comment is not valid', 'code':-104}
+        
+        try:
+            minconf = int(minconf)
+        except:
+            return {'message': 'Invalid minconf value', 'code':-105}
         
         account_list = self.listaccounts(True, True)
         
@@ -307,11 +322,20 @@ class Connector(object):
             return reply
         else:
             # account not found
-            return {'message': 'source or destication account not found'}
+            return {'message': 'source or destication account not found', 'code':-103}
               
     def sendfrom(self, from_account, to_address, amount, currency, minconf=1, comment="", comment_to=""):
         if not from_account or not to_address or not currency:
-            return {'message': 'invalid input data'}
+            return {'message': 'Invalid input data from account or address', 'code':-101}
+        
+        if currency not in self.services.keys():
+            return {'message': 'Non-existant currency %s' % currency, 'code': -100}
+        
+        if not generic.isFloat(amount) or type(amount) is bool:
+            return {'message': 'Amount is not a number', 'code':-102}
+        
+        if type(comment) is not str or type(comment_to) is not str:
+            return {'message': 'Comment is not valid', 'code':-104}
         
         account_list = self.listaccounts(True, True)
         
@@ -333,8 +357,7 @@ class Connector(object):
             return reply
         else:
             # account not found
-            return {'message': 'source account not found'}
-
+            return {'message': 'Source account not found', 'code': -106}
 
     def gettransactiondetails(self, txid, currency):
         if not txid or not currency:

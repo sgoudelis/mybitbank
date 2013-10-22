@@ -139,3 +139,6 @@ def isFloat(s):
         return True
     except ValueError:
         return False
+    except TypeError:
+        return False
+    
