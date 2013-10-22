@@ -235,7 +235,7 @@ class Connector(object):
         '''
         Create a new address
         '''
-        if self.services[currency] and account_name:
+        if self.services.get(currency, False) and type(account_name) is str and len(account_name):
             new_address = self.services[currency].getnewaddress(account_name)
         else:
             new_address = None
@@ -287,9 +287,22 @@ class Connector(object):
         return target_account
 
     def moveamount(self, from_account, to_account, currency, amount, minconf=1, comment=""):
-        print from_account
         if not from_account or not to_account or not currency:
-            return {'message': 'invalid input data'}
+            return {'message': 'Invalid input data from/to account name', 'code':-101}
+        
+        if currency not in self.services.keys():
+            return {'message': 'Non-existant currency %s' % currency, 'code':-100}
+        
+        if not generic.isFloat(amount) or type(amount) is bool:
+            return {'message': 'Amount is not a number', 'code':-102}
+        
+        if type(comment) is not str:
+            return {'message': 'Comment is not valid', 'code':-104}
+        
+        try:
+            minconf = int(minconf)
+        except:
+            return {'message': 'Invalid minconf value', 'code':-105}
         
         account_list = self.listaccounts(True, True)
         
@@ -309,7 +322,7 @@ class Connector(object):
             return reply
         else:
             # account not found
-            return {'message': 'source or destication account not found'}
+            return {'message': 'source or destication account not found', 'code':-103}
               
     def sendfrom(self, from_account, to_address, amount, currency, minconf=1, comment="", comment_to=""):
         if not from_account or not to_address or not currency:
