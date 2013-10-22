@@ -30,4 +30,7 @@ urlpatterns = patterns('',
     
     # transactions
     url(r'^transactions/', include('transactions.urls', namespace="transactions")),
+    
+    # language
+    (r'^i18n/', include('django.conf.urls.i18n')),
 )

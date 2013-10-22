@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,23 +41,37 @@
                 
                 {% for section in page_sections %}
 	                {% if section.active  %}
-	                 <li class="active"><a href="{{ section.path }}">{{ section.title }}</a></li>
+	                 <li class="active"><a href="{{ section.path }}">{% trans section.title %}</a></li>
 	                {% else %}
-	                 <li><a href="{{ section.path }}">{{ section.title }}</a></li>
+	                 <li><a href="{{ section.path }}">{% trans section.title %}</a></li>
 	                {% endif %}
                 {% endfor %}
                 <!--  page sections stop -->
                 </ul>
-                    <form class="navbar-form navbar-right" role="search">
-                      <div class="btn-group">
+                      <div class="btn-group navbar-form navbar-right">
                           <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">User logged in <span class="caret"></span></button>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Unlock wallet</a></li>
-                            <li><a href="#">Preferences</a></li>
+                            <li><a href="#">{% trans "Unlock wallet" %}</a></li>
+                            <li><a href="#">{% trans "Preferences" %}</a></li>
+	                        <li class="dropdown-submenu dropdown">
+	                            <a href="#" data-toggle="dropdown">{% trans "Language" %}</a>
+	                            <ul class="dropdown-menu">
+	                                {% get_language_info_list for LANGUAGES as languages %}
+	                                {% for language in languages %}
+	                                <li>
+	                                	<a href="#" onclick="document.setLang{{ language.code }}.submit();return false;">{{ language.name_local }}</a>
+	                                    <form name="setLang{{ language.code }}" action="/i18n/setlang/" method="POST">{% csrf_token %}
+	                                    <input name="next" type="hidden" value="{{ redirect_to }}" />
+	                                        <input type="hidden" name="language" value="{{ language.code }}" />
+	                                        
+	                                    </form>
+	                                </li>
+									{% endfor %}
+	                            </ul>
+		                	</li>
                             <li><a href="#">Log out</a></li>
                         </ul></li>
                         </div>
-                    </form>
             </div>
             <!-- /.navbar-collapse -->
         </nav>
@@ -64,9 +79,9 @@
     <ol class="breadcrumb">
     {% for page_section in breadcrumbs %}
       {% if page_section.active %}
-	  <li class="active">{{ page_section.name }}</li>
+	  <li class="active">{% trans page_section.name %}</li>
 	  {% else %}
-	  <li><a href="{{ page_section.path }}" >{{ page_section.name }}</a></li>
+	  <li><a href="{{ page_section.path }}" >{% trans page_section.name %}</a></li>
 	  {% endif %}
 	{% endfor %}
 	</ol>

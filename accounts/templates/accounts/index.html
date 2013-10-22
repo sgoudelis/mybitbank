@@ -1,4 +1,5 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 {% load url from future %}
 {% block page_title %}{{ page_title }}{% endblock %}
 
@@ -8,16 +9,16 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">
-                  <div class="col-xs-6"><h3 class="panel-title">Accounts</h3></div>
+                  <div class="col-xs-6"><h3 class="panel-title">{% trans "Accounts" %}</h3></div>
                   <div class="col-xs-6 text-right"><button type="button" onclick="showHideAllAccounts('hidden_account')" class="btn btn-primary btn-xs text-right">show/hide all accounts</button></div>
                 </div>
             </div>
                 <table class="table table-hover table-striped">
                   <thead>
-                        <th style="background-color:#f5f5f5;">Name</th>
-                        <th class="hidden-xs" style="background-color:#f5f5f5;">Addresses</th>
-                        <th class="hidden-xs" style="background-color:#f5f5f5;">Last activity</th>
-                        <th style="background-color:#f5f5f5;" class="text-right">Balance</th>
+                        <th style="background-color:#f5f5f5;">{% trans "Name" %}</th>
+                        <th class="hidden-xs" style="background-color:#f5f5f5;">{% trans "Addresses" %}</th>
+                        <th class="hidden-xs" style="background-color:#f5f5f5;">{% trans "Last activity" %}</th>
+                        <th style="background-color:#f5f5f5;" class="text-right">{% trans "Balance" %}</th>
                     </tr>
                     </thead>
                     {% if accounts %}
@@ -38,7 +39,7 @@
                 </table>
                 <div class="panel-body">
                     <div class="row">
-                      <div class="col-md-6"><a class="btn btn-primary" href="{% url 'accounts:add' %}"><span class="glyphicon glyphicon-plus"></span>&nbsp;create account</a></div>
+                      <div class="col-md-6"><a class="btn btn-primary" href="{% url 'accounts:add' %}"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans "create account" %}</a></div>
                       <div class="col-md-6"></div>
                     </div>
                 </div>
