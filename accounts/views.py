@@ -4,6 +4,7 @@ import generic
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
 
 current_section = 'accounts'
 
@@ -25,7 +26,7 @@ def index(request):
         else:
             account['last_activity'] = "never"
     
-    page_title = "Accounts"
+    page_title = _("Accounts")
     context = {
                'globals': config.MainConfig['globals'], 
                'breadcrumbs': generic.buildBreadcrumbs(current_section, 'all'), 
@@ -54,7 +55,7 @@ def getAddAccountFormContext(account_name='', currency='btc', error=None):
     for curr in currencies:
         currencies_available.append({'name': curr, 'title': connector.config[curr]['currency_name']})
         
-    page_title = "Create account"
+    page_title = _("Create account")
     sections = generic.getSiteSections(current_section)
     context = {'globals': config.MainConfig['globals'], 'page_sections': sections, 'page_title': page_title, 'currencies': currencies_available, 'account_name': account_name, 'currency': currency, 'selected_currency': currency, 'error_message': error}
     return context
@@ -92,10 +93,10 @@ def details(request, account_address="pipes"):
         transactions = generic.getTransactionsByAccount(connector, account['name'], account['currency'], reverse_order=True)
     else:
         account = {}
-        account['name'] = 'no such account'
+        account['name'] = _('no such account')
         transactions = []
     
-    page_title = "Account details for %s" % (account['name'] or account['alternative_name'])
+    page_title = _("Account details for %s") % (account['name'] or account['alternative_name'])
     context = {
                'globals': config.MainConfig['globals'], 
                'system_errors': connector.errors,

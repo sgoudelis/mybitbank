@@ -1,31 +1,33 @@
+from django.utils.translation import ugettext_noop as _
+
 MainConfig = {
               'globals' : {
                     'site_brand': "MyBitBank"
                },
                   
               'site_sections' : [
-                    {'name': 'dashboard', 'path':"/dashboard", 'title': 'Dashboard'},
-                    {'name': 'accounts', 'path':"/accounts", 'title': 'Accounts', 'subsections': 
+                    {'name': 'dashboard', 'path':"/dashboard", 'title': _('Dashboard')},
+                    {'name': 'accounts', 'path':"/accounts", 'title': _("Accounts"), 'subsections': 
                      [
-                         {'name': 'all', 'path':"/accounts", 'title': 'All'},
-                         {'name': 'add', 'path':"/accounts/create", 'title': 'Create account'},
-                         {'name': 'details', 'path':"/accounts/details", 'title': 'Account details'},
+                         {'name': 'all', 'path':"/accounts", 'title': _('All')},
+                         {'name': 'add', 'path':"/accounts/create", 'title': _('Create account')},
+                         {'name': 'details', 'path':"/accounts/details", 'title': _('Account details')},
                      ]
                     },
-                    {'name': 'transactions', 'path':"/transactions/1", 'title': "Transactions", 'subsections':
+                    {'name': 'transactions', 'path':"/transactions/1", 'title': _("Transactions"), 'subsections':
                      [
-                         {'name': 'all', 'path':"/transactions/", 'title': 'All'},
-                         {'name': 'pages', 'path':"/transactions/1", 'title': 'Pages'},
+                         {'name': 'all', 'path':"/transactions/", 'title': _('All')},
+                         {'name': 'pages', 'path':"/transactions/1", 'title': _('Pages')},
                      ]
                     },
-                    {'name': 'transfer', 'path':"/transfer", 'title': "Transfer", 'subsections': 
+                    {'name': 'transfer', 'path':"/transfer", 'title': _("Transfer"), 'subsections': 
                      [
                          # {'name': 'transfer', 'path':"/transfer/", 'title': 'All transactions'}
                      ]
                     },
-                    {'name': 'addressbook', 'path':"/addressbook", 'title': "Addressbook", 'subsections': 
+                    {'name': 'addressbook', 'path':"/addressbook", 'title': _("Addressbook"), 'subsections': 
                      [
-                        {'name': 'add', 'path':"/addressbook/add", 'title': 'Add address'},
+                        {'name': 'add', 'path':"/addressbook/add", 'title': _('Add address')},
                      
                      ]},
                ]
