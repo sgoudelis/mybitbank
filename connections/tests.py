@@ -300,9 +300,9 @@ class ConnectorsTests(TestCase):
         move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
         self.assertEquals(move_result, True)
         
-    def test_moveamount_nonexistant_from_account(self):
+    def test_moveamount_nonexisting_from_account(self):
         '''
-        Test moveamount() method testing non-existant from account
+        Test moveamount() method testing non-existing from account
         '''
         
         from_account = "Idontexistretsakalia"
@@ -317,7 +317,7 @@ class ConnectorsTests(TestCase):
         
     def test_moveamount_nonexistant_to_account(self):
         '''
-        Test moveamount() method testing non-existant from account
+        Test moveamount() method testing non-existing to account
         '''
         
         from_account = "pipes"
@@ -332,7 +332,7 @@ class ConnectorsTests(TestCase):
        
     def test_moveamount_invalid_currency(self):
         '''
-        Test moveamount() method testing non-existant from account
+        Test moveamount() method testing invalid currency
         '''
         
         from_account = "pipes"
@@ -347,7 +347,7 @@ class ConnectorsTests(TestCase):
          
     def test_moveamount_non_number_amount_1(self):
         '''
-        Test moveamount() method testing non-existant from account
+        Test moveamount() method testing non-number amount
         '''
         
         from_account = "pipes"
@@ -362,7 +362,7 @@ class ConnectorsTests(TestCase):
         
     def test_moveamount_non_number_amount_2(self):
         '''
-        Test moveamount() method testing non-existant from account
+        Test moveamount() method testing non-number amount
         '''
         
         from_account = "pipes"
@@ -377,7 +377,7 @@ class ConnectorsTests(TestCase):
 
     def test_moveamount_non_number_amount_3(self):
         '''
-        Test moveamount() method testing non-existant from account
+        Test moveamount() method testing non-number amount
         '''
         
         from_account = "pipes"
@@ -392,7 +392,7 @@ class ConnectorsTests(TestCase):
         
     def test_moveamount_non_number_amount_4(self):
         '''
-        Test moveamount() method testing non-existant from account
+        Test moveamount() method testing non-number amount
         '''
         
         from_account = "pipes"
@@ -405,22 +405,9 @@ class ConnectorsTests(TestCase):
         move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
     def test_sendfrom_nonexistant_from_account(self):
         '''
-        Test sendfrom() method testing non-existant from account
+        Test sendfrom() method testing non-existing from account
         '''
         
         from_account = "Idontexistretsakalia"
@@ -435,7 +422,7 @@ class ConnectorsTests(TestCase):
         
     def test_sendfrom_nonexistant_address(self):
         '''
-        Test sendfrom() method testing non-existant from account
+        Test sendfrom() method testing non-existing address
         '''
         
         from_account = "pipes"
@@ -450,7 +437,7 @@ class ConnectorsTests(TestCase):
        
     def test_sendfrom_invalid_currency(self):
         '''
-        Test sendfrom() method testing non-existant from account
+        Test sendfrom() method testing invalid currency
         '''
         
         from_account = "pipes"
@@ -463,32 +450,9 @@ class ConnectorsTests(TestCase):
         move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
     def test_sendfrom_non_number_amount_1(self):
         '''
-        Test sendfrom() method testing non-existant from account
+        Test sendfrom() method testing non-number amount
         '''
         
         from_account = "pipes"
@@ -503,7 +467,7 @@ class ConnectorsTests(TestCase):
         
     def test_sendfrom_non_number_amount_2(self):
         '''
-        Test sendfrom() method testing non-existant from account
+        Test sendfrom() method testing non-number amount
         '''
         
         from_account = "pipes"
@@ -518,7 +482,7 @@ class ConnectorsTests(TestCase):
 
     def test_sendfrom_non_number_amount_3(self):
         '''
-        Test sendfrom() method testing non-existant from account
+        Test sendfrom() method testing non-number amount
         '''
         
         from_account = "pipes"
@@ -533,7 +497,7 @@ class ConnectorsTests(TestCase):
         
     def test_sendfrom_non_number_amount_4(self):
         '''
-        Test sendfrom() method testing non-existant from account
+        Test sendfrom() method testing non-number amount
         '''
         
         from_account = "pipes"
