@@ -57,7 +57,16 @@ def getAddAccountFormContext(account_name='', currency='btc', error=None):
         
     page_title = _("Create account")
     sections = generic.getSiteSections(current_section)
-    context = {'globals': config.MainConfig['globals'], 'page_sections': sections, 'page_title': page_title, 'currencies': currencies_available, 'account_name': account_name, 'currency': currency, 'selected_currency': currency, 'error_message': error}
+    context = {
+               'globals': config.MainConfig['globals'], 
+               'page_sections': sections, 
+               'page_title': page_title, 
+               'currencies': currencies_available, 
+               'account_name': account_name, 
+               'currency': currency, 
+               'selected_currency': currency, 
+               'error_message': error
+               }
     return context
 
 def create(request):

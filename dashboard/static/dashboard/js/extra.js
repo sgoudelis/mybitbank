@@ -4,11 +4,16 @@ function setInputValue(value, targetId) {
 }
 
 function showHideAllAccounts(id) {
-	$('tr[name="'+id+'"]').toggle()
+	$('tr[name="'+id+'"]').toggle();
 	
 }
 
 function updateTransferDialog(address, balance, targetId) {
 	$('span#'+targetId+'_balance').html(balance);
 	$('input#'+targetId).val(address);
+}
+
+function callAccountsOptionClick(selectElement) {
+	optionElement = $(selectElement).find(":selected");
+	$(optionElement).click();
 }

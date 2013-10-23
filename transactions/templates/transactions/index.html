@@ -40,14 +40,14 @@
                         	{% if transaction.category == "receive" %}
 	                        <span class="fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.source_address }}</span>
 	                        {% elif transaction.category == "send" %}
-	                        <a href="/accounts/details/{{ transaction.source_address.0 }}" class="btn btn-default btn-xs"><strong>{% if transaction.account %}{{ transaction.account }}{% else %}{{ transaction.source_address.0 }}{% endif %}</strong></a>
+	                        <a href="/accounts/details/{{ transaction.source_address.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{% if transaction.account %}{{ transaction.account }}{% else %}{{ transaction.source_address.0 }}{% endif %}</strong></a>
 	                        {% else %}
-	                        <a href="/accounts/details/{% if not transaction.address %}{{ transaction.source_address.0 }}{% else %}{{ transaction.address }}{% endif %}" class="btn btn-default btn-xs"><strong>{% if not transaction.account %}{{ transaction.alternative_name }}{% else %}{{ transaction.account }}{% endif %}</strong></a>
+	                        <a href="/accounts/details/{% if not transaction.address %}{{ transaction.source_address.0 }}{% else %}{{ transaction.address }}{% endif %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{% if not transaction.account %}{{ transaction.alternative_name }}{% else %}{{ transaction.account }}{% endif %}</strong></a>
 	                        {% endif %}
 	                    </td>
                         <td class="hidden-xs">
                         	{% if transaction.category == "move" %}
-                        	<a href="/accounts/details/{{ transaction.destination_address.0 }}" class="btn btn-default btn-xs"><strong>{{ transaction.otheraccount }}</strong></a>
+                        	<a href="/accounts/details/{{ transaction.destination_address.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.otheraccount }}</strong></a>
                         	{% else %}
                         	<span class="fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span>
                         	{% endif %}
