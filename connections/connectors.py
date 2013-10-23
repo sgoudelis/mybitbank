@@ -428,6 +428,8 @@ class Connector(object):
             unload_exit = self.services[currency].walletpassphrase(passphrase, 30)
         except JSONRPCException, e:
             return e.error
+        except Exception, e:
+            return e.error
          
         if type(unload_exit) is dict and unload_exit.get('code', None) and unload_exit['code'] < 0:
             # error occured
