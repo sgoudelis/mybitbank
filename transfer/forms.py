@@ -32,7 +32,7 @@ class SendCurrencyForm(forms.Form):
     comment_to = forms.CharField(initial="", required=False)
     amount = CoinAmount(initial=0)
     selected_currency = CoinCurrency(initial="")
-    passphrase = forms.CharField
+    passphrase = forms.CharField(initial="", required=False)
     
     def clean(self):
         cleaned_data = super(SendCurrencyForm, self).clean()
@@ -41,6 +41,7 @@ class SendCurrencyForm(forms.Form):
         comment = cleaned_data.get('comment', "")
         amount = cleaned_data.get('amount', 0)
         selected_currency = cleaned_data.get('selected_currency',"")
+        passphrase = cleaned_data.get('passphrase',"")
         
         if from_address == to_address and (from_address and to_address):
             raise forms.ValidationError("You cannot move from and to the same account/address")

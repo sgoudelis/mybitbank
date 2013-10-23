@@ -15,7 +15,7 @@ def index(request, selected_currency='btc'):
     context = commonContext(selected_currency=selected_currency)
     return render(request, 'transfer/index.html', context)
 
-def commonContext(selected_currency='btc', form=None, errors=[]):
+def commonContext(selected_currency='btc', form=None, errors=[], show_passphrase=False):
     '''
     This constructs a common context between the two views: index and send
     '''
@@ -53,6 +53,7 @@ def commonContext(selected_currency='btc', form=None, errors=[]):
                'selected_currency': selected_currency,
                'form': form,
                'errors': errors,
+               'show_passphrase': show_passphrase,
                }
     
     return context
@@ -75,7 +76,8 @@ def send(request, currency):
             comment_to = form.cleaned_data['comment_to']
             amount = form.cleaned_data['amount']
             selected_currency = form.cleaned_data['selected_currency']
-
+            passphrase = form.cleaned_data['passphrase']
+            
             # get account details
             from_account = connector.getaccountdetailsbyaddress(from_address)
             to_account = connector.getaccountdetailsbyaddress(to_address)
@@ -96,6 +98,17 @@ def send(request, currency):
                     return render(request, 'transfer/index.html', context)
                 
             else:
+                
+                if passphrase:
+                    # a passphrase was given, unlock wallet first
+                    unlock_exit = connector.walletpassphrase(passphrase, currency)
+                    
+                    if unlock_exit is not True:
+                        # show form with error
+                        post_errors.append({'message': unlock_exit['message']})
+                        context = commonContext(selected_currency=selected_currency, form=form, errors=post_errors, show_passphrase=True)
+                        return render(request, 'transfer/index.html', context)
+                
                 # to_address not local, do a send
                 sendfrom_exit = connector.sendfrom(
                                                    from_account=from_account['name'], 
@@ -105,12 +118,25 @@ def send(request, currency):
                                                    comment=comment, 
                                                    comment_to=comment_to
                                                   )
-
+                
                 # if there are errors, show them in the UI
                 if type(sendfrom_exit) is dict and sendfrom_exit['code'] < 0:
+                    
+                    # check if passphrase is needed
+                    if sendfrom_exit['code'] == -13:
+                        # passphrase is needed
+                        show_passphrase=True
+                    else:
+                        show_passphrase=False
+                    
+                    # show form with error
                     post_errors.append({'message': sendfrom_exit['message']})
-                    context = commonContext(selected_currency=selected_currency, form=form, errors=post_errors)
+                    context = commonContext(selected_currency=selected_currency, form=form, errors=post_errors, show_passphrase=show_passphrase)
                     return render(request, 'transfer/index.html', context)
+                
+                
+            # lock wallet again
+            connector.walletlock(currency)
                 
             # process the data in form.cleaned_data
             return HttpResponseRedirect('/transactions/') # Redirect after POST

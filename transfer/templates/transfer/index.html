@@ -30,6 +30,20 @@
             
             <form action="{% url 'transfer:send' selected_currency %}" method="post" role="form" id="transfer_form">
             {% csrf_token %}
+            
+            {% if show_passphrase %}
+            <div class="row alert-danger">
+              <div class="col-md-6">
+                  <div class="form-group {% if form.from_address.errors %}has-error{% endif %}">
+                    <label for="passphrase"><h5>Passphrase</h5></label>
+                    <input type="password" class="form-control fixed-width-font" id="passphrase" name="passphrase" placeholder="passphrase" value="">
+                    {{ form.passphrase.errors }}
+                  </div>
+              </div>
+            </div>
+            
+            {% endif %}
+            
             <input type="hidden" name="selected_currency" value="{{ selected_currency }}"/>
             <div class="row">
               <div class="col-md-4">

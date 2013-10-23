@@ -333,8 +333,8 @@ class Connector(object):
         
         if not generic.isFloat(amount) or type(amount) is bool:
             return {'message': 'Amount is not a number', 'code':-102}
-        
-        if type(comment) is not str or type(comment_to) is not str:
+
+        if type(comment) not in [str, unicode]  or type(comment_to) not in [str, unicode]:
             return {'message': 'Comment is not valid', 'code':-104}
         
         account_list = self.listaccounts(True, True)
@@ -347,7 +347,7 @@ class Connector(object):
             # account given exists, continue
             try:
                 reply = self.services[currency].sendfrom(from_account, to_address, amount, minconf, comment, comment_to)
-            except JSONRPCException, e: 
+            except JSONRPCException, e:
                 return e.error
             except ValueError, e:
                 return {'message': e, 'code': -1}
@@ -409,4 +409,39 @@ class Connector(object):
         #print "resolved address: %s" % encoded_address
         
         return encoded_address
+    
+    def walletpassphrase(self, passphrase, currency):
+        '''
+        Unlock the wallet
+        '''
+        
+        if type(passphrase) not in [str, unicode]:
+            return {'message': 'Incorrect data type for passphrase', 'code': -110}
+        
+        if len(passphrase) < 1:
+            return {'message': 'Incorrect data type for passphrase', 'code': -111}
+        
+        if currency not in self.services.keys():
+            return {'message': 'Invalid non-existing or disabled currency', 'code': -112}
+        
+        try:
+            unload_exit = self.services[currency].walletpassphrase(passphrase, 30)
+        except JSONRPCException, e:
+            return e.error
+         
+        if type(unload_exit) is dict and unload_exit.get('code', None) and unload_exit['code'] < 0:
+            # error occured
+            return unload_exit
+        else:
+            return True
+        
+    def walletlock(self, currency):
+        '''
+        Lock wallet
+        '''
+        if currency not in self.services.keys():
+            return {'message': 'Invalid non-existing or disabled currency', 'code': -112}
+        
+        self.services[currency].walletlock()
+        
         
