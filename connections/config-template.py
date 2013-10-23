@@ -6,7 +6,7 @@ config = {
         'rpchost': "localhost",
         'rpcport': "7000",
         'currency_name': 'BitCoin (BTC)',
-        'symbol': "B⃦",
+        'symbol': "฿",
         'code': 'BTC',
         'network': "mainnet",
     },
