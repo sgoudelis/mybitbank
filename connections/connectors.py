@@ -291,7 +291,7 @@ class Connector(object):
             return {'message': 'Invalid input data from/to account name', 'code':-101}
         
         if currency not in self.services.keys():
-            return {'message': 'Non-existant currency %s' % currency, 'code':-100}
+            return {'message': 'Non-existing currency %s' % currency, 'code':-100}
         
         if not generic.isFloat(amount) or type(amount) is bool:
             return {'message': 'Amount is not a number', 'code':-102}
@@ -329,7 +329,7 @@ class Connector(object):
             return {'message': 'Invalid input data from account or address', 'code':-101}
         
         if currency not in self.services.keys():
-            return {'message': 'Non-existant currency %s' % currency, 'code': -100}
+            return {'message': 'Non-existing currency %s' % currency, 'code': -100}
         
         if not generic.isFloat(amount) or type(amount) is bool:
             return {'message': 'Amount is not a number', 'code':-102}
@@ -360,8 +360,11 @@ class Connector(object):
             return {'message': 'Source account not found', 'code': -106}
 
     def gettransactiondetails(self, txid, currency):
-        if not txid or not currency:
-            return {}
+        if type(txid) not in [str, unicode] or len(txid) < 1:
+            return {'message': 'Invalid transaction id', 'code': -120}
+        
+        if currency not in self.services.keys():
+            return {'message': 'Non-existing currency %s' % currency, 'code': -121}
         
         transaction_details = None
         try:

@@ -1,16 +1,17 @@
 from django.test import TestCase
 from decimal import Decimal
 from connections import Connector
-#import generic
+# import generic
 
 rawData = {
+           'passphrase': 'testpassphrase',
            'new_account_address': "new account address",
            'accounts': {
-                        u'': Decimal('0.00000000'), 
-                        u'pipes': Decimal('0E-8'), 
+                        u'': Decimal('0.00000000'),
+                        u'pipes': Decimal('0E-8'),
                         u'another account': Decimal('0E-8'),
-                        u'my empty account': Decimal('0E-8'), 
-                        u'my test BTC account': Decimal('230.00000000'), 
+                        u'my empty account': Decimal('0E-8'),
+                        u'my test BTC account': Decimal('230.00000000'),
                         u'sdfsdfs': Decimal('0E-8')
                         },
            
@@ -80,6 +81,39 @@ rawData = {
                            u'sdfsdfs': [],
                         },
                   'balance': Decimal('30.00000000'),
+                  
+                  
+                  'rawtransactions':  [
+                                                {   u'blockhash': u'00000000f623a840f81762114d5426faabeb2fcf8b13e3edb128273aa24a3c38',
+                                                        u'blocktime': 1382465670,
+                                                        u'confirmations': 73,
+                                                        u'hex': u'01000000018419d61304f827e0743e84ce3ae694ac2adbc43ca57c5c8997543eba1b8b9fa4000000006a4730440220475a95f43295daaf6575ee0cd9e576d6d6f95a25e7ca51950f9976f4570f294302206798592cfa435be24e503325b0a11364d61ec0c5aab494049b5d35208ed24edf012103d0b8349514469b2c42b41f2aa8982d4b9a666c1662865bd4728c04ad535739f4ffffffff0260d0bb27000000001976a9146608824a44bf9d4c4c7440227143f9b8283439b388ac9002cc00000000001976a914bc488f1667ee3e8b42bb95e320341689f0c5ffc788ac00000000',
+                                                        u'locktime': 0,
+                                                        u'time': 1382465670,
+                                                        u'txid': u'd1f51c53cc35e14596a6cd3607689927dd1ef0d133037883b7dd85f058ffab73',
+                                                        u'version': 1,
+                                                        u'vin': [   {   u'scriptSig': {   u'asm': u'30440220475a95f43295daaf6575ee0cd9e576d6d6f95a25e7ca51950f9976f4570f294302206798592cfa435be24e503325b0a11364d61ec0c5aab494049b5d35208ed24edf01 03d0b8349514469b2c42b41f2aa8982d4b9a666c1662865bd4728c04ad535739f4',
+                                                                                          u'hex': u'4730440220475a95f43295daaf6575ee0cd9e576d6d6f95a25e7ca51950f9976f4570f294302206798592cfa435be24e503325b0a11364d61ec0c5aab494049b5d35208ed24edf012103d0b8349514469b2c42b41f2aa8982d4b9a666c1662865bd4728c04ad535739f4'},
+                                                                        u'sequence': 4294967295,
+                                                                        u'txid': u'a49f8b1bba3e5497895c7ca53cc4db2aac94e63ace843e74e027f80413d61984',
+                                                                        u'vout': 0}],
+                                                        u'vout': [   {   u'n': 0,
+                                                                         u'scriptPubKey': {   u'addresses': [   u'mppTQqFFXmk2E4F1FJ5A2BqDt56oYH2Nss'],
+                                                                                              u'asm': u'OP_DUP OP_HASH160 6608824a44bf9d4c4c7440227143f9b8283439b3 OP_EQUALVERIFY OP_CHECKSIG',
+                                                                                              u'hex': u'76a9146608824a44bf9d4c4c7440227143f9b8283439b388ac',
+                                                                                              u'reqSigs': 1,
+                                                                                              u'type': u'pubkeyhash'},
+                                                                         u'value': Decimal('6.66620000')},
+                                                                     {   u'n': 1,
+                                                                         u'scriptPubKey': {   u'addresses': [   u'mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP'],
+                                                                                              u'asm': u'OP_DUP OP_HASH160 bc488f1667ee3e8b42bb95e320341689f0c5ffc7 OP_EQUALVERIFY OP_CHECKSIG',
+                                                                                              u'hex': u'76a914bc488f1667ee3e8b42bb95e320341689f0c5ffc788ac',
+                                                                                              u'reqSigs': 1,
+                                                                                              u'type': u'pubkeyhash'},
+                                                                         u'value': Decimal('0.13370000')}]}
+                                                
+                                                ]
+                                      
            }
 
 class ServiceProxyStubBTC(object):
@@ -110,6 +144,16 @@ class ServiceProxyStubBTC(object):
     def sendfrom(self, from_account, to_address, amount, minconf, comment, comment_to):
         return True
 
+    def walletpassphrase(self, passphrase, timeout):
+        return True
+    
+    def walletlock(self):
+        return True
+    
+    def getrawtransaction(self, txid, verbose=1):
+        return self._rawData['rawtransaction'][0]
+
+
 class ConnectorsTests(TestCase):
     connector = None
 
@@ -138,7 +182,7 @@ class ConnectorsTests(TestCase):
         '''
         accounts = self.connector.listaccounts(gethidden=True, getarchived=True)
         
-        #generic.prettyPrint(accounts)
+        # generic.prettyPrint(accounts)
         
         # check number of in and out accounts        
         number_raw_accounts = len(self.connector.services['btc'].listaccounts().keys())
@@ -510,6 +554,182 @@ class ConnectorsTests(TestCase):
         move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
+    def test_walletpassphrase_invalid_passphrase_1(self):
+        '''
+        Test unload wallet
+        '''
         
+        passphrase = True
+        currency = 'btc'
         
+        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
         
+        self.assertNotEquals(unlock_exit, True)
+        
+    def test_walletpassphrase_invalid_passphrase_2(self):
+        '''
+        Test unload wallet
+        '''
+        
+        passphrase = {}
+        currency = 'btc'
+        
+        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        
+        self.assertNotEquals(unlock_exit, True)
+        
+    def test_walletpassphrase_invalid_passphrase_3(self):
+        '''
+        Test unload wallet
+        '''
+        
+        passphrase = None
+        currency = 'btc'
+        
+        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        
+        self.assertNotEquals(unlock_exit, True)
+        
+    def test_walletpassphrase_invalid_passphrase_4(self):
+        '''
+        Test unload wallet
+        '''
+        
+        passphrase = ""
+        currency = 'btc'
+        
+        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        
+        self.assertNotEquals(unlock_exit, True)
+        
+    def test_walletpassphrase_invalid_currency_1(self):
+        '''
+        Test unload wallet
+        '''
+        
+        passphrase = "testpassphrase"
+        currency = 'inv'
+        
+        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        
+        self.assertNotEquals(unlock_exit, True)
+        
+    def test_walletpassphrase_invalid_currency_2(self):
+        '''
+        Test unload wallet
+        '''
+        
+        passphrase = "testpassphrase"
+        currency = ""
+        
+        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        
+        self.assertNotEquals(unlock_exit, True)
+        
+    def test_walletpassphrase_invalid_currency_3(self):
+        '''
+        Test unload wallet
+        '''
+        
+        passphrase = "testpassphrase"
+        currency = False
+        
+        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        
+        self.assertNotEquals(unlock_exit, True)
+        
+    def test_walletlock_invalid_currency_1(self):
+        '''
+        Test walletlock
+        '''
+        
+        currency = "inv"
+        lock_exit = self.connector.walletlock(currency)
+        
+        self.assertNotEquals(lock_exit, True)
+        
+    def test_walletlock_invalid_currency_2(self):
+        '''
+        Test walletlock
+        '''
+        
+        currency = ""
+        lock_exit = self.connector.walletlock(currency)
+        
+        self.assertNotEquals(lock_exit, True)
+        
+    def test_walletlock_invalid_currency_3(self):
+        '''
+        Test walletlock
+        '''
+        
+        currency = False
+        lock_exit = self.connector.walletlock(currency)
+        
+        self.assertNotEquals(lock_exit, True)
+        
+    def test_gettransactiondetails(self):
+        '''
+        Test gettransactiondetails()
+        '''
+
+        txid = 'bogus tx id'
+        currency = 'btc'
+        
+        transaction_details = self.connector.gettransactiondetails(txid, currency)
+        self.assertEquals(type(transaction_details), dict)
+        
+    def test_gettransactiondetails_invalid_currency_1(self):
+        '''
+        Test gettransactiondetails()
+        '''
+
+        txid = 'bogus tx id'
+        currency = 'inv'
+        
+        transaction_details = self.connector.gettransactiondetails(txid, currency)
+        self.assertNotEquals(transaction_details.get('code', None), None)
+
+    def test_gettransactiondetails_invalid_currency_2(self):
+        '''
+        Test gettransactiondetails()
+        '''
+
+        txid = 'bogus tx id'
+        currency = None
+        
+        transaction_details = self.connector.gettransactiondetails(txid, currency)
+        self.assertNotEquals(transaction_details.get('code', None), None)
+        
+    def test_gettransactiondetails_invalid_txid_1(self):
+        '''
+        Test gettransactiondetails()
+        '''
+
+        txid = {}
+        currency = 'btc'
+        
+        transaction_details = self.connector.gettransactiondetails(txid, currency)
+        self.assertNotEquals(transaction_details.get('code', None), None)
+    
+    def test_gettransactiondetails_invalid_txid_2(self):
+        '''
+        Test gettransactiondetails()
+        '''
+
+        txid = False
+        currency = 'btc'
+        
+        transaction_details = self.connector.gettransactiondetails(txid, currency)
+        self.assertNotEquals(transaction_details.get('code', None), None)
+
+    def test_gettransactiondetails_invalid_txid_3(self):
+        '''
+        Test gettransactiondetails()
+        '''
+
+        txid = ""
+        currency = 'btc'
+        
+        transaction_details = self.connector.gettransactiondetails(txid, currency)
+        self.assertNotEquals(transaction_details.get('code', None), None)
