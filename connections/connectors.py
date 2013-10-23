@@ -432,7 +432,7 @@ class Connector(object):
             return e.error
          
         if type(unload_exit) is dict and unload_exit.get('code', None) and unload_exit['code'] < 0:
-            # error occured
+            # error occurred
             return unload_exit
         else:
             return True
