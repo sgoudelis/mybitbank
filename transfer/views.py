@@ -133,9 +133,9 @@ def send(request, currency):
                     context = commonContext(selected_currency=selected_currency, form=form, errors=post_errors, show_passphrase=show_passphrase)
                     return render(request, 'transfer/index.html', context)
                 
-                
-            # lock wallet again
-            connector.walletlock(currency)
+            if passphrase:
+                # lock wallet again
+                connector.walletlock(currency)
                 
             # process the data in form.cleaned_data
             return HttpResponseRedirect('/transactions/') # Redirect after POST
