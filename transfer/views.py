@@ -4,7 +4,6 @@ import generic
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import forms
-from django.core.urlresolvers import reverse
 
 current_section = 'transfer'
 
