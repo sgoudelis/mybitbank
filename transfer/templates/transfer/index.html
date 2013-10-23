@@ -70,7 +70,7 @@
 			  
 			  <div class="col-md-2">
 			  <div class="row">&nbsp;</div>
-			  <div class="row"><span class="large-text-1" id="from_address_currency">{{ currency_symbols|keyvalue:selected_currency }}</span> <span class="large-text-1" id="from_address_balance">0.00000000</span></div>
+			  <div class="row"><div class="visible-xs col-md-1"></div><span class="large-text-1" id="from_address_currency">{{ currency_symbols|keyvalue:selected_currency }}</span> <span class="large-text-1" id="from_address_balance">0.00000000</span></div>
 			  </div>
 
             </div>
@@ -97,7 +97,7 @@
               </div>
              <div class="col-md-2">
 			  <div class="row">&nbsp;</div>
-			  <div class="row"><span class="large-text-1" id="to_address_currency">{{ currency_symbols|keyvalue:selected_currency }}</span> <span class="large-text-1" id="to_address_balance">0.00000000</span></div>
+			  <div class="row"><div class="visible-xs col-md-1"></div><span class="large-text-1" id="to_address_currency">{{ currency_symbols|keyvalue:selected_currency }}</span> <span class="large-text-1" id="to_address_balance">0.00000000</span></div>
 			  </div>
             </div>
             
@@ -154,13 +154,13 @@
         {% endif %}
         <script type="text/javascript">
         $(document).ready(function() {
-        	if ($('input#from_address')) {
+        	if ($('input#from_address').val()) {
         		$('select#from_account_menu').val($('input#from_address').val());
         		optionElement = $('select#from_account_menu').find(":selected");
         		$(optionElement).click();
         	}
         	
-        	if ($('input#to_address')) {
+        	if ($('input#to_address').val()) {
         		$('select#to_account_menu').val($('input#to_address').val());
         		optionElement = $('select#to_account_menu').find(":selected");
         		$(optionElement).click();
