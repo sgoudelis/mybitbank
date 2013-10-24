@@ -111,3 +111,11 @@ ul.errorlist {
 	-moz-border-radius: 6px 0 6px 6px;
 	border-radius: 6px 0 6px 6px;
 }
+
+.panel-dark-header {
+	background-color: #eeeeee !important;
+}
+
+.huge-symbol {
+	font-size: 70px;
+}
