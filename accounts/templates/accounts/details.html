@@ -86,11 +86,11 @@
             <td>
             <div class="hidden-xs">
             {% if transaction.category = 'receive' %}
-            <span data-toggle="tooltip" title="{{ transaction.category }}" class="glyphicon glyphicon-circle-arrow-down"></span> 
+            <span data-toggle="tooltip" title="{{ transaction.category }}" class="category-icon glyphicon glyphicon-circle-arrow-down"></span> 
             {% elif transaction.category = 'send' %}
-            <span data-toggle="tooltip" title="{{ transaction.category }}" class="glyphicon glyphicon-circle-arrow-up"></span>
+            <span data-toggle="tooltip" title="{{ transaction.category }}" class="category-icon glyphicon glyphicon-circle-arrow-up"></span>
             {% elif transaction.category = 'move' %}
-            <span data-toggle="tooltip" title="{{ transaction.category }}" class="glyphicon glyphicon-circle-arrow-right"></span>
+            <span data-toggle="tooltip" title="{{ transaction.category }}" class="category-icon glyphicon glyphicon-circle-arrow-right"></span>
             {% endif %}
             </div>
             <div class="visible-xs"><span class="glyphicon {{ transaction.icon }}"></span></div>
