@@ -162,6 +162,43 @@ class ServiceProxyStubBTC(object):
     def getrawtransaction(self, txid, verbose=1):
         return self._rawData['rawtransaction'][0]
 
+class ServiceProxyStubBTCWithPass(object):
+    def __init__(self):
+        self._rawData = rawData
+        
+    def listaccounts(self):
+        return self._rawData['accounts']
+
+    def getaddressesbyaccount(self, account_name):
+        try:
+            return self._rawData['addresses'][account_name]
+        except:
+            return False
+        
+    def listtransactions(self, account_name, count=10, start=0):
+        return self._rawData['transactions'][account_name]
+
+    def getnewaddress(self, account_name):
+        return self._rawData['new_account_address']
+    
+    def getbalance(self):
+        return self._rawData['balance']
+    
+    def move(self, from_account, to_account, amount, minconf, comment):
+        return True
+    
+    def sendfrom(self, from_account, to_address, amount, minconf, comment, comment_to):
+        return {'code': -13, 'message': u'Error: Please enter the wallet passphrase with walletpassphrase first.'}
+
+    def walletpassphrase(self, passphrase, timeout):
+        return True
+    
+    def walletlock(self):
+        return True
+    
+    def getrawtransaction(self, txid, verbose=1):
+        return self._rawData['rawtransaction'][0]
+
 
 class TransferIndexTests(TestCase):
     def setUp(self):
@@ -253,7 +290,7 @@ class TransferIndexTests(TestCase):
                     'to_address': ""
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency})+'/'+currency, post_data)
+        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
@@ -282,7 +319,7 @@ class TransferIndexTests(TestCase):
                     'to_address': ""
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency})+'/'+currency, post_data)
+        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
@@ -311,7 +348,7 @@ class TransferIndexTests(TestCase):
                     'to_address': "mox7nxwfu9hrTQCn24RBTDce1wiHEP1NQp"
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency})+'/'+currency, post_data)
+        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
@@ -340,7 +377,7 @@ class TransferIndexTests(TestCase):
                     'to_address': "mox7nxwfu9hrTQCn24RBTDce1wiHEP1NQp"
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency})+'/'+currency, post_data)
+        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
@@ -369,14 +406,14 @@ class TransferIndexTests(TestCase):
                     'to_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP"
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency})+'/'+currency, post_data)
+        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/div[2]/ul/li"), []) 
+        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/div[2]/ul[@class='errorlist']"), []) 
         
     def test_tranfer_submit_with_correct_values_move(self):
         '''
@@ -396,7 +433,7 @@ class TransferIndexTests(TestCase):
                     'to_address': "mox7nxwfu9hrTQCn24RBTDce1wiHEP1NQp"
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency})+'/'+currency, post_data)
+        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
         self.assertContains(response, text='', count=None, status_code=302)
         
     def test_tranfer_submit_test_invalid_currency(self):
@@ -417,14 +454,14 @@ class TransferIndexTests(TestCase):
                     'to_address': "mox7nxwfu9hrTQCn24RBTDce1wiHEP1NQp"
                     }
 
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency})+'/'+currency, post_data)
+        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/div[2]/ul"), [])
+        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/div[2]/ul[@class='errorlist']"), [])
     
     def test_tranfer_submit_invalid_address(self):
         '''
@@ -444,12 +481,40 @@ class TransferIndexTests(TestCase):
                     'to_address': "mox7nxwfu9hrTQCn24RBTDce"
                     }
 
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency})+'/'+currency, post_data)
+        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
         # validate HTML
         self.assertNotEquals(html_tree, False)
 
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[1]/div/div/ul"), [])
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[2]/div/div/ul"), [])
+        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[1]/div/div/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[2]/div/div/ul[@class='errorlist']"), [])
+        
+    def test_tranfer_submit_required_pass(self):
+        '''
+        Test invalid address
+        '''
+        
+        currency = 'btc'
+        client = Client()
+        connector.services['btc'] = ServiceProxyStubBTCWithPass()
+        
+        post_data = {
+                    'amount': 3,    
+                    'comment': "",    
+                    'comment_to': "",   
+                    'csrfmiddlewaretoken': "",
+                    'from_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP",
+                    'selected_currency': "btc",
+                    'to_address': "mox7n3wfu9hrT3Cn24RBTDce1wiHEP1NQp"
+                    }
+
+        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
+        response_html = self.stripHeaders(response)
+        html_tree = self.validateHTML(response_html)
+
+        # validate HTML
+        self.assertNotEquals(html_tree, False)
+
+        self.assertNotEquals(html_tree.xpath("//*[@id='passphrase']"), [])
