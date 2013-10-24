@@ -157,13 +157,17 @@
         	if ($('input#from_address').val()) {
         		$('select#from_account_menu').val($('input#from_address').val());
         		optionElement = $('select#from_account_menu').find(":selected");
-        		$(optionElement).click();
+        		if (optionElement.length) {
+        			$(optionElement).click();
+        		}
         	}
         	
         	if ($('input#to_address').val()) {
         		$('select#to_account_menu').val($('input#to_address').val());
         		optionElement = $('select#to_account_menu').find(":selected");
-        		$(optionElement).click();
+        		if (optionElement.length) {
+        			$(optionElement).click();
+        		}
         	}
         });
         </script>

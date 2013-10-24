@@ -15,5 +15,7 @@ function updateTransferDialog(address, balance, targetId) {
 
 function callAccountsOptionClick(selectElement) {
 	optionElement = $(selectElement).find(":selected");
-	$(optionElement).click();
+	if (optionElement.length) {
+		$(optionElement).click();
+	}
 }
