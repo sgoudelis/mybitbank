@@ -20,8 +20,9 @@
 			</ul>
             <div class="row">&nbsp;</div>
             
-            {% if form.non_field_errors %}
-            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% if form.non_field_errors or form.selected_currency.errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}{{ form.selected_currency.errors }}</div>
+            
             {% endif %}
             
             {% if errors %}

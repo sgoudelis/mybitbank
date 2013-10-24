@@ -296,7 +296,7 @@ class Connector(object):
         if not generic.isFloat(amount) or type(amount) is bool:
             return {'message': 'Amount is not a number', 'code':-102}
         
-        if type(comment) is not str:
+        if type(comment) not in [str, unicode]:
             return {'message': 'Comment is not valid', 'code':-104}
         
         try:
