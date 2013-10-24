@@ -237,7 +237,7 @@ class TransferIndexTests(TestCase):
         
     def test_tranfer_submit_empty_values(self):
         '''
-        Test what errors come out an empty POST
+        Test empty form submittion
         '''
         
         currency = 'btc'
@@ -266,7 +266,7 @@ class TransferIndexTests(TestCase):
         
     def test_tranfer_submit_with_from_account_value(self):
         '''
-        Test what errors come out
+        Test with from address value only
         '''
         
         currency = 'btc'
@@ -295,7 +295,7 @@ class TransferIndexTests(TestCase):
        
     def test_tranfer_submit_with_to_account_value(self):
         '''
-        Test what errors come out
+        Test with to address value only
         '''
         
         currency = 'btc'
@@ -324,7 +324,7 @@ class TransferIndexTests(TestCase):
         
     def test_tranfer_submit_with_from_to_values(self):
         '''
-        Test what errors come out
+        Test with empty addresses
         '''
         
         currency = 'btc'
@@ -353,7 +353,7 @@ class TransferIndexTests(TestCase):
         
     def test_tranfer_submit_with_from_to_same_values(self):
         '''
-        Test what errors come out
+        Test same address for from and to
         '''
         
         currency = 'btc'
@@ -380,7 +380,7 @@ class TransferIndexTests(TestCase):
         
     def test_tranfer_submit_with_correct_values_move(self):
         '''
-        Test what errors come out
+        Test correct value -> move
         '''
         
         currency = 'btc'
@@ -401,7 +401,7 @@ class TransferIndexTests(TestCase):
         
     def test_tranfer_submit_test_invalid_currency(self):
         '''
-        Test what errors come out
+        Test invalid currency
         '''
         
         currency = 'btc'
@@ -425,3 +425,31 @@ class TransferIndexTests(TestCase):
         self.assertNotEquals(html_tree, False)
         
         self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/div[2]/ul"), [])
+    
+    def test_tranfer_submit_invalid_address(self):
+        '''
+        Test invalid address
+        '''
+        
+        currency = 'btc'
+        client = Client()
+        
+        post_data = {
+                    'amount': 3,    
+                    'comment': "",    
+                    'comment_to': "",   
+                    'csrfmiddlewaretoken': "",
+                    'from_address': "mxgWFbqGPywQUKNXdAd3G2",
+                    'selected_currency': "inv",
+                    'to_address': "mox7nxwfu9hrTQCn24RBTDce"
+                    }
+
+        response = client.post(reverse('transfer:send', kwargs={'currency': currency})+'/'+currency, post_data)
+        response_html = self.stripHeaders(response)
+        html_tree = self.validateHTML(response_html)
+
+        # validate HTML
+        self.assertNotEquals(html_tree, False)
+
+        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[1]/div/div/ul"), [])
+        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[2]/div/div/ul"), [])
