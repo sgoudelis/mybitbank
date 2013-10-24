@@ -34,6 +34,7 @@ html {
 .address-label {
 	border-radius: 0.25em 0.25em 0.25em 0.25em;
 	color: #FFFFFF;
+	background-color: #AAAAAA;
 	display: inline;
 	font-size: 99%;
 	font-weight: normal;
@@ -42,6 +43,7 @@ html {
 	text-align: center;
 	vertical-align: baseline;
 	white-space: nowrap;
+	font-family: courier;
 }
 
 .table thead>tr>th {
@@ -118,4 +120,8 @@ ul.errorlist {
 
 .huge-symbol {
 	font-size: 70px;
+}
+
+.smaller-font-size {
+	font-size: 13px;
 }

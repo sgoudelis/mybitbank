@@ -39,15 +39,19 @@
 			</table>
 	  </div>
 	</div>
+	
+	
   
   
   
   
-    <h4>Transactions</h4>
-     <table class="table table-hover table-striped table-condensed">
+
+  </div>
+      <div class="panel-body"><h4>Transactions</h4></div>
+     <table class="smaller-font-size table table-hover table-striped table-condensed">
       <thead>
         <tr class="top-solid-border">
-            <th nowrap width="300" style="background-color:#f5f5f5;" >Address</th>
+            <th nowrap width="300" style="background-color:#f5f5f5;" >From</th>
             <th width="200" style="background-color:#f5f5f5;">To</th>
             <th width="200" style="background-color:#f5f5f5;">Comment</th>
             <th style="background-color:#f5f5f5;">Type</th>
@@ -63,19 +67,32 @@
         {% else %}
           <tr style="color: #bbb;">
         {% endif %}
-            <td class="fixed-width-font">{{ transaction.address }}</td>
-            <td>{% if transaction.to %}{{ transaction.to }}{% else %}-{% endif %}</td>
+        	{% if transaction.category = 'move' %}
+            <td>-</td>
+            {% elif transaction.category = 'receive'%}
+            <td><span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.details.sender_address }}</span></td>
+            {% else %}
+            <td class="fixed-width-font">-</td>
+            {% endif %}
+            
+            
+            {% if transaction.category = 'move' %}
+            <td><a href="/accounts/details/{{ transaction.otheraccount_address.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.otheraccount }}</strong></a></td>
+            {% else %}
+            <td><span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span></td>
+            {% endif %}
+            
             <td>{% if transaction.comment %}{{ transaction.comment }}{% else %}-{% endif %}</td>    
             <td>
             <div class="hidden-xs">
             {% if transaction.category = 'receive' %}
-            <span class="glyphicon glyphicon-circle-arrow-down"></span> 
+            <span data-toggle="tooltip" title="{{ transaction.category }}" class="glyphicon glyphicon-circle-arrow-down"></span> 
             {% elif transaction.category = 'send' %}
-            <span class="glyphicon glyphicon-circle-arrow-up"></span>
+            <span data-toggle="tooltip" title="{{ transaction.category }}" class="glyphicon glyphicon-circle-arrow-up"></span>
             {% elif transaction.category = 'move' %}
-            <span class="glyphicon glyphicon-circle-arrow-right"></span>
+            <span data-toggle="tooltip" title="{{ transaction.category }}" class="glyphicon glyphicon-circle-arrow-right"></span>
             {% endif %}
-            {{ transaction.category }}</div>
+            </div>
             <div class="visible-xs"><span class="glyphicon {{ transaction.icon }}"></span></div>
             </td>
             <td class="hidden-xs">{{ transaction.confirmations }}</td>
@@ -89,6 +106,6 @@
         </tr>
         {% endif %}
     </table>
-  </div>
+  
 </div>
 {% endblock %}
