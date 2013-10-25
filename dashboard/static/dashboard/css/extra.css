@@ -135,23 +135,23 @@ ul.nav li a {
 }
 
 .holder{        
-    width:100%;
-    display:block;
+    width: 100%;
+    display: block;
 }
 
 .content{
-    background:#fff;
+    background: #fff;
     padding: 28px 26px 33px 25px;
 }
 
 .popup{
     border-radius: 7px;
-    margin:30px auto 0;
-    padding:6px;  
-    position:absolute;
-    width:500px;
+    margin: 30px auto 0;
+    padding: 6px;  
+    position: absolute;
+    width: 400px;
     top: 29%;
     left: 50%;
-    margin-left: -250px;
+    margin-left: -200px;
     margin-top: -40px;
 }
