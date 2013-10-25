@@ -14,7 +14,7 @@ def index(request, selected_currency='btc'):
     handler for the transfers
     '''
     context = commonContext(request=request, selected_currency=selected_currency)
-    context['user'] = request.user
+    context['request'] = request
     return render(request, 'transfer/index.html', context)
 
 def commonContext(request={}, selected_currency='btc', form=None, errors=[], show_passphrase=False):
@@ -45,7 +45,7 @@ def commonContext(request={}, selected_currency='btc', form=None, errors=[], sho
     context = {
                'globals': config.MainConfig['globals'], 
                'system_errors': connector.errors,
-               'user': request.user,
+               'request': request,
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', currency_names[selected_currency]), 
                'page_sections': generic.getSiteSections('transfer'), 
                'page_title': page_title,

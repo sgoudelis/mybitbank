@@ -35,7 +35,6 @@ def processLogin(request):
     '''
     
     auth_process = False
-    post_errors = []
     
     if request.method == 'POST': 
         # we have a POST request
@@ -55,6 +54,10 @@ def processLogin(request):
             if user is not None and user.is_active:
                 # authenticated, log user in
                 login(request, user)
+                if remember:
+                    request.session.set_expiry(0)
+                else:
+                    request.session.set_expiry(300)
                 if next_url:
                     return HttpResponseRedirect(next_url)
                 else:
