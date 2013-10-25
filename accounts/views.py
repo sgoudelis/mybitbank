@@ -5,9 +5,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+from django.contrib.auth.decorators import login_required
+
 
 current_section = 'accounts'
 
+@login_required
 def index(request):
     '''
     Handler for the accounts
@@ -37,6 +40,7 @@ def index(request):
                }
     return render(request, 'accounts/index.html', context)
 
+@login_required
 def add(request):
     '''
     Handler for the account create form
@@ -69,6 +73,7 @@ def getAddAccountFormContext(account_name='', currency='btc', error=None):
                }
     return context
 
+@login_required
 def create(request):
     '''
     Handler for POST of create account form
@@ -85,7 +90,8 @@ def create(request):
         # all ok, create account
         new_address = connector.getnewaddress(currency, account_name)
         return HttpResponseRedirect(reverse('accounts:index'))
-        
+
+@login_required        
 def details(request, account_address="pipes"):
     '''
     Handler for the account details

@@ -129,3 +129,29 @@ ul.errorlist {
 .category-icon {
 	font-size: 15px;
 }
+
+ul.nav li a {
+	font-weight: bold;
+}
+
+.holder{        
+    width:100%;
+    display:block;
+}
+
+.content{
+    background:#fff;
+    padding: 28px 26px 33px 25px;
+}
+
+.popup{
+    border-radius: 7px;
+    margin:30px auto 0;
+    padding:6px;  
+    position:absolute;
+    width:500px;
+    top: 29%;
+    left: 50%;
+    margin-left: -250px;
+    margin-top: -40px;
+}

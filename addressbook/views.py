@@ -1,9 +1,11 @@
 import config
 import generic
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 current_section = 'addressbook'
 
+@login_required
 def index(request):
     '''
     URLconf handler for the addressbook

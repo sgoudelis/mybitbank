@@ -1,12 +1,14 @@
-from connections import connector
+import forms
 import config
 import generic
+from connections import connector
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-import forms
+from django.contrib.auth.decorators import login_required
 
 current_section = 'transfer'
 
+@login_required
 def index(request, selected_currency='btc'):
     '''
     handler for the transfers
@@ -57,6 +59,7 @@ def commonContext(selected_currency='btc', form=None, errors=[], show_passphrase
     
     return context
 
+@login_required
 def send(request, currency):
     '''
     handler for the transfers

@@ -1,11 +1,13 @@
-from connections import connector
+import math
 import config
 import generic
+from connections import connector
 from django.shortcuts import render
-import math
+from django.contrib.auth.decorators import login_required
 
 current_section = 'transactions'
 
+@login_required
 def index(request, page=0):
     '''
     handler for the transactions

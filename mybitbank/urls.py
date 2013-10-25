@@ -7,7 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', lambda r : HttpResponseRedirect('dashboard/')),
+    url(r'^$', lambda r : HttpResponseRedirect('login/')),
     # url(r'^mybitbank/', include('mybitbank.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
@@ -30,6 +30,9 @@ urlpatterns = patterns('',
     
     # transactions
     url(r'^transactions/', include('transactions.urls', namespace="transactions")),
+    
+    # login
+    url(r'^login/', include('login.urls', namespace="login")),
     
     # language
     (r'^i18n/', include('django.conf.urls.i18n')),

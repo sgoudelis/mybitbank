@@ -2,7 +2,9 @@ from connections import connector
 import config
 import generic
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def index(request):
     '''
     Handler for the dashboard
