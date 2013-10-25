@@ -107,13 +107,9 @@ def details(request, account_address="pipes"):
     if account:
         # get transaction details
         transactions = generic.getTransactionsByAccount(connector, account['name'], account['currency'], reverse_order=True)
-        generic.prettyPrint(transactions)
         for transaction in transactions:
             transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
-            if transaction.get('txid', None):
-                transaction['details'] = connector.gettransactiondetails(transaction['txid'], transaction['currency'])
-                print transaction['details']
-                if transaction['details'].get('sender_address', True):
+            if not transaction.get('details', {}).get('sender_address', False):
                     transaction['details']['sender_address'] = '(unknown)'
             if transaction['category'] == 'move':
                 transaction['otheraccount_address'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['currency'])

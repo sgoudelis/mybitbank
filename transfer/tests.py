@@ -204,6 +204,10 @@ class TransferIndexTests(TestCase):
     def setUp(self):
         setup_test_environment()
         connector.services = {'btc': ServiceProxyStubBTC()}
+        
+        from django.contrib.auth.models import User
+        user = User.objects.create_user('testing', 'testing@testingpipes.com', 'testingpassword')
+        user.save()
 
     def stripHeaders(self, response):
         '''
@@ -237,6 +241,7 @@ class TransferIndexTests(TestCase):
         '''
         
         client = Client()
+        client.login(username='testing', password='testingpassword')
         response = client.get(reverse('transfer:index'))
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
@@ -257,6 +262,7 @@ class TransferIndexTests(TestCase):
         
         currency = 'btc'
         client = Client(enforce_csrf_checks=True)
+        client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'amount': "",    
@@ -279,6 +285,7 @@ class TransferIndexTests(TestCase):
         
         currency = 'btc'
         client = Client()
+        client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'amount': "",    
@@ -308,6 +315,7 @@ class TransferIndexTests(TestCase):
         
         currency = 'btc'
         client = Client()
+        client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'amount': "",    
@@ -337,6 +345,7 @@ class TransferIndexTests(TestCase):
         
         currency = 'btc'
         client = Client()
+        client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'amount': "",    
@@ -366,6 +375,7 @@ class TransferIndexTests(TestCase):
         
         currency = 'btc'
         client = Client()
+        client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'amount': "",    
@@ -395,6 +405,7 @@ class TransferIndexTests(TestCase):
         
         currency = 'btc'
         client = Client()
+        client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'amount': "",    
@@ -422,6 +433,7 @@ class TransferIndexTests(TestCase):
         
         currency = 'btc'
         client = Client()
+        client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'amount': 3,    
@@ -443,6 +455,7 @@ class TransferIndexTests(TestCase):
         
         currency = 'btc'
         client = Client()
+        client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'amount': 3,    
@@ -470,6 +483,7 @@ class TransferIndexTests(TestCase):
         
         currency = 'btc'
         client = Client()
+        client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'amount': 3,    
@@ -498,6 +512,8 @@ class TransferIndexTests(TestCase):
         
         currency = 'btc'
         client = Client()
+        client.login(username='testing', password='testingpassword')
+        
         connector.services['btc'] = ServiceProxyStubBTCWithPass()
         
         post_data = {
