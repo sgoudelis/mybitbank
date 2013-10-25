@@ -179,3 +179,13 @@ LANGUAGES = (
 LOCALE_PATHS = (
     'locale',
 )
+
+SESSION_ENGINE = (
+    'django.contrib.sessions.backends.db'
+)
+
+THOUSAND_SEPARATOR = '.'
+
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+
+LOGIN_URL = '/login'
