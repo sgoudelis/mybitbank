@@ -74,6 +74,7 @@ def processLogin(request):
             
     # check 
     if not auth_process:
+        login_form = forms.LoginForm()
         page_title = _("Login")
         context = {
                    'globals': config.MainConfig['globals'], 
@@ -81,7 +82,6 @@ def processLogin(request):
                    'system_errors': connector.errors,
                    'page_title': page_title, 
                    'form': login_form,
-                   'main_error': auth_message,
                    }
         
         return render(request, 'login/index.html', context)
