@@ -42,7 +42,6 @@ def processLogin(request):
         
         if login_form.is_valid(): 
             # all validation rules pass
-            print login_form.cleaned_data
             username = login_form.cleaned_data['username']
             password = login_form.cleaned_data['password']
             remember = login_form.cleaned_data['remember']
@@ -58,6 +57,7 @@ def processLogin(request):
                     request.session.set_expiry(0)
                 else:
                     request.session.set_expiry(300)
+                    
                 if next_url:
                     return HttpResponseRedirect(next_url)
                 else:
@@ -71,10 +71,13 @@ def processLogin(request):
             # form not valid so auth failed
             auth_process = False
             auth_message = ""
+    else:
+        auth_process = False
+        auth_message = ""
+        login_form = forms.LoginForm()
             
     # check 
     if not auth_process:
-        login_form = forms.LoginForm()
         page_title = _("Login")
         context = {
                    'globals': config.MainConfig['globals'], 
@@ -84,7 +87,7 @@ def processLogin(request):
                    'form': login_form,
                    }
         
-        return render(request, 'login/index.html', context)
+    return render(request, 'login/index.html', context)
 
 @login_required
 def processLogout(request):
