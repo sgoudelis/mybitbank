@@ -15,5 +15,11 @@ def index(request):
     # add a list of pages in the view
     sections = generic.getSiteSections('addressbook')
     
-    context = {'globals': config.MainConfig['globals'], 'breadcrumbs': generic.buildBreadcrumbs(current_section), 'page_sections': sections, 'page_title': page_title}
+    context = {
+               'globals': config.MainConfig['globals'], 
+               'user': request.user,
+               'breadcrumbs': generic.buildBreadcrumbs(current_section), 
+               'page_sections': sections, 
+               'page_title': page_title
+               }
     return render(request, 'addressbook/index.html', context)

@@ -13,10 +13,11 @@ def index(request, selected_currency='btc'):
     '''
     handler for the transfers
     '''
-    context = commonContext(selected_currency=selected_currency)
+    context = commonContext(request=request, selected_currency=selected_currency)
+    context['user'] = request.user
     return render(request, 'transfer/index.html', context)
 
-def commonContext(selected_currency='btc', form=None, errors=[], show_passphrase=False):
+def commonContext(request={}, selected_currency='btc', form=None, errors=[], show_passphrase=False):
     '''
     This constructs a common context between the two views: index and send
     '''
@@ -44,6 +45,7 @@ def commonContext(selected_currency='btc', form=None, errors=[], show_passphrase
     context = {
                'globals': config.MainConfig['globals'], 
                'system_errors': connector.errors,
+               'user': request.user,
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', currency_names[selected_currency]), 
                'page_sections': generic.getSiteSections('transfer'), 
                'page_title': page_title,
@@ -96,7 +98,7 @@ def send(request, currency):
                 # if there are errors, show them in the UI
                 if move_exit is not True:
                     post_errors.append({'message': move_exit['message']})
-                    context = commonContext(selected_currency=selected_currency, form=form, errors=post_errors)
+                    context = commonContext(request=request, selected_currency=selected_currency, form=form, errors=post_errors)
                     return render(request, 'transfer/index.html', context)
                 
             else:
@@ -108,7 +110,7 @@ def send(request, currency):
                     if unlock_exit is not True:
                         # show form with error
                         post_errors.append({'message': unlock_exit['message']})
-                        context = commonContext(selected_currency=selected_currency, form=form, errors=post_errors, show_passphrase=True)
+                        context = commonContext(request=request, selected_currency=selected_currency, form=form, errors=post_errors, show_passphrase=True)
                         return render(request, 'transfer/index.html', context)
                 
                 # to_address not local, do a send
@@ -133,7 +135,7 @@ def send(request, currency):
                     
                     # show form with error
                     post_errors.append({'message': sendfrom_exit['message']})
-                    context = commonContext(selected_currency=selected_currency, form=form, errors=post_errors, show_passphrase=show_passphrase)
+                    context = commonContext(request=request, selected_currency=selected_currency, form=form, errors=post_errors, show_passphrase=show_passphrase)
                     return render(request, 'transfer/index.html', context)
                 
             if passphrase:
@@ -145,6 +147,6 @@ def send(request, currency):
     else:
         form = forms.SendCurrencyForm()
         
-    context = commonContext(selected_currency=currency, form=form)
+    context = commonContext(request=request, selected_currency=currency, form=form)
     
     return render(request, 'transfer/index.html', context)

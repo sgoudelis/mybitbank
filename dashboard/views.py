@@ -18,6 +18,7 @@ def index(request):
     context = {
                'globals': config.MainConfig['globals'], 
                'system_errors': connector.errors,
+               'user': request.user,
                'breadcrumbs': generic.buildBreadcrumbs(currect_section), 
                'page_title': page_title, 
                'page_sections': sections, 

@@ -51,7 +51,7 @@
                 </ul>
                 <!-- <a data-toggle="modal" href="#unlockDialog" class="btn btn-danger navbar-btn btn-sm navbar-right"><img src="{% static 'dashboard/images/locked-icon.png' %}"/></a> -->
                       <div class="btn-group navbar-form navbar-right">
-                          <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">User logged in <span class="caret"></span></button>
+                          <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">{{ user.username }} <span class="caret"></span></button>
                         <ul class="dropdown-menu">
                             <li><a href="#">{% trans "Unlock wallet" %}</a></li>
                             <li><a href="#">{% trans "Preferences" %}</a></li>

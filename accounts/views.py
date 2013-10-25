@@ -36,7 +36,8 @@ def index(request):
                'system_errors': connector.errors,
                'page_title': page_title, 
                'page_sections': sections, 
-               'accounts': accounts
+               'accounts': accounts,
+               'user': request.user,
                }
     return render(request, 'accounts/index.html', context)
 
@@ -123,7 +124,8 @@ def details(request, account_address="pipes"):
     
     page_title = _("Account details for %s") % (account['name'] or account['alternative_name'])
     context = {
-               'globals': config.MainConfig['globals'], 
+               'globals': config.MainConfig['globals'],
+               'user': request.user,
                'system_errors': connector.errors,
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', account['name'] or account['alternative_name']), 
                'page_title': page_title, 
