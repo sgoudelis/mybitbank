@@ -269,7 +269,15 @@ class ConnectorsTests(TestCase):
         
         new_address = self.connector.getnewaddress('INV', rawData['new_account_address'])
         self.assertEquals(new_address, None)
+
+    def test_getnewaddress_unicode_account_name(self):
+        '''
+        Test getnewaddress() method with a unicode string account name
+        '''
         
+        account_name = u'thisisunicode'
+        new_address = self.connector.getnewaddress('btc', account_name)
+        self.assertEquals(new_address, 'new account address')        
         
     def test_getnewaddress_nonstring_account_name(self):
         '''

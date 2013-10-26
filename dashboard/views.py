@@ -42,7 +42,6 @@ def index(request):
                 transaction['alternative_name'] = '(no name)'
             transaction['icon'] = 'glyphicon-circle-arrow-right'
 
-    print transactions
     currency_symbols = generic.getCurrencySymbol('*')
     page_title = "Dashboard"
     sections = generic.getSiteSections('dashboard')

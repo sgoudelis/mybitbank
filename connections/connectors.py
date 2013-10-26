@@ -237,7 +237,7 @@ class Connector(object):
         '''
         Create a new address
         '''
-        if self.services.get(currency, False) and type(account_name) is str and len(account_name):
+        if self.services.get(currency, False) and type(account_name) in [str, unicode] and len(account_name):
             new_address = self.services[currency].getnewaddress(account_name)
         else:
             new_address = None
