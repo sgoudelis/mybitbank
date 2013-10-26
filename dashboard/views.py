@@ -12,7 +12,7 @@ def index(request):
     currect_section = 'dashboard'
     
     balances = connector.getbalance()
-    transactions_by_currency = connector.listtransactions(limit=40, start=0)
+    transactions_by_currency = connector.listtransactions(limit=20, start=0)
     transactions = []
     for currency in transactions_by_currency:
         for transaction in transactions_by_currency[currency]:
@@ -23,7 +23,7 @@ def index(request):
     transactions = sorted(transactions, key=lambda k: k.get('time',0), reverse=True)
     
     # get only 10 transactions
-    transactions = transactions[:10]
+    #transactions = transactions[:10]
     
     for transaction in transactions:
         transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
