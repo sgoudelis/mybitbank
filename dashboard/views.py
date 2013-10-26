@@ -16,8 +16,9 @@ def index(request):
     transactions = []
     for currency in transactions_by_currency:
         for transaction in transactions_by_currency[currency]:
-            transaction['currency'] = currency
-            transactions.append(transaction)
+            if transaction['category'] != 'move':
+                transaction['currency'] = currency
+                transactions.append(transaction)
     
     # sort result
     transactions = sorted(transactions, key=lambda k: k.get('time',0), reverse=True)
