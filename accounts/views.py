@@ -25,6 +25,7 @@ def index(request):
         for transaction in transactions:
             if account['name'] == transaction['account']:
                 account['last_activity'] = generic.twitterizeDate(transaction['time'])
+                account['address_count'] = len(account['addresses']) - 1
                 break
         else:
             account['last_activity'] = "never"

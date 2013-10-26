@@ -26,7 +26,7 @@
                     
                     <tr {% if account.name == "" or account.hidden %}class="no-display" name="hidden_account"{% endif %}>
                         <td><a href="/accounts/details/{{ account.addresses.0 }}" class="btn btn-default btn-xs">{{ account.currency_symbol }} {% if account.name == "" %}<em>(no name)</em>{% else %}<strong>{{ account.name }}</strong>{% endif %}</a></td>
-                        <td class="hidden-xs" style="font-family: courier;"><span class="address-label label-default">{{ account.currency_symbol }} {% if account.addresses.0 %}{{ account.addresses.0 }}{% else %}no address{%endif%}</span>{% if account.addresses.1 %} (+{{ account.addresses|length }}){% endif %}</td>
+                        <td class="hidden-xs" style="font-family: courier;"><span class="address-label label-default">{{ account.currency_symbol }} {% if account.addresses.0 %}{{ account.addresses.0 }}{% else %}no address{%endif%}</span>{% if account.addresses.1 %} (+{{ account.address_count }}){% endif %}</td>
                         <td class="hidden-xs">{{ account.last_activity }}</td>
                         <td class="text-right" style="font-family: courier;"><strong>{{ account.balance }}</strong> {{ account.currency|upper }}</td>
                     </tr>
