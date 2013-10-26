@@ -44,6 +44,11 @@ def index(request):
             transaction['icon'] = 'glyphicon-circle-arrow-right'
 
     currency_symbols = generic.getCurrencySymbol('*')
+    
+    currency_names = {}
+    for currency in connector.config:
+        currency_names[currency] = connector.config[currency]['currency_name']
+    
     page_title = "Dashboard"
     sections = generic.getSiteSections('dashboard')
     context = {
@@ -55,6 +60,7 @@ def index(request):
                'page_sections': sections, 
                'balances': balances, 
                'currency_symbols': currency_symbols,
+               'currency_names': currency_names,
                'transactions': transactions,
                }
     return render(request, 'dashboard/index.html', context)

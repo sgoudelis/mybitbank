@@ -263,7 +263,6 @@ class Connector(object):
             try:
                 balances[currency] = generic.longNumber(self.services[currency].getbalance())
             except Exception as e:
-                raise
                 # in case of an Exception continue on to the next currency service (xxxcoind)
                 self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e)})
                 self.removeCurrencyService(currency)

@@ -36,7 +36,7 @@
 			</div>
 			
 			{% for currency, balance in balances.iteritems %}
-			  <a class="list-group-item" href="#"> <span class="badge"> {{ currency_symbols|keyvalue:currency }} {{ balance }}</span> <i class="icon-arrow"></i> {{ currency_symbols|keyvalue:currency }} {{ balance }}</a>
+			  <a class="list-group-item" href="#"> <span class="badge"> {{ currency_symbols|keyvalue:currency }} {{ balance }}</span> <i class="icon-arrow"></i> {{ currency_names|keyvalue:currency }} </a>
 			{% endfor %}
 			</div>
 				
