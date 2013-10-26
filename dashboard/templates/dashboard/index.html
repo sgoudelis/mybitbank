@@ -38,26 +38,14 @@
 			{% for currency, balance in balances.iteritems %}
 			  <a class="list-group-item" href="#"> <span class="badge"> {{ currency_symbols|keyvalue:currency }} {{ balance }}</span> <i class="icon-arrow"></i> {{ currency_names|keyvalue:currency }} </a>
 			{% endfor %}
-			</div>
-				
-		    <div class="panel-body">
-			<div class="list-group">
-	
-			<div class="text-right">
-				<a href="{% url 'accounts:index' %}">View All Accounts <i class="icon-circle-arrow-right"></i></a>
-			</div>
+			
+			<div class="panel-body">
+		    	<div class="text-right">
+					<a href="{% url 'accounts:index' %}">View All Accounts <i class="icon-circle-arrow-right"></i></a>
+				</div>
 			</div>
 		</div>
 	</div>
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	<div class="col-lg-6">
 		<div class="panel panel-primary">
