@@ -30,24 +30,17 @@
 		</tr>
 	  </table>
 	  </div>
-	  <div class="col-md-6">
-			<table class="table">
-			<tr>
-		 	<td class="no-top-solid-border" width="10%"><h4>Balance</h4></td>
-		  	<td class="no-top-solid-border text-right fixed-font-width" width="40%"><h3>{{ account.balance }} {{ account.currency|upper }}</h3></td>
-			</tr>
-			</table>
-	  </div>
+		<div class="col-md-6">
+		<table class="table">
+		<tr>
+			<td class="no-top-solid-border" width="10%"><h4>Balance</h4></td>
+		 	<td class="no-top-solid-border text-right fixed-font-width" width="40%"><h3>{{ account.balance }} {{ account.currency|upper }}</h3></td>
+		</tr>
+		</table>
+  	  </div>
 	</div>
 	
-	
-  
-  
-  
-  
-
-  </div>
-      <div class="panel-body"><h4>Transactions</h4></div>
+	<h4>Transactions</h4>
      <table class="smaller-font-size table table-hover table-striped table-condensed">
       <thead>
         <tr class="top-solid-border">
@@ -106,6 +99,13 @@
         </tr>
         {% endif %}
     </table>
+  
+  
+  
+  
+
+  </div>
+
   
 </div>
 {% endblock %}

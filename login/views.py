@@ -46,7 +46,7 @@ def processLogin(request):
             password = login_form.cleaned_data['password']
             remember = login_form.cleaned_data['remember']
             next_url = login_form.cleaned_data['next_url']
-            print "remember: %s" % remember
+
             # try to authenticate user
             user = authenticate(username=username, password=password)
         
@@ -85,6 +85,7 @@ def processLogin(request):
                    'system_errors': connector.errors,
                    'page_title': page_title, 
                    'form': login_form,
+                   'main_error': auth_message,
                    }
         
     return render(request, 'login/index.html', context)

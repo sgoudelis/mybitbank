@@ -155,3 +155,7 @@ ul.nav li a {
     margin-left: -200px;
     margin-top: -40px;
 }
+
+body {
+	margin-top: 0px;
+}

@@ -175,7 +175,7 @@ class Connector(object):
             address_str = []
         return address_str
     
-    def listtransactionsbyaccount(self, account_name, currency):    
+    def listtransactionsbyaccount(self, account_name, currency, limit=0, start=0):    
         '''
         Get a list of transactions by account and currency
         '''
@@ -192,7 +192,7 @@ class Connector(object):
         
         transactions = []
         try:
-            transactions = self.services[currency].listtransactions(account_name, 1000000, 0)
+            transactions = self.services[currency].listtransactions(account_name, limit, start)
         except Exception as e:
             raise
             self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listtransactions()' % (e.error)})
@@ -217,10 +217,11 @@ class Connector(object):
         
         return transactions
     
-    def listtransactions(self):
-        ''' 
-        Get a list of transactions
-        '''        
+    def listtransactions(self, limit=100000, start=0):
+        '''
+        Get a list of transactions, default is 100000 transactions per account
+        '''
+        
         accounts = self.listaccounts(gethidden=True, getarchived=True)
 
         transactions = {}
@@ -228,7 +229,7 @@ class Connector(object):
             transactions[currency] = []
             for account in accounts[currency]:
                 # append list
-                transactions[currency] = transactions[currency] + self.listtransactionsbyaccount(account['name'], currency)
+                transactions[currency] = transactions[currency] + self.listtransactionsbyaccount(account['name'], currency, limit, start)
 
         return transactions
     

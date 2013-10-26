@@ -8,11 +8,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+<!-- added theme from http://startbootstrap.com/templates/sb-admin/ -->
+<link href="{% static 'dashboard/css/sb-admin.css' %}" rel="stylesheet" media="screen">
+<link href="{% static 'dashboard/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" media="screen">
 <link href="{% static 'dashboard/css/extra.css' %}" rel="stylesheet" media="screen">
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="//code.jquery.com/jquery.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="{% static 'dashboard/js/bootstrap.min.js' %}"></script>
+
 <script src="{% static 'dashboard/js/extra.js' %}"></script>
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
@@ -22,7 +26,8 @@
 </head>
 <body>
     <div class="container">
-        <nav class="navbar  navbar-inverse" role="navigation">
+    	<!--  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">  -->
+        <nav class="navbar navbar-inverse" role="navigation">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle"
@@ -49,36 +54,39 @@
                 {% endfor %}
                 <!--  page sections stop -->
                 </ul>
+                
+                
+                
+	           <ul class="nav navbar-nav navbar-right navbar-user">
+	            <li class="dropdown user-dropdown">
+	              <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-user"></i> {{ user.first_name }} {{ user.last_name  }} <b class="caret"></b></a>
+	              <ul class="dropdown-menu">
+	                <li><a href="#"><i class="icon-gear"></i> Settings</a></li>
+                       <li class="dropdown-submenu dropdown">
+                           <a href="#" data-toggle="dropdown">{% trans "Language" %}</a>
+                           <ul class="dropdown-menu">
+                               {% get_language_info_list for LANGUAGES as languages %}
+                               {% for language in languages %}
+                               <li>
+                               	<a href="#" onclick="document.setLang{{ language.code }}.submit();return false;">{{ language.name_local }}</a>
+                                   <form name="setLang{{ language.code }}" action="/i18n/setlang/" method="POST">{% csrf_token %}
+                                   <input name="next" type="hidden" value="{{ redirect_to }}" />
+                                   <input type="hidden" name="language" value="{{ language.code }}" />
+                                   </form>
+                               </li>
+							{% endfor %}
+                           </ul>
+	                <li class="divider"></li>
+	                <li><a href="{% url 'login:processLogout' %}"><i class="icon-power-off"></i> Log Out</a></li>
+	              </ul>
+	            </li>
+	          </ul>
+                
                 <!-- <a data-toggle="modal" href="#unlockDialog" class="btn btn-danger navbar-btn btn-sm navbar-right"><img src="{% static 'dashboard/images/locked-icon.png' %}"/></a> -->
-                      <div class="btn-group navbar-form navbar-right">
-                          <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">{{ user.username }} <span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">{% trans "Unlock wallet" %}</a></li>
-                            <li><a href="#">{% trans "Preferences" %}</a></li>
-	                        <li class="dropdown-submenu dropdown">
-	                            <a href="#" data-toggle="dropdown">{% trans "Language" %}</a>
-	                            <ul class="dropdown-menu">
-	                                {% get_language_info_list for LANGUAGES as languages %}
-	                                {% for language in languages %}
-	                                <li>
-	                                	<a href="#" onclick="document.setLang{{ language.code }}.submit();return false;">{{ language.name_local }}</a>
-	                                    <form name="setLang{{ language.code }}" action="/i18n/setlang/" method="POST">{% csrf_token %}
-	                                    <input name="next" type="hidden" value="{{ redirect_to }}" />
-	                                        <input type="hidden" name="language" value="{{ language.code }}" />
-	                                        
-	                                    </form>
-	                                </li>
-									{% endfor %}
-	                            </ul>
-		                	</li>
-                            <li><a href="{% url 'login:processLogout' %}">Log out</a></li>
-                          </ul>
-                         </li>
-                        </div>
+
             </div>
             <!-- /.navbar-collapse -->
         </nav>
-   
     <ol class="breadcrumb">
     {% for page_section in breadcrumbs %}
       {% if page_section.active %}
