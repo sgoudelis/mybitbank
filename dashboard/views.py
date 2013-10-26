@@ -23,7 +23,7 @@ def index(request):
     transactions = sorted(transactions, key=lambda k: k.get('time',0), reverse=True)
     
     # get only 10 transactions
-    #transactions = transactions[:10]
+    transactions = transactions[0:10]
     
     for transaction in transactions:
         transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
