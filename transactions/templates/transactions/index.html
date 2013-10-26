@@ -21,7 +21,7 @@
                 <table class="table table-hover table-striped">
                   <thead>
                     <tr>
-                        <th style="background-color:#f5f5f5;">From</th>
+                        <th class="hidden-xs" style="background-color:#f5f5f5;">From</th>
                         <th class="hidden-xs" style="background-color:#f5f5f5;">To</th>
                         <th style="background-color:#f5f5f5;">Type</th>
                         <th class="hidden-xs" style="background-color:#f5f5f5;">Conf.</th>
@@ -36,7 +36,7 @@
                     {% else %}
                       <tr style="color: #bbb;">
                     {% endif %}
-                        <td>
+                        <td  class="hidden-xs">
                         	{% if transaction.category == "receive" %}
 	                        <span class="fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.source_address }}</span>
 	                        {% elif transaction.category == "send" %}
