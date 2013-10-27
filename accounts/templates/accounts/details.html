@@ -89,7 +89,7 @@
             </div>
             <div class="visible-xs"><span class="glyphicon {{ transaction.icon }}"></span></div>
             </td>
-            <td class="hidden-xs">{{ transaction.confirmations }}</td>
+            <td class="hidden-xs"><span style="color: {{ transaction.status_color }};" class="bigger-icon glyphicon {{ transaction.status_icon }}" title="{{ transaction.tooltip }}" data-toggle="tooltip"></span></td>
             <td>{{ transaction.time_pretty }}</td>
             <td class="text-right" style="font-family: courier;"><strong>{{ transaction.amount }}</strong> {{ transaction.currency|upper }}</td>
         </tr>

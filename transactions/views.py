@@ -20,6 +20,18 @@ def index(request, page=0):
     
     for transaction in transactions:
         transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
+        # glyphicon-time glyphicon-ok-circle
+        
+        if transaction.get('confirmations', False):
+            if transaction['confirmations'] <= config.MainConfig['globals']['confirmation_limit']:
+                transaction['status_icon'] = 'glyphicon-time'
+                transaction['status_color'] = '#AAA';
+                transaction['tooltip'] = transaction['confirmations']
+            else:
+                transaction['status_icon'] = 'glyphicon-ok-circle'
+                transaction['status_color'] = '#1C9E3F';
+                transaction['tooltip'] = transaction['confirmations']
+        
         if transaction['category'] == 'receive':
             transaction['source_address'] = transaction.get('details', {}).get('sender_address', '(no sender address)')
             transaction['destination_address'] = transaction['address']

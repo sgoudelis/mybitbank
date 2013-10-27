@@ -128,6 +128,17 @@ def details(request, account_address="pipes"):
                     transaction['details']['sender_address'] = '(unknown)'
             if transaction['category'] == 'move':
                 transaction['otheraccount_address'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['currency'])
+            
+            # use icons and colors to represent confirmations
+            if transaction.get('confirmations', False):
+                if transaction['confirmations'] <= config.MainConfig['globals']['confirmation_limit']:
+                    transaction['status_icon'] = 'glyphicon-time'
+                    transaction['status_color'] = '#DDD';
+                    transaction['tooltip'] = transaction['confirmations']
+                else:
+                    transaction['status_icon'] = 'glyphicon-ok-circle'
+                    transaction['status_color'] = '#1C9E3F';
+                    transaction['tooltip'] = transaction['confirmations']
     else:
         account = {}
         account['name'] = _('no such account')

@@ -150,8 +150,8 @@ class ServiceProxyStubBTC(object):
     def walletlock(self):
         return True
     
-    def getrawtransaction(self, txid, verbose=1):
-        return self._rawData['rawtransaction'][0]
+    def getrawtransaction(self, transaction, verbose=1):
+        return self._rawData['rawtransactions'][0]
 
 
 class ConnectorsTests(TestCase):
@@ -681,21 +681,20 @@ class ConnectorsTests(TestCase):
         Test gettransactiondetails()
         '''
 
-        txid = 'bogus tx id'
+        transaction = rawData['transactions']['pipes'][0]
         currency = 'btc'
-        
-        transaction_details = self.connector.gettransactiondetails(txid, currency)
-        self.assertEquals(type(transaction_details), dict)
+        transaction_details = self.connector.gettransactiondetails(transaction, currency)
+        self.assertEquals(type(transaction_details.get('sender_address', False)), str)
         
     def test_gettransactiondetails_invalid_currency_1(self):
         '''
         Test gettransactiondetails()
         '''
 
-        txid = 'bogus tx id'
+        transaction = rawData['transactions']['pipes'][0]
         currency = 'inv'
         
-        transaction_details = self.connector.gettransactiondetails(txid, currency)
+        transaction_details = self.connector.gettransactiondetails(transaction, currency)
         self.assertNotEquals(transaction_details.get('code', None), None)
 
     def test_gettransactiondetails_invalid_currency_2(self):
@@ -703,10 +702,10 @@ class ConnectorsTests(TestCase):
         Test gettransactiondetails()
         '''
 
-        txid = 'bogus tx id'
+        transaction = rawData['transactions']['pipes'][0]
         currency = None
         
-        transaction_details = self.connector.gettransactiondetails(txid, currency)
+        transaction_details = self.connector.gettransactiondetails(transaction, currency)
         self.assertNotEquals(transaction_details.get('code', None), None)
         
     def test_gettransactiondetails_invalid_txid_1(self):
@@ -714,10 +713,10 @@ class ConnectorsTests(TestCase):
         Test gettransactiondetails()
         '''
 
-        txid = {}
+        transaction = ""
         currency = 'btc'
         
-        transaction_details = self.connector.gettransactiondetails(txid, currency)
+        transaction_details = self.connector.gettransactiondetails(transaction, currency)
         self.assertNotEquals(transaction_details.get('code', None), None)
     
     def test_gettransactiondetails_invalid_txid_2(self):
@@ -725,10 +724,10 @@ class ConnectorsTests(TestCase):
         Test gettransactiondetails()
         '''
 
-        txid = False
+        transaction = False
         currency = 'btc'
         
-        transaction_details = self.connector.gettransactiondetails(txid, currency)
+        transaction_details = self.connector.gettransactiondetails(transaction, currency)
         self.assertNotEquals(transaction_details.get('code', None), None)
 
     def test_gettransactiondetails_invalid_txid_3(self):
@@ -736,8 +735,8 @@ class ConnectorsTests(TestCase):
         Test gettransactiondetails()
         '''
 
-        txid = ""
+        transaction = "dsfasdfasdf"
         currency = 'btc'
         
-        transaction_details = self.connector.gettransactiondetails(txid, currency)
+        transaction_details = self.connector.gettransactiondetails(transaction, currency)
         self.assertNotEquals(transaction_details.get('code', None), None)

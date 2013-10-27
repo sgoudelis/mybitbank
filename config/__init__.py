@@ -2,7 +2,8 @@ from django.utils.translation import ugettext_noop as _
 
 MainConfig = {
               'globals' : {
-                    'site_brand': "MyBitBank"
+                    'site_brand': "MyBitBank",
+                    'confirmation_limit': 6,
                },
                   
               'site_sections' : [

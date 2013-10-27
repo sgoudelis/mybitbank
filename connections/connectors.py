@@ -364,7 +364,7 @@ class Connector(object):
         '''
         Return transaction details
         '''
-        if type(transaction) is {}:
+        if type(transaction) is not dict:
             return {'message': 'Invalid transaction details', 'code': -120}
         
         if currency not in self.services.keys():
@@ -373,14 +373,14 @@ class Connector(object):
         txid = transaction.get('txid', "")
         
         if type(txid) not in [str, unicode] or not len(txid):
-            return {}  
+            return {'message': 'Transaction ID is not valid', 'code': -127} 
         
         transaction_details = None
         try:
             transaction_details = self.services[currency].getrawtransaction(txid, 1)
-        except JSONRPCException:
+        except JSONRPCException, e:
             return {}
-        except Exception:
+        except Exception, e:
             return {}
 
         if transaction['category'] == 'receive':

@@ -34,7 +34,7 @@
                     {% if transaction.confirmations > 6 or transaction.category == "move" %}
                       <tr>
                     {% else %}
-                      <tr style="color: #bbb;">
+                      <tr style="opacity: 0.4;">
                     {% endif %}
 
                         <td class="hidden-xs">
@@ -62,7 +62,7 @@
                         <div class="hidden-xs"><span class="category-icon glyphicon {{ transaction.icon }}"></span> {{ transaction.category }}</div>
                         <div class="visible-xs"><span class="glyphicon {{ transaction.icon }}"></span></div>
                         </td>
-                        <td class="hidden-xs">{{ transaction.confirmations }}</td>
+                        <td class="hidden-xs"><span style="color: {{ transaction.status_color }};" class="bigger-icon glyphicon {{ transaction.status_icon }}" title="{{ transaction.tooltip }}" data-toggle="tooltip"></span></td>
                         <td>{{ transaction.time_pretty }}</td>
                         <td class="text-right" style="font-family: courier;"><strong>{{ transaction.amount }}</strong> {{ transaction.currency|upper }}</td>
                     </tr>
