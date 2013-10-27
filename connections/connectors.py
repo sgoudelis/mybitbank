@@ -175,7 +175,7 @@ class Connector(object):
             address_str = []
         return address_str
     
-    def listtransactionsbyaccount(self, account_name, currency, limit=0, start=0):    
+    def listtransactionsbyaccount(self, account_name, currency, limit=100000, start=0):    
         '''
         Get a list of transactions by account and currency
         '''
