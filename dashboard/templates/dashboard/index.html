@@ -36,12 +36,12 @@
 			</div>
 			
 			{% for currency, balance in balances.iteritems %}
-			  <a class="list-group-item" href="#"> <span class="badge"> {{ currency_symbols|keyvalue:currency }} {{ balance }}</span> <i class="icon-arrow"></i> {{ currency_names|keyvalue:currency }} </a>
+			  <a class="list-group-item" href="#"> <span class="badge badge-large"> {{ currency_symbols|keyvalue:currency }} {{ balance }}</span> <i class="icon-arrow"></i> <strong>{{ currency_names|keyvalue:currency }}</strong> </a>
 			{% endfor %}
 			
 			<div class="panel-body">
 		    	<div class="text-right">
-					<a href="{% url 'accounts:index' %}">View All Accounts <i class="icon-circle-arrow-right"></i></a>
+					<a href="{% url 'accounts:index' %}"><strong>View All Accounts</strong> <i class="icon-circle-arrow-right"></i></a>
 				</div>
 			</div>
 		</div>
@@ -70,7 +70,7 @@
 						<td>{{ transaction.account }}</td>
 						<td><span class="glyphicon {{ transaction.icon }}"></span></td>
 						<td>{{ transaction.time_pretty }}</td>
-						<td class="text-right">{{ transaction.currency_symbol }} {{ transaction.amount }}</td>
+						<td class="text-right fixed-width-font"><strong>{{ transaction.amount }} {{ transaction.currency|upper }}</strong></td>
 					</tr>
 				{% endif %}
 				{% endfor %}
@@ -78,7 +78,7 @@
 			</table>
 			<div class="panel-body">
 				<div class="text-right">
-					<a href="{% url 'transactions:index' 1 %}">View All Transactions <i class="icon-circle-arrow-right"></i></a>
+					<a href="{% url 'transactions:index' 1 %}"><strong>View All Transactions</strong> <i class="icon-circle-arrow-right"></i></a>
 				</div>
 			</div>
 		</div>

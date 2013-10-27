@@ -159,3 +159,7 @@ ul.nav li a {
 body {
 	margin-top: 0px;
 }
+
+.badge-large {
+	font-size: 15px;
+}
