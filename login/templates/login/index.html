@@ -45,7 +45,7 @@
 				<input type="hidden" name="next_url" value="{{ next_url }}"/>
 				<label for="username">{% trans "Username" %}</label>
 				  <div class="form-group {% if form.username.errors %}has-error{% endif %} input-group">
-				    <span class="input-group-addon"><span class="icon-user"></span></span>
+				    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
 				    <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" value="{{ form.username.value }}">
 				  </div>
 				  {{ form.username.errors }}
