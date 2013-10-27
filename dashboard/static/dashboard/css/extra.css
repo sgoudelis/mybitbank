@@ -39,16 +39,18 @@ html {
 	font-size: 99%;
 	font-weight: normal;
 	line-height: 1;
-	padding: 0.3em 0.6em 0.2em;
+	padding: 0.3em 0.3em 0.1em;
 	text-align: center;
 	vertical-align: baseline;
 	white-space: nowrap;
 	font-family: courier;
+	font-weight: bold;
 }
 
 .sender-address {
 	background-color: #826599;
-	padding: 0.4em 0.6em 0.1em;
+	padding: 0.4em 0.3em 0.1em;
+	font-weight: bold;
 }
 
 .table thead>tr>th {

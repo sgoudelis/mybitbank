@@ -45,12 +45,12 @@
      <table class="smaller-font-size table table-hover table-striped table-condensed">
       <thead>
         <tr class="top-solid-border">
-            <th nowrap width="300" style="background-color:#f5f5f5;" >From</th>
-            <th width="200" style="background-color:#f5f5f5;">To</th>
+            <th style="background-color:#f5f5f5;" >To</th>
+            <th width="200" style="background-color:#f5f5f5;">From</th>
             <th width="200" style="background-color:#f5f5f5;">Comment</th>
-            <th style="background-color:#f5f5f5;">Type</th>
+            <th width="30" style="background-color:#f5f5f5;">Type</th>
             <th class="hidden-xs" style="background-color:#f5f5f5;">Conf.</th>
-            <th style="background-color:#f5f5f5;">When</th>
+            <th width="100" style="background-color:#f5f5f5;">When</th>
             <th width="150"style="background-color:#f5f5f5;" class="text-right">Amount</th>
         </tr>
        </thead>
@@ -61,20 +61,22 @@
         {% else %}
           <tr style="color: #bbb;">
         {% endif %}
-        	{% if transaction.category = 'move' %}
+        
+            {% if transaction.category = 'move' %}
+            
             <td><span style="color:#ccc;">this account</span></td>
+            {% else %}
+            <td nowrap><span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span></td>
+            {% endif %}
+        
+        	{% if transaction.category = 'move' %}
+            <td nowrap><a href="/accounts/details/{{ transaction.otheraccount_address.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.otheraccount }}</strong></a></td>
             {% elif transaction.category = 'receive'%}
-            <td><span class="sender-address address-label label-default">{{ transaction.currency_symbol }} {{ transaction.details.sender_address }} <span class="normal-font glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="This address has been calculated using the Input Script Signature. You should verify before using it."></span></span></td>
+            <td nowrap><span class="sender-address address-label label-default">{{ transaction.currency_symbol }} {{ transaction.details.sender_address }} <span class="normal-font glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="This address has been calculated using the Input Script Signature. You should verify before using it."></span></span></td>
             {% else %}
             <td class="fixed-width-font">-</td>
             {% endif %}
             
-            
-            {% if transaction.category = 'move' %}
-            <td><a href="/accounts/details/{{ transaction.otheraccount_address.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.otheraccount }}</strong></a></td>
-            {% else %}
-            <td><span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span></td>
-            {% endif %}
             
             <td>{% if transaction.comment %}{{ transaction.comment }}{% else %}-{% endif %}</td>    
             <td>
