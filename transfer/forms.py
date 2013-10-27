@@ -5,11 +5,12 @@ from connections import connector
 
 class CoinAddress(CharField):
     def validate(self, value):
+        super(CharField, self).validate(value)
         if value == "":
-            raise forms.ValidationError("Please provide a valid address (empty string)")
+            raise forms.ValidationError("Please provide a valid address")
         
         if len(value) < 27 or 34 > len(value):
-            raise forms.ValidationError("Please provide a valid address (length mismatch)")
+            raise forms.ValidationError("Please provide a valid address")
             
 class CoinAmount(CharField):
     def to_python(self, value):
@@ -19,12 +20,14 @@ class CoinAmount(CharField):
         return float(value)
     
     def validate(self, value):
+        super(CharField, self).validate(value)
         if not generic.isFloat(value):
             raise forms.ValidationError("Please provide a valid amount")
 
 
 class CoinCurrency(CharField):
     def validate(self, value):
+        super(CharField, self).validate(value)
         supported_currencies = connector.services.keys()
         if value not in supported_currencies:
             raise forms.ValidationError("This currency is not supported: %s" % value)

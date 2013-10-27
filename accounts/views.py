@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
-
+import forms
 
 current_section = 'accounts'
 
@@ -47,11 +47,12 @@ def add(request):
     '''
     Handler for the account create form
     '''
-    context = getAddAccountFormContext()
+    form = forms.CreateAccountForm()
+    context = getAddAccountFormContext(form=form)
     context['breadcrumbs'] = generic.buildBreadcrumbs(current_section, '', 'Create')
     return render(request, 'accounts/add.html', context)
 
-def getAddAccountFormContext(account_name='', currency='btc', error=None):
+def getAddAccountFormContext(account_name='', currency='btc', error=None, form=None):
     '''
     Provide a common context between the account view and create account view
     '''
@@ -65,13 +66,15 @@ def getAddAccountFormContext(account_name='', currency='btc', error=None):
     sections = generic.getSiteSections(current_section)
     context = {
                'globals': config.MainConfig['globals'], 
+               'breadcrumbs': generic.buildBreadcrumbs(current_section, '', 'Create'),
                'page_sections': sections, 
                'page_title': page_title, 
                'currencies': currencies_available, 
                'account_name': account_name, 
                'currency': currency, 
                'selected_currency': currency, 
-               'error_message': error
+               'error_message': error,
+               'form': form,
                }
     return context
 
@@ -80,19 +83,30 @@ def create(request):
     '''
     Handler for POST of create account form
     '''
-    try:
-        account_name = request.POST['account_name']
-        currency = request.POST['currency']
-        if not account_name:
-            raise Exception('Account name not provided')
-    except (Exception, KeyError) as e:
-        context = getAddAccountFormContext(account_name=account_name, currency=currency, error=e)
-        return render(request, 'accounts/add.html', context)
-    else:
-        # all ok, create account
-        new_address = connector.getnewaddress(currency, account_name)
-        return HttpResponseRedirect(reverse('accounts:index'))
+    
+    # put default values
+    new_account_name = ""
+    currency = ""
+    
+    if request.method == 'POST': 
+        
+        # we have a POST request
+        form = forms.CreateAccountForm(request.POST)
+    
+        if form.is_valid(): 
+            new_account_name = form.cleaned_data['account_name']
+            currency = form.cleaned_data['currency']
+            
+            # all ok, create account
+            new_address = connector.getnewaddress(currency, new_account_name)
+            return HttpResponseRedirect(reverse('accounts:index'))
 
+    else:
+        form = forms.CreateAccountForm()
+    
+    context = getAddAccountFormContext(account_name=new_account_name, currency=currency, form=form)
+    return render(request, 'accounts/add.html', context)
+    
 @login_required        
 def details(request, account_address="pipes"):
     '''

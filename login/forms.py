@@ -5,11 +5,13 @@ from connections import connector
 
 class UsernameField(CharField):
     def validate(self, value):
+        super(CharField, self).validate(value)
         if value == "":
             raise forms.ValidationError("Please enter a username")
 
 class PasswordField(CharField):
     def validate(self, value):
+        super(CharField, self).validate(value)
         if value == "":
             raise forms.ValidationError("Please enter a password")
 

@@ -8,7 +8,6 @@ from lxml import etree
 import io
 import StringIO
 
-
 '''
 Bogus currency services
 '''
