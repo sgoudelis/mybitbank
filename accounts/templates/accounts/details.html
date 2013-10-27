@@ -10,17 +10,18 @@
 	    <h3 class="panel-title">{% if account.name %}{{ account.name }}{% else %}{{ account.alternative_name }}{% endif %}</h3>
 	  </div>
 	  <div class="panel-body">
-	  <h4>Details</h4>
+	  
 	  
 	  
 	<div class="row">
 	  <div class="col-md-6">
+	  <h4>Details</h4>
 	  <table class="table">
 	  <tr>
 	  	<td class="no-top-solid-border" width="10%">Addresses</td>
 	  	<td class="no-top-solid-border" width="40%">
 	  	{% for address in account.addresses %}
-	  	<div class="fixed-width-font text-right"><span>{{ address }}</span><span style="float:right;"></span></div>
+	  	<div style="padding: 4px;" class="row text-right"><span class="address-label label-default">{{ account.currency_symbol }} {{ address }}</span></div>
 	  	{% endfor %}
 	  	</td>
 	  </tr>
@@ -61,9 +62,9 @@
           <tr style="color: #bbb;">
         {% endif %}
         	{% if transaction.category = 'move' %}
-            <td>-</td>
+            <td><span style="color:#ccc;">this account</span></td>
             {% elif transaction.category = 'receive'%}
-            <td><span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.details.sender_address }}</span></td>
+            <td><span class="sender-address address-label label-default">{{ transaction.currency_symbol }} {{ transaction.details.sender_address }} <span class="normal-font glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="This address has been calculated using the Input Script Signature. You should verify before using it."></span></span></td>
             {% else %}
             <td class="fixed-width-font">-</td>
             {% endif %}

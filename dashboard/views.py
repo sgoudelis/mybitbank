@@ -33,7 +33,7 @@ def index(request):
             transaction['destination_address'] = transaction['address']
             transaction['icon'] = 'glyphicon-circle-arrow-down'
         elif transaction['category'] == 'send':
-            transaction['source_address'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
+            transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
             transaction['destination_address'] = transaction['address']
             transaction['icon'] = 'glyphicon-circle-arrow-up'
         elif transaction['category'] == 'move':

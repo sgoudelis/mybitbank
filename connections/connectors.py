@@ -206,7 +206,7 @@ class Connector(object):
             transaction['currency'] = currency
             transaction['details'] = {}
             if transaction.get('txid', False):
-                transaction_details = self.gettransactiondetails(transaction['txid'], currency)
+                transaction_details = self.gettransactiondetails(transaction, currency)
                 if not transaction_details.get('code', False):
                     transaction['details'] = transaction_details
                 else:
@@ -360,12 +360,20 @@ class Connector(object):
             # account not found
             return {'message': 'Source account not found', 'code': -106}
 
-    def gettransactiondetails(self, txid, currency):
-        if type(txid) not in [str, unicode] or len(txid) < 1:
-            return {'message': 'Invalid transaction id', 'code': -120}
+    def gettransactiondetails(self, transaction, currency):
+        '''
+        Return transaction details
+        '''
+        if type(transaction) is {}:
+            return {'message': 'Invalid transaction details', 'code': -120}
         
         if currency not in self.services.keys():
             return {'message': 'Non-existing currency %s' % currency, 'code': -121}
+        
+        txid = transaction.get('txid', "")
+        
+        if type(txid) not in [str, unicode] or not len(txid):
+            return {}  
         
         transaction_details = None
         try:
@@ -374,8 +382,13 @@ class Connector(object):
             return {}
         except Exception:
             return {}
+
+        if transaction['category'] == 'receive':
+            sender_address = self.decodeScriptSig(transaction_details, currency, self.getNet(currency))
+        else:
+            sender_address = ""
         
-        return {'sender_address': self.decodeScriptSig(transaction_details, currency, self.getNet(currency))}
+        return {'sender_address': sender_address}
         
     def decodeScriptSig(self, rawtransaction, currency, net='testnet'):
         '''

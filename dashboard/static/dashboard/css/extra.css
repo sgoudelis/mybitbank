@@ -39,11 +39,16 @@ html {
 	font-size: 99%;
 	font-weight: normal;
 	line-height: 1;
-	padding: 0.25em 0.6em 0.15em;
+	padding: 0.3em 0.6em 0.2em;
 	text-align: center;
 	vertical-align: baseline;
 	white-space: nowrap;
 	font-family: courier;
+}
+
+.sender-address {
+	background-color: #826599;
+	padding: 0.4em 0.6em 0.1em;
 }
 
 .table thead>tr>th {
@@ -162,4 +167,11 @@ body {
 
 .badge-large {
 	font-size: 17px;
+}
+
+/* hack to make the tooltip show the whole text */
+.tooltip-inner {
+    white-space:pre-wrap;
+    font-family: Helvetica;
+    font-weight: bold;
 }

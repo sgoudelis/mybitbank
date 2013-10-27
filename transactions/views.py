@@ -25,12 +25,14 @@ def index(request, page=0):
             transaction['destination_address'] = transaction['address']
             transaction['icon'] = 'glyphicon-circle-arrow-down'
         elif transaction['category'] == 'send':
-            transaction['source_address'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
+            if not len(transaction['account']):
+                transaction['alternative_account'] = "(no name)"
+            transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
             transaction['destination_address'] = transaction['address']
             transaction['icon'] = 'glyphicon-circle-arrow-up'
         elif transaction['category'] == 'move':
-            transaction['source_address'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
-            transaction['destination_address'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['currency'])
+            transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
+            transaction['destination_addresses'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['currency'])
             if not transaction['account']:
                 transaction['alternative_name'] = '(no name)'
             transaction['icon'] = 'glyphicon-circle-arrow-right'

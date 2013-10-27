@@ -67,7 +67,15 @@
 				{% for transaction in transactions %}
 				{% if transaction.category != 'move' %}
 					<tr>
-						<td>{{ transaction.account }}</td>
+						<td>
+						{% if transaction.category == 'receive'%}
+						<a href="/accounts/details/{{ transaction.address }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account }}</strong></a>
+						{% elif transaction.category == 'send'%}
+						<a href="/accounts/details/{{ transaction.source_addresses.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account }}</strong></a>
+						{% elif transaction.category == 'receive'%}
+						<a href="/accounts/details/{{ transaction.address }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account }}</strong></a>
+						{% endif %}
+						</td>
 						<td><span class="glyphicon {{ transaction.icon }}"></span></td>
 						<td>{{ transaction.time_pretty }}</td>
 						<td class="text-right fixed-width-font"><strong>{{ transaction.amount }} {{ transaction.currency|upper }}</strong></td>
