@@ -15,14 +15,14 @@ class CoinAddress(CharField):
 class CoinAmount(CharField):
     def to_python(self, value):
         if not generic.isFloat(value):
-            raise forms.ValidationError("Please provide a valid address")
+            raise forms.ValidationError("Please provide a valid amount eg. 12.3456789")
         
         return float(value)
     
     def validate(self, value):
         super(CharField, self).validate(value)
         if not generic.isFloat(value):
-            raise forms.ValidationError("Please provide a valid amount")
+            raise forms.ValidationError("Please provide a valid amount eg. 12.3456789")
 
 
 class CoinCurrency(CharField):
