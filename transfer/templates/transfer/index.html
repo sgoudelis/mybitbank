@@ -21,12 +21,25 @@
             <div class="row">&nbsp;</div>
             
             {% if form.non_field_errors or form.selected_currency.errors %}
-            <div class="alert alert-danger">{{ form.non_field_errors }}{{ form.selected_currency.errors }}</div>
-            
+            <div class="alert alert-dismissable alert-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ form.non_field_errors }}{{ form.selected_currency.errors }}
+            </div>
             {% endif %}
             
+            {% if show_warning_ssl %}
+            <div class="alert alert-dismissable alert-danger">
+			  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			  <strong>Warning!</strong> You are not over SSL! Please re-consider transmitting your passphrase over an insecure connection.
+			</div>
+			{% endif %}
+            
+            
             {% if errors %}
-            <div class="alert alert-danger">{{ errors }}</div>
+            <div class="alert alert-dismissable alert-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ errors }}
+            </div>
             {% endif %}
             
             <form action="{% url 'transfer:send' selected_currency %}" method="post" role="form" id="transfer_form">

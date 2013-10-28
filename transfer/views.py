@@ -17,7 +17,7 @@ def index(request, selected_currency='btc'):
     context['request'] = request
     return render(request, 'transfer/index.html', context)
 
-def commonContext(request={}, selected_currency='btc', form=None, errors=[], show_passphrase=False):
+def commonContext(request={}, selected_currency='btc', form=None, errors=[], show_passphrase=False, show_warning_ssl=False):
     '''
     This constructs a common context between the two views: index and send
     '''
@@ -57,6 +57,7 @@ def commonContext(request={}, selected_currency='btc', form=None, errors=[], sho
                'form': form,
                'errors': errors,
                'show_passphrase': show_passphrase,
+               'show_warning_ssl': show_warning_ssl,
                }
     
     return context
@@ -133,9 +134,14 @@ def send(request, currency):
                     else:
                         show_passphrase=False
                     
+                    if not request.is_secure():
+                        show_warning_ssl = True
+                    else:
+                        show_warning_ssl = False
+                    
                     # show form with error
                     post_errors.append({'message': sendfrom_exit['message']})
-                    context = commonContext(request=request, selected_currency=selected_currency, form=form, errors=post_errors, show_passphrase=show_passphrase)
+                    context = commonContext(request=request, selected_currency=selected_currency, form=form, errors=post_errors, show_passphrase=show_passphrase, show_warning_ssl=show_warning_ssl)
                     return render(request, 'transfer/index.html', context)
                 
             if passphrase:
