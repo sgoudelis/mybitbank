@@ -57,7 +57,7 @@ def commonContext(request={}, selected_currency='btc', form=None, errors=[], sho
                'form': form,
                'errors': errors,
                'show_passphrase': show_passphrase,
-               'show_warning_ssl': show_warning_ssl,
+               'ssl_warning': show_warning_ssl,
                }
     
     return context

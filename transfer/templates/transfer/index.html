@@ -27,13 +27,17 @@
             </div>
             {% endif %}
             
-            {% if show_warning_ssl %}
+            {% if ssl_warning %}
             <div class="alert alert-dismissable alert-danger">
 			  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-			  <strong>Warning!</strong> You are not over SSL! Please re-consider transmitting your passphrase over an insecure connection.
+			  <strong>Warning!</strong> You are NOT over SSL! Please re-consider transmitting your passphrase over an insecure connection.
+			</div>
+			{% else %}
+			<div class="alert alert-dismissable alert-success">
+			  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			  <strong>Safety assured!</strong> You are over SSL. You may proceed safely.
 			</div>
 			{% endif %}
-            
             
             {% if errors %}
             <div class="alert alert-dismissable alert-danger">
