@@ -41,7 +41,7 @@
                         	{% if transaction.category == "move" %}
                         	<a href="/accounts/details/{{ transaction.source_addresses.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account }}</strong></a>
                         	{% elif transaction.category == "send" %}
-                        	<a href="/accounts/details/{{ transaction.source_addresses.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{% if not transaction.account %}{{ transaction.alternative_account }}{% else %}{{ transaction.account }}{% endif %}</strong></a>
+                        	<span class="fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span>
                         	{% elif transaction.category == "receive" %}
                         	<a href="/accounts/details/{{ transaction.destination_address }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account }}</strong></a>
                         	{% endif %}
@@ -52,7 +52,8 @@
                         	{% if transaction.category == "receive" %}
 	                        <span class="sender-address fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.source_address }} <span data-toggle="tooltip" title="This address has been calculated using the Input Script Signature. You should verify before using it." class="small-info-icon glyphicon glyphicon-info-sign"></span></span>
 	                        {% elif transaction.category == "send" %}
-	                        <span class="fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span>
+	                        <a href="/accounts/details/{{ transaction.source_addresses.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{% if not transaction.account %}{{ transaction.alternative_account }}{% else %}{{ transaction.account }}{% endif %}</strong></a>
+	                        
 	                        {% elif transaction.category == "move" %}
 	                        <a href="/accounts/details/{{ transaction.destination_addresses.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{% if not transaction.account %}{{ transaction.alternative_name }}{% else %}{{ transaction.otheraccount }}{% endif %}</strong></a>
 	                        {% endif %}
