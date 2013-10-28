@@ -118,7 +118,10 @@ def details(request, account_address="pipes"):
     
     # get account details
     account = connector.getaccountdetailsbyaddress(account_address)
+    currency_symbol = generic.getCurrencySymbol(account['currency'])
+    currency_name = connector.config[account['currency']]['currency_name']
     
+    print account
     if account:
         # get transaction details
         transactions = generic.getTransactionsByAccount(connector, account['name'], account['currency'], reverse_order=True)
@@ -154,6 +157,8 @@ def details(request, account_address="pipes"):
                'page_sections': sections, 
                'account': account,
                'transactions': transactions,
+               'currency_name': currency_name,
+               'currency_symbol': currency_symbol,
                }
     
     return render(request, 'accounts/details.html', context)

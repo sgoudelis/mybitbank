@@ -24,7 +24,7 @@
                         <th class="hidden-xs" style="background-color:#f5f5f5;">To</th>
                         <th class="hidden-xs" style="background-color:#f5f5f5;">From</th>
                         <th style="background-color:#f5f5f5;">Type</th>
-                        <th class="hidden-xs" style="background-color:#f5f5f5;">Conf.</th>
+                        <th class="hidden-xs text-center" style="background-color:#f5f5f5;">Conf.</th>
                         <th style="background-color:#f5f5f5;">When</th>
                         <th style="background-color:#f5f5f5;" class="text-right">Amount</th>
                     </tr>
@@ -59,10 +59,10 @@
 	                    </td>
                         
                         <td>
-                        <div class="hidden-xs"><span class="category-icon glyphicon {{ transaction.icon }}"></span> {{ transaction.category }}</div>
+                        <div class="hidden-xs"><span class="category-badge"><span class="glyphicon {{ transaction.icon }}"></span> {{ transaction.category }}</span></div>
                         <div class="visible-xs"><span class="glyphicon {{ transaction.icon }}"></span></div>
                         </td>
-                        <td class="hidden-xs"><span style="color: {{ transaction.status_color }};" class="bigger-icon glyphicon {{ transaction.status_icon }}" title="{{ transaction.tooltip }}" data-toggle="tooltip"></span></td>
+                        <td class="hidden-xs text-center"><span style="color: {{ transaction.status_color }};" class="bigger-icon glyphicon {{ transaction.status_icon }}" title="{{ transaction.tooltip }}" data-toggle="tooltip"></span></td>
                         <td>{{ transaction.time_pretty }}</td>
                         <td class="text-right" style="font-family: courier;"><strong>{{ transaction.amount }}</strong> {{ transaction.currency|upper }}</td>
                     </tr>

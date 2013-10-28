@@ -43,7 +43,7 @@ html {
 	text-align: center;
 	vertical-align: baseline;
 	white-space: nowrap;
-	font-family: courier;
+	font-family: Monospace;
 	font-weight: bold;
 }
 
@@ -58,7 +58,7 @@ html {
 }
 
 .fixed-width-font {
-	font-family: courier;
+	font-family: Monospace;
 }
 
 .large-text-1 {
@@ -134,11 +134,26 @@ ul.errorlist {
 }
 
 .category-icon {
-	font-size: 15px;
+	font-size: 16px;	
+}
+
+.category-badge {
+	background-color: #999999;
+    border-radius: 10px 10px 10px 10px;
+    color: #FFFFFF;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    min-width: 10px;
+    padding: 1px 5px 3px;
+    text-align: center;
+    vertical-align: baseline;
+    white-space: nowrap;
 }
 
 .bigger-icon {
-	font-size: 15px;
+	font-size: 16px;
 }
 
 ul.nav li a {
