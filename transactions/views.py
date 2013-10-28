@@ -20,9 +20,8 @@ def index(request, page=0):
     
     for transaction in transactions:
         transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
-        # glyphicon-time glyphicon-ok-circle
         
-        if transaction.get('confirmations', False):
+        if transaction.get('confirmations', False) is not False:
             if transaction['confirmations'] <= config.MainConfig['globals']['confirmation_limit']:
                 transaction['status_icon'] = 'glyphicon-time'
                 transaction['status_color'] = '#AAA';

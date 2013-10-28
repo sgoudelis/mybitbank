@@ -133,7 +133,7 @@ def details(request, account_address="pipes"):
                 transaction['otheraccount_address'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['currency'])
             
             # use icons and colors to represent confirmations
-            if transaction.get('confirmations', False):
+            if transaction.get('confirmations', False) is not False:
                 if transaction['confirmations'] <= config.MainConfig['globals']['confirmation_limit']:
                     transaction['status_icon'] = 'glyphicon-time'
                     transaction['status_color'] = '#DDD';
