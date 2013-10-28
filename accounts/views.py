@@ -1,12 +1,13 @@
 from connections import connector
 import config
+import forms
 import generic
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
-import forms
+from addressbook.models import savedAddress
 
 current_section = 'accounts'
 
@@ -121,7 +122,13 @@ def details(request, account_address="pipes"):
     currency_symbol = generic.getCurrencySymbol(account['currency'])
     currency_name = connector.config[account['currency']]['currency_name']
     
-    print account
+    # get addressbook
+    addressBookAddresses = savedAddress.objects.all()
+    saved_addresses = {}
+    for saved_address in addressBookAddresses:
+        saved_addresses[saved_address.address] = saved_address.name
+    print saved_addresses
+    
     if account:
         # get transaction details
         transactions = generic.getTransactionsByAccount(connector, account['name'], account['currency'], reverse_order=True)
@@ -129,9 +136,21 @@ def details(request, account_address="pipes"):
             transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
             if not transaction.get('details', {}).get('sender_address', False):
                     transaction['details']['sender_address'] = '(unknown)'
+            
+            # addressbook names and address resolution
             if transaction['category'] == 'move':
                 transaction['otheraccount_address'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['currency'])
-            
+            elif transaction['category'] == 'receive':
+                transaction['source_address'] = transaction.get('details', {}).get('sender_address', '(no sender address)')
+                transaction['addressbook_name'] = saved_addresses.get(transaction['source_address'], False)
+            elif transaction['category'] == 'send':
+                transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
+                print transaction
+                print 
+                transaction['addressbook_name'] = saved_addresses.get(transaction['address'], False)
+                print transaction['addressbook_name']
+                print 
+                
             # use icons and colors to represent confirmations
             if transaction.get('confirmations', False) is not False:
                 if transaction['confirmations'] <= config.MainConfig['globals']['confirmation_limit']:
@@ -148,6 +167,8 @@ def details(request, account_address="pipes"):
         transactions = []
     
     page_title = _("Account details for %s") % (account['name'] or account['alternative_name'])
+    sender_address_tooltip_text = "This address has been calculated using the Input Script Signature. You should verify before using it."
+    
     context = {
                'globals': config.MainConfig['globals'],
                'request': request,
@@ -159,6 +180,7 @@ def details(request, account_address="pipes"):
                'transactions': transactions,
                'currency_name': currency_name,
                'currency_symbol': currency_symbol,
+               'sender_address_tooltip_text': sender_address_tooltip_text,
                }
     
     return render(request, 'accounts/details.html', context)
