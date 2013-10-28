@@ -104,11 +104,11 @@
               <label for="">&nbsp;</label>
                 <select class="form-control fixed-width-font" id="to_account_menu" onchange="callAccountsOptionClick(this)">
                 <option onclick="javascript:updateTransferDialog('', '0.00000000', 'to_address');">select an account</option>
-                
+
                 {% if addressbook_addresses %}
                 	<optgroup label="from addressbook"></optgroup>
                 	{% for saved_address, saved_name in addressbook_addresses.items %}
-                	<option value="{{ saved_address }}" class="fixed-width-font" onclick="javascript:updateTransferDialog('{{ saved_address }}', '0.00000000', 'to_address');" >{{ saved_address }} - {{ saved_name }}</option>
+                	<option value="{{ saved_address }}" class="fixed-width-font" onclick="javascript:updateTransferDialog('{{ saved_address }}', '0.00000000', 'to_address');" >{{ saved_name }} - {{ saved_address }}</option>
                 	{% endfor %}
                 	<optgroup label=""></optgroup>
                 {% endif %}
