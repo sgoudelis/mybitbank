@@ -49,8 +49,12 @@ html {
 
 .sender-address {
 	background-color: #826599;
-	padding: 0.4em 0.3em 0.1em;
+	padding: 0.3em 0.3em 0.1em;
 	font-weight: bold;
+}
+
+.small-info-icon {
+	font-size: 12px;
 }
 
 .table thead>tr>th {
@@ -69,6 +73,10 @@ html {
 	font-size: 20px;
 }
 
+.small-font {
+	font-size: 12px;
+}
+ 
 ul.errorlist {
 	color: #B94A48;
 }

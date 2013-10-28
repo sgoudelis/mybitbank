@@ -74,7 +74,7 @@
             {% endif %}
 
             {% if transaction.category = 'receive' %}
-            <td class="hidden-xs" nowrap><span class="sender-address address-label label-default">{{ transaction.currency_symbol }} {{ transaction.details.sender_address }} <span class="normal-font glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="This address has been calculated using the Input Script Signature. You should verify before using it."></span></span></td>
+            <td class="hidden-xs" nowrap><span class="sender-address address-label label-default">{{ transaction.currency_symbol }} {{ transaction.details.sender_address }} <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="This address has been calculated using the Input Script Signature. You should verify before using it."></span></span></td>
             {% elif transaction.category = 'send' %}
             <td class="hidden-xs fixed-width-font"><span style="color:#ccc;">this account</span></td>
             {% elif transaction.category = 'move' %}
