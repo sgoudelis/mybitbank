@@ -8,7 +8,7 @@ import hashlib
 class Connector(object):
     # how long to cache responses
     caching_time = 3 
-    config = []
+    config = {}
     services = {}
     errors = []
     

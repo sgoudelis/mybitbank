@@ -5,6 +5,7 @@ from connections import connector
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from addressbook.models import savedAddress
 
 current_section = 'transfer'
 
@@ -42,6 +43,12 @@ def commonContext(request={}, selected_currency='btc', form=None, errors=[], sho
         for account in accounts[currency]:
             account['currency_symbol'] = currency_symbols[currency]
     
+    # addressbook values
+    saved_addresses = savedAddress.objects.filter(currency=selected_currency)
+    addressbook_addresses = {}
+    for saved_address in saved_addresses:
+        addressbook_addresses[saved_address.address] = saved_address.name
+    
     context = {
                'globals': config.MainConfig['globals'], 
                'system_errors': connector.errors,
@@ -58,6 +65,7 @@ def commonContext(request={}, selected_currency='btc', form=None, errors=[], sho
                'errors': errors,
                'show_passphrase': show_passphrase,
                'ssl_warning': show_warning_ssl,
+               'addressbook_addresses': addressbook_addresses
                }
     
     return context

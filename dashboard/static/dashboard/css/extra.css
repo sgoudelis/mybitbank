@@ -52,6 +52,11 @@ html {
 	font-weight: normal;
 }
 
+.addressbook-label {
+	background-color: #7C9E41;
+	font-family: Helvetica !important;
+}
+
 .small-info-icon {
 	font-size: 12px;
 }

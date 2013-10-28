@@ -1,5 +1,5 @@
 {% extends "dashboard/base.html" %}
-{% load url from future %}
+{% load dashboard_extras %} 
 {% block page_title %}{{ page_title }}{% endblock %}
 
 {% block site_brand %}{{ globals.site_brand }}{% endblock %}
@@ -41,16 +41,24 @@
                         	{% if transaction.category == "move" %}
                         	<a href="/accounts/details/{{ transaction.source_addresses.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account }}</strong></a>
                         	{% elif transaction.category == "send" %}
-                        	<span class="fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span>
+                        		{% if transaction.addressbook_name %}
+                        			<span class="fixed-width-font addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.addressbook_name }}</span>
+                        		{% else %}
+                        			<span class="fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span>
+                        		{% endif %}
+                        	
                         	{% elif transaction.category == "receive" %}
                         	<a href="/accounts/details/{{ transaction.destination_address }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account }}</strong></a>
                         	{% endif %}
                         </td>
                         
-                        
                         <td  class="hidden-xs">
                         	{% if transaction.category == "receive" %}
-	                        <span class="sender-address fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.source_address }} <span data-toggle="tooltip" title="This address has been calculated using the Input Script Signature. You should verify before using it." class="small-info-icon glyphicon glyphicon-info-sign"></span></span>
+	                        	{% if transaction.addressbook_name %}
+	                        		<span class="sender-address fixed-width-font addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.addressbook_name }} <span data-toggle="tooltip" title="{{ sender_address_tooltip_text }}" class="small-info-icon glyphicon glyphicon-info-sign"></span></span>
+	                        	{% else %}
+	                        		<span class="sender-address fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.source_address }} <span data-toggle="tooltip" title="{{ sender_address_tooltip_text }}" class="small-info-icon glyphicon glyphicon-info-sign"></span></span>
+	                        	{% endif %}
 	                        {% elif transaction.category == "send" %}
 	                        <a href="/accounts/details/{{ transaction.source_addresses.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{% if not transaction.account %}{{ transaction.alternative_account }}{% else %}{{ transaction.account }}{% endif %}</strong></a>
 	                        

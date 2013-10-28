@@ -4,6 +4,7 @@ import generic
 from connections import connector
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from addressbook.models import savedAddress
 
 current_section = 'transactions'
 
@@ -16,6 +17,13 @@ def index(request, page=0):
     items_per_page = 10
     page_title = "Transactions"
     
+    # get addressbook
+    addressBookAddresses = savedAddress.objects.all()
+    saved_addresses = {}
+    for saved_address in addressBookAddresses:
+        saved_addresses[saved_address.address] = saved_address.name
+
+    # get transactions
     transactions = generic.getTransactions(connector = connector, sort_by = 'time', reverse_order = True)
     
     for transaction in transactions:
@@ -33,6 +41,7 @@ def index(request, page=0):
         
         if transaction['category'] == 'receive':
             transaction['source_address'] = transaction.get('details', {}).get('sender_address', '(no sender address)')
+            transaction['addressbook_name'] = saved_addresses.get(transaction['source_address'], False)
             transaction['destination_address'] = transaction['address']
             transaction['icon'] = 'glyphicon-circle-arrow-down'
         elif transaction['category'] == 'send':
@@ -41,13 +50,14 @@ def index(request, page=0):
             transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
             transaction['destination_address'] = transaction['address']
             transaction['icon'] = 'glyphicon-circle-arrow-up'
+            transaction['addressbook_name'] = saved_addresses.get(transaction['address'], False)
         elif transaction['category'] == 'move':
             transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
             transaction['destination_addresses'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['currency'])
             if not transaction['account']:
                 transaction['alternative_name'] = '(no name)'
             transaction['icon'] = 'glyphicon-circle-arrow-right'
-            
+    
     # pagify
     if page is 0:
         # pager off
@@ -68,6 +78,8 @@ def index(request, page=0):
     # add a list of pages in the view
     sections = generic.getSiteSections(current_section)
     
+    sender_address_tooltip_text = "This address has been calculated using the Input Script Signature. You should verify before using it."
+    
     context = {
                'globals': config.MainConfig['globals'],
                'system_errors': connector.errors,
@@ -80,6 +92,8 @@ def index(request, page=0):
                'next_page': min((page+1), len(pages)), 
                'prev_page': max(1, page-1), 
                'pages': pages, 
-               'current_page': page
+               'current_page': page,
+               'saved_addresses': saved_addresses,
+               'sender_address_tooltip_text': sender_address_tooltip_text,
                }
     return render(request, 'transactions/index.html', context)
