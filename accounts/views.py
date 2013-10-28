@@ -127,7 +127,6 @@ def details(request, account_address="pipes"):
     saved_addresses = {}
     for saved_address in addressBookAddresses:
         saved_addresses[saved_address.address] = saved_address.name
-    print saved_addresses
     
     if account:
         # get transaction details
@@ -145,11 +144,7 @@ def details(request, account_address="pipes"):
                 transaction['addressbook_name'] = saved_addresses.get(transaction['source_address'], False)
             elif transaction['category'] == 'send':
                 transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
-                print transaction
-                print 
                 transaction['addressbook_name'] = saved_addresses.get(transaction['address'], False)
-                print transaction['addressbook_name']
-                print 
                 
             # use icons and colors to represent confirmations
             if transaction.get('confirmations', False) is not False:
