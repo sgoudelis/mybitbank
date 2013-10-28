@@ -110,7 +110,7 @@
                 	{% for saved_address, saved_name in addressbook_addresses.items %}
                 	<option value="{{ saved_address }}" class="fixed-width-font" onclick="javascript:updateTransferDialog('{{ saved_address }}', '0.00000000', 'to_address');" >{{ saved_address }} - {{ saved_name }}</option>
                 	{% endfor %}
-                	<optgroup label="-----------------------------------------------------------------"></optgroup>
+                	<optgroup label=""></optgroup>
                 {% endif %}
                 
                 {% if accounts|keyvalue:selected_currency %}
