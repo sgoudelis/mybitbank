@@ -9,7 +9,7 @@ from bitcoinrpc.authproxy import JSONRPCException
 
 class Connector(object):
     # how long to cache responses
-    caching_time = 3 
+    caching_time = 60
     config = {}
     services = {}
     errors = []
@@ -36,6 +36,7 @@ class Connector(object):
              'accounts': {},
              'transactions': {},
              'balances': {},
+             'addressesbyaccount': {},
              })
         try:
             import config
@@ -174,21 +175,36 @@ class Connector(object):
         It is used to hash the input parameters of functions/method in order to uniquely identify a cached result based only
         on the input parameters of the function/method call.
         '''
-        cache_hash = hashlib.md5(param).hexdigest()
+        cache_hash = hashlib.sha224(param).hexdigest()
         return cache_hash
     
     def getaddressesbyaccount(self, name, currency):
         '''
         Get the address of an account name
         '''
+        
+        # check for cached data, use that or get it again
+        cache_hash = self.getParamHash("name=%s&currency=%s" % (name, currency))
+        try:
+            cache_object = self.cache['addressesbyaccount'].get(cache_hash, None)
+            if ((datetime.datetime.now() - cache_object['when']).seconds) < self.caching_time:
+                cached_addresses_by_account = self.cache['transactions'][cache_hash]['data']
+                return cached_addresses_by_account
+        except:
+            pass
+        
         if self.services[currency]:
             addresses = self.services[currency].getaddressesbyaccount(name)
-            address_str = []
+            addresses_list = []
             for address in addresses:
-                address_str.append(address.encode('ascii','ignore'))
+                addresses_list.append(address.encode('ascii','ignore'))
         else:
-            address_str = []
-        return address_str
+            addresses_list = []
+            
+        # cache the result
+        self.cache['addressesbyaccount'][cache_hash] = {'data': addresses_list, 'when': datetime.datetime.now()}
+            
+        return addresses_list
     
     def listtransactionsbyaccount(self, account_name, currency, limit=100000, start=0):    
         '''
