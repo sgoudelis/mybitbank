@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     'transfer',
     'transactions',
     'login',
+    'peerinfo',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
@@ -190,3 +191,5 @@ THOUSAND_SEPARATOR = '.'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 
 LOGIN_URL = '/login'
+
+GEOIP_PATH = '.geoip/'

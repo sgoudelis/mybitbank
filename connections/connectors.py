@@ -62,6 +62,17 @@ class Connector(object):
         '''
         return "{:.8f}".format(x)
     
+    def getpeerinfo(self, currency):
+        # get data from the connector (coind)
+        try:
+            peers = self.services[currency].getpeerinfo()
+        except Exception, e:
+            raise
+            # in case of an error, store the error, remove the service and move on
+            self.errors.append({'message': 'Error occurred while getting peers info of accounts (currency: %s, error:%s)' % (currency, e)})
+            self.removeCurrencyService(currency)
+        return peers
+    
     def listaccounts(self, gethidden=False, getarchived=False):
         '''
         Get a list of accounts. This method also supports filtering, fetches address for each account etc.

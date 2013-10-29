@@ -1,0 +1,62 @@
+{% extends "dashboard/base.html" %}
+
+{% load dashboard_extras %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block site_brand %}{{ globals.site_brand }}{% endblock %}
+
+{% block content %}
+
+<ul class="nav nav-tabs">
+	{% for currency in currency_codes %}
+	<li {% if selected_currency == currency %}class="active"{% endif %}>
+		<a href="{% url 'peerinfo:index' %}{{ currency }}"><strong>{{ currency_names|keyvalue:currency }}</strong></a>
+	</li>
+	{% endfor %}
+</ul>
+<div class="panel panel-default no-border-top no-border-radius">
+
+	<!-- Table -->
+	<table class="table table-condensed no-border-top no-border-radius vertical-align-middle">
+		<thead>
+			<th class="text-center">#</th>
+			<th>IP : port</th>
+			<th>Country</th>
+			<th>Version</th>
+			<th class="text-center">In / Out</th>
+			<th class="text-center">Last Send/Rec.</th>
+			<th class="text-center">Connect Time</th>
+			<th class="text-center">Ban Score</th>
+			<th class="text-center">Sync Node</th>
+		</thead>
+		<tbody>
+			{% for peer in peers %}
+			<tr>
+				<td class="text-center"><span class="label label-primary">{{ forloop.counter }}</span></td>
+				<td>{{ peer.addr }}</td>
+				<td>{{ peer.country }} ({{ peer.city }})</td>
+				<td>{{ peer.subver }}</td>
+				<td class="text-right">
+					<p class="text-success">{{ peer.in }} <span class="glyphicon glyphicon-circle-arrow-down"></span></p>
+					<p class="text-danger">{{ peer.out }} <span class="glyphicon glyphicon-circle-arrow-up"></span></p>
+				</td>
+				<td class="text-right">
+					<p class="text-success">{{ peer.lastrecv }} <span class="glyphicon glyphicon-circle-arrow-down"></span></p>
+					<p class="text-danger">{{ peer.lastsend }} <span class="glyphicon glyphicon-circle-arrow-up"></span></p>
+				</td>
+				<td class="text-center">{{ peer.conntime }}</td>
+				<td class="text-center">{{ peer.banscore }}</td>
+				<td class="text-center">
+					{% if peer.syncnode %}
+					<span style="color: #1C9E3F;" class="bigger-icon glyphicon glyphicon-ok-circle"></span>
+					{% endif %}
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+</div>
+
+{% endblock %}

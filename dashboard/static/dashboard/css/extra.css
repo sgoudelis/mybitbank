@@ -210,3 +210,20 @@ body {
     font-family: Helvetica;
     font-weight: bold;
 }
+
+.no-border-top {
+	border-top: 0;
+}
+
+.no-border-radius {
+	border-radius: 0;
+}
+
+.vertical-align-middle {
+	vertical-align: middle;
+}
+
+table.vertical-align-middle tbody > tr > td {
+	vertical-align: middle;
+}
+

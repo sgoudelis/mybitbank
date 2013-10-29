@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import dateutil.relativedelta
 import connections
 import config
 
@@ -39,6 +40,23 @@ def twitterizeDate(ts):
     else:
         return '{} hours ago'.format(s/3600)
 
+def timeSince(time):
+    dt = datetime.datetime.fromtimestamp(time)
+    rd = dateutil.relativedelta.relativedelta (datetime.datetime.now(), dt)
+    s = ""
+    if(rd.years > 0):
+        s += "%dy " % (rd.years)
+    if(rd.months > 0):
+        s += "%dm " % (rd.months)
+    if(rd.days > 0):
+        s += "%dd " % (rd.days)
+    if(rd.hours > 0):
+        s += "%dh " % (rd.hours)
+    if(rd.minutes > 0):
+        s += "%dm " % (rd.minutes)
+    if(rd.seconds > 0):
+        s += "%ds" % (rd.seconds)
+    return s    
 
 def getAllAccounts(connector):
     '''
@@ -109,6 +127,20 @@ def getCurrencySymbol(for_currency='*'):
     else:
         return currencies[for_currency]
 
+def getPeerInfo(connector, currency='btc'):
+    '''
+    Return peers info
+    '''
+    peers = []
+    return connector.getpeerinfo(currency)
+    for currency in accounts_by_name.keys():
+        for account in accounts_by_name[currency]:
+            account['currency'] = currency
+            account['currency_symbol'] = getCurrencySymbol(currency)
+            accounts.append(account)
+
+    return accounts
+
 def buildBreadcrumbs(current_section='dashboard', currect_subsection='', current_activesection=''):
     # this is kind of stupid but it is 12 AM and I am sleepy
     breadcrumbs = []
@@ -142,3 +174,8 @@ def isFloat(s):
     except TypeError:
         return False
     
+def humanBytes(num):
+    for x in ['bytes','KB','MB','GB','TB']:
+        if num < 1024.0:
+            return "%3.1f %s" % (num, x)
+        num /= 1024.0

@@ -31,5 +31,10 @@ MainConfig = {
                         {'name': 'add', 'path':"/addressbook/add", 'title': _('Add address')},
                      
                      ]},
+                    {'name': 'peerinfo', 'path':"/peerinfo", 'title': _("Peerinfo"), 'subsections': 
+                     [
+                        #{'name': 'add', 'path':"/addressbook/add", 'title': _('Add address')},
+                     
+                     ]},
                ]
               }
