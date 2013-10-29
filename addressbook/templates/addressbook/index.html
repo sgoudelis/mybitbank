@@ -14,7 +14,7 @@
 				<thead>
 					<tr style="background-color:#f5f5f5;">
 						<th class="header">Name</th>
-						<th class="header">Address</th>
+						<th class="header hidden-xs">Address</th>
 						<th class="header">Currency</th>
 						<th class="header">Comment</th>
 						<th class="header">Entered</th>
@@ -29,7 +29,7 @@
 						<td>
 							{{ address.name }}
 						</td>
-						<td>
+						<td class="hidden-xs">
 							<span class="fixed-width-font address-label label-default">{{ currency_symbols|keyvalue:address.currency }} {{ address.address }}</span>
 						</td>
 						<td>{{ address.currency|upper }}</td>

@@ -1,9 +1,11 @@
-from jsonrpc import ServiceProxy
 import datetime
 import generic
+import hashlib
+from jsonrpc import ServiceProxy
+from connections.cacher import Cacher 
 from accounts.models import accountFilter
 from bitcoinrpc.authproxy import JSONRPCException
-import hashlib
+
 
 class Connector(object):
     # how long to cache responses
@@ -23,16 +25,18 @@ class Connector(object):
                }
     
     # caching data
-    cache = {
-             'accounts': {},
-             'transactions': {},
-             'balances': {},
-             }
+    cache = None
     
     def __init__(self):
         '''
         Constructor, load config 
         '''
+        
+        self.cache = Cacher({
+             'accounts': {},
+             'transactions': {},
+             'balances': {},
+             })
         try:
             import config
             self.config = config.config
@@ -45,7 +49,7 @@ class Connector(object):
                                                                            self.config[currency]['rpchost'], 
                                                                            self.config[currency]['rpcport'])
                                                   )
-
+    
     def getNet(self, currency):
         return self.config[currency].get('network', 'testnet')
 
@@ -170,7 +174,7 @@ class Connector(object):
         It is used to hash the input parameters of functions/method in order to uniquely identify a cached result based only
         on the input parameters of the function/method call.
         '''
-        cache_hash = hashlib.sha224(param).hexdigest()
+        cache_hash = hashlib.md5(param).hexdigest()
         return cache_hash
     
     def getaddressesbyaccount(self, name, currency):
@@ -225,7 +229,7 @@ class Connector(object):
             
         # cache the result
         self.cache['transactions'][cache_hash] = {'data': transactions, 'when': datetime.datetime.now()}
-        
+
         return transactions
     
     def listtransactions(self, limit=100000, start=0):
