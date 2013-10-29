@@ -131,15 +131,8 @@ def getPeerInfo(connector, currency='btc'):
     '''
     Return peers info
     '''
-    peers = []
+    
     return connector.getpeerinfo(currency)
-    for currency in accounts_by_name.keys():
-        for account in accounts_by_name[currency]:
-            account['currency'] = currency
-            account['currency_symbol'] = getCurrencySymbol(currency)
-            accounts.append(account)
-
-    return accounts
 
 def buildBreadcrumbs(current_section='dashboard', currect_subsection='', current_activesection=''):
     # this is kind of stupid but it is 12 AM and I am sleepy
