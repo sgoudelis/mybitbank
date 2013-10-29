@@ -1,25 +1,29 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 {% load dashboard_extras %} 
 {% block page_title %}{{ page_title }}{% endblock %}
 
 {% block site_brand %}{{ globals.site_brand }}{% endblock %}
 
 {% block content %}
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Addressbook</h3>
-  </div>
-      <table class="table table-hover table-striped">
+		<div class="panel panel-default">
+		  <div class="panel-heading">
+		    <h3 class="panel-title">Addressbook</h3>
+		  </div>
+		      <table class="table table-hover table-striped">
 				<thead>
 					<tr style="background-color:#f5f5f5;">
 						<th class="header">Name</th>
 						<th class="header">Address</th>
 						<th class="header">Currency</th>
+						<th class="header">Comment</th>
 						<th class="header">Entered</th>
 						<th class="header text-right">Status</th>
+						<th class="header text-right">Action</th>
 					</tr>
 				</thead>
 				<tbody>
+				{% if book %}
 				{% for address in book %}
 					<tr>
 						<td>
@@ -29,85 +33,32 @@
 							<span class="fixed-width-font address-label label-default">{{ currency_symbols|keyvalue:address.currency }} {{ address.address }}</span>
 						</td>
 						<td>{{ address.currency|upper }}</td>
+						<td>{{ address.comment }}</td>
 						<td>{{ address.entered }}</td>
-						<td class="text-right fixed-width-font"><strong>{{ transaction.amount }} {{ transaction.currency|upper }}</strong></td>
+						<td class="text-right fixed-width-font">{{ address.status }}</td>
+						<td class="text-right">
+						
+						<form action="{% url 'addressbook:delete' address.id %}" method="post" role="form">
+    					{% csrf_token %}
+						<input type="submit" class="btn btn-warning btn-xs" value="delete" name="delete"/>
+						</form>
+						
+						</td>
 					</tr>
 				{% endfor %}
+				{% else %}
+				<tr>
+					<td colspan="7" class="text-center">No addressbook entries</td>
+				</tr>
+				{% endif %}
 				</tbody>
 			</table>
-  <div class="panel-body">
-
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Add address</h3>
-  </div>
-
-  <div class="panel-body">
-   <form action="{% url 'addressbook:add' %}" method="post" role="form">
-    {% csrf_token %}
-    <div class="row">
-      <div class="col-md-4 form-group {% if form.errors.name %}has-error{% endif %}">
-        <label for="name">Address name</label>
-        <input type="text" class="form-control" id="name" name="name" placeholder="address name" value="{{ form.name.value }}">
-      	{% if form.errors.name %}
-      	{{ form.errors.name }}
-      	{% endif %}
-      </div>
-     </div>
-      
-      <div class="row">
-      <div class="col-md-4 form-group {% if form.errors.address %}has-error{% endif %}">
-        <label for="address">Address</label>
-        <input type="text" class="form-control" id="address" name="address" placeholder="address" value="{{ form.address.value }}">
-      	{% if form.errors.address %}
-      	{{ form.errors.address }}
-      	{% endif %}
-      </div>
-     </div>
-     <div class="row">
-      <div class="col-md-4 form-group">
-       {% for currency in currencies %}
-        <div class="radio">
-          <label>
-            <input type="radio" name="currency" id="currency" value="{{ currency.name }}" {% ifequal form.currency.value currency.name %}checked{% endifequal %}>
-            {{ currency.title }}
-          </label>
-        </div>
-       {% endfor %}
-      </div>
-    </div>
-    
-    
-    <div class="row">
-      <div class="col-md-4 form-group">
-        <label for="comment">Comment</label>
-        <textarea class="form-control" rows="3" id="comment" name="comment" placeholder="comment" value="{{ form.comment.value }}"></textarea>
-      	{% if form.errors.comment %}
-      	{{ form.errors.comment }}
-      	{% endif %}
-      </div>
-      </div>
-      <div class="row">
-	      <div class="col-md-4 form-group">
-	      	<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span>&nbsp;add</button> 
-	      </div>
-      </div>
-    </form>
-  </div>
-</div>
+                <div class="panel-body">
+                    <div class="row">
+                      <div class="col-md-6"><a class="btn btn-primary" href="{% url 'addressbook:add' %}"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans "add address" %}</a></div>
+                      <div class="col-md-6"></div>
+                    </div>
+                </div>
+			</div>
 
 {% endblock %}
