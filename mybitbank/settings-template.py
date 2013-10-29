@@ -193,3 +193,5 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 LOGIN_URL = '/login'
 
 GEOIP_PATH = '.geoip/'
+
+GEOIP_LIBRARY_PATH = '/opt/local/lib/libGeoIP.dylib'
