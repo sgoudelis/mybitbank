@@ -1,4 +1,4 @@
-#mybitbank  
+# mybitbank  
 ---
 Your Personal CryptoCoin Bank
 
@@ -20,6 +20,11 @@ On Mac OS X, you can install using [homebrew](http://github.com/mxcl/homebrew):
 ```
 brew install geoip
 ```
+or [MacPorts](http://www.macports.org/install.php):
+```
+sudo port install libgeoip
+```
+
 
 Download GeoIP City datasets in binary format from [MaxMind](http://dev.maxmind.com/geoip/legacy/geolite/) uncompress and put them in `.geoip/` folder.
 
