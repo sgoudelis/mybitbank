@@ -21,6 +21,15 @@ On Mac OS X, you can install using [homebrew](http://github.com/mxcl/homebrew):
 brew install geoip
 ```
 
+Download GeoIP City datasets in binary format from [MaxMind](http://dev.maxmind.com/geoip/legacy/geolite/) uncompress and put them in `.geoip/` folder.
+
+```
+cd .geoip
+wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+gzip -d GeoLiteCity.dat.gz
+```
+
+
 ### Configuration
 
 Copy template file `mybitbank/settings-template.py` into `mybitbank/settings.py`.
