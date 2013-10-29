@@ -132,7 +132,7 @@ INSTALLED_APPS = (
     'transfer',
     'transactions',
     'login',
-    'peerinfo',
+    'network',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'

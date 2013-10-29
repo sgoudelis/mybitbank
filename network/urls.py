@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 
-from peerinfo import views
+from network import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),

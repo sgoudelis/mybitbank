@@ -31,7 +31,7 @@ MainConfig = {
                         {'name': 'add', 'path':"/addressbook/add", 'title': _('Add address')},
                      
                      ]},
-                    {'name': 'peerinfo', 'path':"/peerinfo", 'title': _("Peerinfo"), 'subsections': 
+                    {'name': 'network', 'path':"/network", 'title': _("Network"), 'subsections': 
                      [
                         #{'name': 'add', 'path':"/addressbook/add", 'title': _('Add address')},
                      

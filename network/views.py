@@ -8,7 +8,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from django.contrib.gis.geoip import GeoIP
 
-current_section = 'peerinfo'
+current_section = 'network'
 
 @login_required
 def index(request, selected_currency=sorted(connector.config.keys())[0]):
@@ -43,7 +43,7 @@ def index(request, selected_currency=sorted(connector.config.keys())[0]):
     currency_codes = sorted(currency_codes)
     
   
-    page_title = _("peersinfo")
+    page_title = _("Network")
     context = {
                'globals': config.MainConfig['globals'], 
                'breadcrumbs': generic.buildBreadcrumbs(current_section, 'all'), 
@@ -57,6 +57,6 @@ def index(request, selected_currency=sorted(connector.config.keys())[0]):
                'selected_currency': selected_currency,
                'peers': peers
                }
-    return render(request, 'peersinfo/index.html', context)
+    return render(request, 'network/index.html', context)
 
     

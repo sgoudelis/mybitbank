@@ -11,7 +11,7 @@
 <ul class="nav nav-tabs">
 	{% for currency in currency_codes %}
 	<li {% if selected_currency == currency %}class="active"{% endif %}>
-		<a href="{% url 'peerinfo:index' %}{{ currency }}"><strong>{{ currency_names|keyvalue:currency }}</strong></a>
+		<a href="{% url 'network:index' %}{{ currency }}"><strong>{{ currency_names|keyvalue:currency }}</strong></a>
 	</li>
 	{% endfor %}
 </ul>

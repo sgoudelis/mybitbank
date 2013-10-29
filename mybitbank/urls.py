@@ -34,8 +34,8 @@ urlpatterns = patterns('',
     # login
     url(r'^login/', include('login.urls', namespace="login")),
     
-    # peerinfo
-    url(r'^peerinfo/', include('peerinfo.urls', namespace="peerinfo")),
+    # network
+    url(r'^network/', include('network.urls', namespace="network")),
     
     # language
     (r'^i18n/', include('django.conf.urls.i18n')),
