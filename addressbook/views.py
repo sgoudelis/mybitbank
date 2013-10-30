@@ -9,7 +9,9 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
+from django.utils.timezone import utc
 from models import savedAddress
+
 
 
 current_section = 'addressbook'
@@ -85,7 +87,7 @@ def create(request):
             comment =  form.cleaned_data['comment']
             
             # add address to addressbook
-            newAddressEntry = savedAddress(name=name, address=address, currency=currency, comment=comment, status=2, entered=datetime.datetime.now())
+            newAddressEntry = savedAddress(name=name, address=address, currency=currency, comment=comment, status=2, entered=datetime.datetime.utcnow().replace(tzinfo=utc))
             newAddressEntry.save()
             return HttpResponseRedirect(reverse('addressbook:index'))
         else:

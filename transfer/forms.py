@@ -11,10 +11,7 @@ class CoinAddress(CharField):
         
         if len(value) < 27 or 34 > len(value):
             raise forms.ValidationError("Please provide a valid address")
-        
-    def clean(self, value):
-        return value.strip()
-        
+            
 class CoinAmount(CharField):
     def to_python(self, value):
         if not generic.isFloat(value):
@@ -49,10 +46,10 @@ class SendCurrencyForm(forms.Form):
         cleaned_data = super(SendCurrencyForm, self).clean()
         from_address = cleaned_data.get('from_address', "")
         to_address = cleaned_data.get('to_address', "")
-        comment = cleaned_data.get('comment', "")
-        amount = cleaned_data.get('amount', 0)
-        selected_currency = cleaned_data.get('selected_currency',"")
-        passphrase = cleaned_data.get('passphrase',"")
+        #comment = cleaned_data.get('comment', "")
+        #amount = cleaned_data.get('amount', 0)
+        #selected_currency = cleaned_data.get('selected_currency',"")
+        #passphrase = cleaned_data.get('passphrase',"")
         
         if from_address == to_address and (from_address and to_address):
             raise forms.ValidationError("You cannot move from and to the same account/address")

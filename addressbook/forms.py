@@ -28,12 +28,16 @@ class AddAddressBookForm(forms.Form):
     currency = CoinCurrency(required=True, initial=initial_currency)
     comment = forms.CharField(required=False, initial="")
     
+    def clean_address(self):
+        address = self.cleaned_data['address']
+        return address.strip()
+    
     def clean(self):
         cleaned_data = super(AddAddressBookForm, self).clean()
-        name = cleaned_data.get('name', "")
-        address = cleaned_data.get('address', "")
-        currency = cleaned_data.get('currency', self.initial_currency)
-        comment = cleaned_data.get('comment', "")
+        #name = cleaned_data.get('name', "")
+        #address = cleaned_data.get('address', "")
+        #currency = cleaned_data.get('currency', self.initial_currency)
+        #comment = cleaned_data.get('comment', "")
         
         # clean data ?
         return cleaned_data
