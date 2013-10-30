@@ -142,7 +142,7 @@ def send(request, currency):
                     else:
                         show_passphrase=False
                     
-                    if not request.is_secure():
+                    if not request.is_secure() and passphrase:
                         show_warning_ssl = True
                     else:
                         show_warning_ssl = False
