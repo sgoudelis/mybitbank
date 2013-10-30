@@ -5,11 +5,12 @@ This is WORK-IN-PROGRESS
 import login
 
 class UserSettings(object):
-    user_id = 2
+    user_id = None
     user_object = None
     
     def __init__(self, user):
         self.user_object = user
+        self.user_id = user.id
     
     def set(self, name, value):
         existing = login.models.Setting.objects.filter(name=name)
