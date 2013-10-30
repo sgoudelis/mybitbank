@@ -234,3 +234,15 @@ table.vertical-align-middle tbody > tr > td {
 .red-font {
 	color: red;
 }
+
+.grey-font {
+	color: #999999;
+}
+
+.dark-font {
+	color: #555555;
+}
+
+.black-font {
+	color: #000;
+}
