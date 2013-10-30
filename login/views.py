@@ -53,6 +53,7 @@ def processLogin(request):
             if user is not None and user.is_active:
                 # authenticated, log user in
                 login(request, user)
+
                 if remember:
                     request.session.set_expiry(0)
                 else:

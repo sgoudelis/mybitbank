@@ -5,6 +5,7 @@ from connections import connector
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from addressbook.models import savedAddress
+from django.contrib.auth.models import User
 
 current_section = 'transactions'
 
