@@ -11,7 +11,10 @@ class CoinAddress(CharField):
         
         if len(value) < 27 or 34 > len(value):
             raise forms.ValidationError("Please provide a valid address")
-            
+        
+    def clean(self, value):
+        return value.strip()
+        
 class CoinAmount(CharField):
     def to_python(self, value):
         if not generic.isFloat(value):
