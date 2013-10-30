@@ -123,7 +123,7 @@ def details(request, account_address="pipes"):
     currency_name = connector.config[account['currency']]['currency_name']
     
     # get addressbook
-    addressBookAddresses = savedAddress.objects.all()
+    addressBookAddresses = savedAddress.objects.filter(status__gt=1)
     saved_addresses = {}
     for saved_address in addressBookAddresses:
         saved_addresses[saved_address.address] = saved_address.name

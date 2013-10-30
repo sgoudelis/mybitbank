@@ -18,6 +18,9 @@ def index(request, page=0):
     items_per_page = 10
     page_title = "Transactions"
     
+    hide_moves = request.user.setting.get('hide_moves')
+    print 'hide_moves: %s' % hide_moves
+    
     # get addressbook
     addressBookAddresses = savedAddress.objects.filter(status__gt=1)
     saved_addresses = {}
@@ -25,9 +28,21 @@ def index(request, page=0):
         saved_addresses[saved_address.address] = saved_address.name
 
     # get transactions
-    transactions = generic.getTransactions(connector = connector, sort_by = 'time', reverse_order = True)
+    transactions_list = generic.getTransactions(connector = connector, sort_by = 'time', reverse_order = True)
+    
+    # remove moves if there is a user setting for it
+    transactions = []
+    if hide_moves:
+        for transaction in transactions_list:
+            if transaction['category'] != "move":
+                transactions.append(transaction)
+    else:
+        transactions = transactions_list
     
     for transaction in transactions:
+        if transaction['category'] == "move" and hide_moves:
+            continue
+        
         transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
         
         if transaction.get('confirmations', False) is not False:
