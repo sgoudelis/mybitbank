@@ -18,7 +18,7 @@ def index(request, page=0):
     page_title = "Transactions"
     
     # get addressbook
-    addressBookAddresses = savedAddress.objects.all()
+    addressBookAddresses = savedAddress.objects.filter(status__gt=1)
     saved_addresses = {}
     for saved_address in addressBookAddresses:
         saved_addresses[saved_address.address] = saved_address.name

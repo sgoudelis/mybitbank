@@ -2,12 +2,15 @@ import config
 import generic
 import forms
 import datetime
+import calendar
 from connections import connector
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from models import savedAddress
+
 
 current_section = 'addressbook'
 
@@ -34,6 +37,20 @@ def getAddressBookCommonContext(request, form=None):
     for curr in currencies:
         currencies_available.append({'name': curr, 'title': connector.config[curr]['currency_name']})
         
+    for address in book:
+        timestamp = calendar.timegm(address.entered.timetuple())
+        address.time_pretty = generic.twitterizeDate(timestamp)
+        if address.status == 1:
+            address.button_text = _("enable")
+            address.status_text = 'Hidden'
+            address.icon = "glyphicon-minus-sign"
+            address.icon_color = 'red-font'
+        elif address.status == 2:
+            address.button_text = _("disable")
+            address.status_text = 'Active'
+            address.icon = "glyphicon-ok-circle"
+            address.icon_color = 'green-font'
+    
     context = {
                'globals': config.MainConfig['globals'], 
                'user': request.user,
@@ -85,13 +102,30 @@ def create(request):
                 
                 
 def delete(request, addressid):
-    
-    
+    '''
+    Set status to 0
+    '''
     addressbook = savedAddress.objects.filter(id=addressid)
     
     if addressbook:
         addressbook[0].status=0
         addressbook[0].save()
         
+    return HttpResponseRedirect(reverse('addressbook:index'))
+    
+def toggleStatus(request, addressid):
+    '''
+    Toggle status
+    '''
+    addressbook = savedAddress.objects.filter(id=addressid)
+    
+    if len(addressbook):
+        if addressbook[0].status == 1:
+            addressbook[0].status=2
+            addressbook[0].save()
+        else:
+            addressbook[0].status=1
+            addressbook[0].save()
+            
     return HttpResponseRedirect(reverse('addressbook:index'))
     

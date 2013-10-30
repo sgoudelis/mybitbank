@@ -227,3 +227,10 @@ table.vertical-align-middle tbody > tr > td {
 	vertical-align: middle;
 }
 
+.green-font {
+	color: green;
+}
+
+.red-font {
+	color: red;
+}

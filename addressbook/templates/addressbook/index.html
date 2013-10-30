@@ -19,7 +19,8 @@
 						<th class="header">Comment</th>
 						<th class="header">Entered</th>
 						<th class="header text-right">Status</th>
-						<th class="header text-right">Action</th>
+						<th width="25" class="header text-right"></th>
+						<th width="25" class="header text-right">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -34,15 +35,19 @@
 						</td>
 						<td>{{ address.currency|upper }}</td>
 						<td>{{ address.comment }}</td>
-						<td>{{ address.entered }}</td>
-						<td class="text-right fixed-width-font">{{ address.status }}</td>
+						<td>{{ address.time_pretty }}</td>
+						<td class="text-center fixed-width-font"><span data-toggle="tooltip" title="{{ address.status_text }}" class="glyphicon {{ address.icon }} {{ address.icon_color }}"></span></td>
 						<td class="text-right">
-						
-						<form action="{% url 'addressbook:delete' address.id %}" method="post" role="form">
-    					{% csrf_token %}
-						<input type="submit" class="btn btn-warning btn-xs" value="delete" name="delete"/>
-						</form>
-						
+							<form action="{% url 'addressbook:disable' address.id %}" method="post" role="form" class="form-inline">
+	    					{% csrf_token %}
+	    					<input type="submit" class="btn btn-warning btn-xs" value="{{ address.button_text }}" name="disable"/>
+							</form>
+						</td>
+						<td class="text-right">
+							<form action="{% url 'addressbook:delete' address.id %}" method="post" role="form" class="form-inline">
+	    					{% csrf_token %}
+							<input type="submit" class="btn btn-danger btn-xs" value="delete" name="delete"/>
+							</form>
 						</td>
 					</tr>
 				{% endfor %}

@@ -44,7 +44,7 @@ def commonContext(request={}, selected_currency='btc', form=None, errors=[], sho
             account['currency_symbol'] = currency_symbols[currency]
     
     # addressbook values
-    saved_addresses = savedAddress.objects.filter(currency=selected_currency)
+    saved_addresses = savedAddress.objects.filter(currency=selected_currency, status__gt=1)
     addressbook_addresses = {}
     for saved_address in saved_addresses:
         addressbook_addresses[saved_address.address] = saved_address.name
