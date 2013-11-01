@@ -58,7 +58,38 @@
                 
                 
                 
-	           <ul class="nav navbar-nav navbar-right navbar-user">
+	            <ul class="nav navbar-nav navbar-right navbar-user">
+		           <li class="dropdown alerts-dropdown messages-dropdown">
+	              <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-bell-alt"></i> Alerts <span class="badge {% if system_errors %}badge-alert{% endif %}">{{ system_errors|length }}</span> <b class="caret"></b></a>
+	              
+	              
+	              
+	              
+	              
+	              <ul class="dropdown-menu">
+	              {% if system_errors %}
+	              
+	                <li class="dropdown-header">{{ system_errors|length }} active alerts</li>
+					{% for system_error in system_errors %}
+	                <li class="divider"></li>
+	                <li class="message-preview">
+	                  <a href="#">
+	                    <span class="avatar"><span class="glyphicon glyphicon-exclamation-sign"></span></span>
+	                    <span class="name">ERROR:</span>
+	                    <span class="message">{{ system_error.message }}</span>
+	                    <span class="time"><i class="icon-time"></i> {{ system_error.when|date:'H:i' }}</span>
+	                  </a>
+	                </li>
+	                <li class="divider"></li>
+	                {% endfor %}
+	                <!-- <li><a href="#">View Inbox <span class="badge">7</span></a></li>  -->
+				  {% else %}
+					<li class="dropdown-header">No alerts at the moment</li>
+	              {% endif %}
+	              </ul>
+	            </li>
+	           
+	           
 	            <li class="dropdown user-dropdown">
 	              <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-user"></i> {{ user.first_name }} {{ user.last_name  }} <b class="caret"></b></a>
 	              <ul class="dropdown-menu">
@@ -100,7 +131,7 @@
    
    {% if system_errors %}
    {% for error in system_errors %}
-    <div class="alert alert-danger">
+    <div class="visible-xs alert alert-danger">
       <span><strong>{{error.message}}</strong></span>
     </div>
     {% endfor %}

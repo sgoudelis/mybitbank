@@ -246,3 +246,11 @@ table.vertical-align-middle tbody > tr > td {
 .black-font {
 	color: #000;
 }
+
+.badge-alert {
+	background-color: red;
+}
+
+.yellow-font {
+	color: yellow;'
+}

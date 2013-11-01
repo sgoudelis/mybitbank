@@ -42,7 +42,7 @@ class Connector(object):
             import config
             self.config = config.config
         except (AttributeError, ImportError) as e:
-            self.errors.append({'message': 'Error occurred while compiling list of accounts (%s)' % (e)})
+            self.errors.append({'message': 'Error occurred while compiling list of accounts (%s)' % (e), 'when': datetime.datetime.utcnow()})
         
         for currency in self.config:
             self.services[currency] = ServiceProxy("http://%s:%s@%s:%s" % (self.config[currency]['rpcusername'], 
@@ -73,7 +73,7 @@ class Connector(object):
             peers = self.services[currency].getpeerinfo()
         except Exception, e:
             # in case of an error, store the error, remove the service and move on
-            self.errors.append({'message': 'Error occurred while getting peers info of accounts (currency: %s, error:%s)' % (currency, e)})
+            self.errors.append({'message': 'Error occurred while getting peers info of accounts (currency: %s, error:%s)' % (currency, e), 'when': datetime.datetime.utcnow()})
             self.removeCurrencyService(currency)
         return peers
     
@@ -99,7 +99,7 @@ class Connector(object):
                 fresh_accounts[currency] = self.services[currency].listaccounts()
             except Exception, e:
                 # in case of an error, store the error, remove the service and move on
-                self.errors.append({'message': 'Error occurred while getting a list of accounts (currency: %s, error:%s)' % (currency, e)})
+                self.errors.append({'message': 'Error occurred while getting a list of accounts (currency: %s, error:%s)' % (currency, e), 'when': datetime.datetime.utcnow()})
                 self.removeCurrencyService(currency)
             
         # get a list of archived address
@@ -127,7 +127,7 @@ class Connector(object):
                         try:
                             account_addresses = self.getaddressesbyaccount(account_name, currency)
                         except Exception, e:
-                            self.errors.append({'message': 'Error getting addresses for account %s (currency: %s, error:%s)' % (account_name, currency, e)})
+                            self.errors.append({'message': 'Error getting addresses for account %s (currency: %s, error:%s)' % (account_name, currency, e), 'when': datetime.datetime.utcnow()})
                             
                         # check all addresses if they are in the archive list
                         for ignored_address in address_ignore_list:
@@ -158,7 +158,7 @@ class Connector(object):
                                                        })
                     
         except Exception as e:
-            self.errors.append({'message': 'Error occurred while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})
+            self.errors.append({'message': 'Error occurred while compiling list of accounts (currency: %s, error:%s)' % (currency, e), 'when': datetime.datetime.utcnow()})
             self.removeCurrencyService(currency)
         
         # cache the result
@@ -222,7 +222,7 @@ class Connector(object):
         try:
             transactions = self.services[currency].listtransactions(account_name, limit, start)
         except Exception as e:
-            self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listtransactions()' % (e.error)})
+            self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listtransactions()' % (e), 'when': datetime.datetime.utcnow()})
             self.removeCurrencyService(currency)
             
         for transaction in transactions:
@@ -237,7 +237,7 @@ class Connector(object):
                 if not transaction_details.get('code', False):
                     transaction['details'] = transaction_details
                 else:
-                    self.errors.append({'message': transaction_details})
+                    self.errors.append({'message': transaction_details, 'when': datetime.datetime.utcnow()})
             
         # cache the result
         self.cache['transactions'][cache_hash] = {'data': transactions, 'when': datetime.datetime.now()}
@@ -291,7 +291,7 @@ class Connector(object):
                 balances[currency] = generic.longNumber(self.services[currency].getbalance())
             except Exception as e:
                 # in case of an Exception continue on to the next currency service (xxxcoind)
-                self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e)})
+                self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e), 'when': datetime.datetime.utcnow()})
                 self.removeCurrencyService(currency)
         
         self.cache['balances'][cache_hash] = {'data': balances, 'when': datetime.datetime.now()}
