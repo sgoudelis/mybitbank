@@ -72,7 +72,6 @@ class Connector(object):
         try:
             peers = self.services[currency].getpeerinfo()
         except Exception, e:
-            raise
             # in case of an error, store the error, remove the service and move on
             self.errors.append({'message': 'Error occurred while getting peers info of accounts (currency: %s, error:%s)' % (currency, e)})
             self.removeCurrencyService(currency)
@@ -99,7 +98,6 @@ class Connector(object):
             try:
                 fresh_accounts[currency] = self.services[currency].listaccounts()
             except Exception, e:
-                raise
                 # in case of an error, store the error, remove the service and move on
                 self.errors.append({'message': 'Error occurred while getting a list of accounts (currency: %s, error:%s)' % (currency, e)})
                 self.removeCurrencyService(currency)
@@ -160,7 +158,6 @@ class Connector(object):
                                                        })
                     
         except Exception as e:
-            raise
             self.errors.append({'message': 'Error occurred while compiling list of accounts (currency: %s, error:%s)' % (currency, e)})
             self.removeCurrencyService(currency)
         
@@ -225,7 +222,6 @@ class Connector(object):
         try:
             transactions = self.services[currency].listtransactions(account_name, limit, start)
         except Exception as e:
-            raise
             self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listtransactions()' % (e.error)})
             self.removeCurrencyService(currency)
             

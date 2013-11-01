@@ -19,7 +19,6 @@ def index(request, page=0):
     page_title = "Transactions"
     
     hide_moves = request.user.setting.get('hide_moves')
-    print 'hide_moves: %s' % hide_moves
     
     # get addressbook
     addressBookAddresses = savedAddress.objects.filter(status__gt=1)
