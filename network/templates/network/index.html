@@ -65,9 +65,9 @@
 
 </div>
 
-<link rel="stylesheet" type="text/css" href="//cdn.leafletjs.com/leaflet-0.6.4/leaflet.css">
+<link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css">
 <link rel="stylesheet" type="text/css" href="{% static 'dashboard/css/leaflet.awesome-markers.css' %}">
-<script type='text/javascript' src="//cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+<script type='text/javascript' src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
 <script type='text/javascript' src="{% static 'dashboard/js/leaflet/leaflet.awesome-markers.min.js' %}"></script>
    
 <script>
@@ -79,7 +79,7 @@ var map = L.map('map', {
         worldCopyJump: true,
       });
      
-L.tileLayer('//{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
     styleId: 999,
     key : '699736f928ae42ac843ca20ec4b5f664',
     detectRetina: true,
