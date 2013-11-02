@@ -20,20 +20,25 @@ def index(request, selected_currency=sorted(connector.config.keys())[0]):
     sections = generic.getSiteSections(current_section)
     
     g = GeoIP()
+    notsupported = 0;
     peers = generic.getPeerInfo(connector, selected_currency)
-    for peer in peers:
-        info = g.city(peer['addr'].partition(':')[0])
-        peer['country'] = info['country_name']
-        peer['city'] =  info['city'] if info['city'] != None else 'N/A'
-        peer['lat'] =  info['latitude'];
-        peer['lon'] =  info['longitude'];
-        peer['subver'] = peer['subver'].replace("/","")
-        peer['in'] = generic.humanBytes(peer['bytesrecv']) if 'bytesrecv' in peer else 'N/A'
-        peer['out'] = generic.humanBytes(peer['bytessent']) if 'bytessent' in peer else 'N/A'
-        peer['lastsend'] = generic.twitterizeDate(peer['lastsend']) if 'lastsend' in peer else 'N/A'
-        peer['lastrecv'] = generic.twitterizeDate(peer['lastrecv']) if 'lastrecv' in peer else 'N/A'
-        peer['conntime'] = generic.timeSince(peer['conntime']) if 'conntime' in peer else 'N/A'
-        peer['syncnode'] = peer['syncnode'] if 'syncnode' in peer else False
+    if 'error' in peers :
+        peers = {}
+        notsupported = 1
+    else :
+        for peer in peers:
+            info = g.city(peer['addr'].partition(':')[0])
+            peer['country'] = info['country_name']
+            peer['city'] =  info['city'] if info['city'] != None else 'N/A'
+            peer['lat'] =  info['latitude'];
+            peer['lon'] =  info['longitude'];
+            peer['subver'] = peer['subver'].replace("/","")
+            peer['in'] = generic.humanBytes(peer['bytesrecv']) if 'bytesrecv' in peer else 'N/A'
+            peer['out'] = generic.humanBytes(peer['bytessent']) if 'bytessent' in peer else 'N/A'
+            peer['lastsend'] = generic.twitterizeDate(peer['lastsend']) if 'lastsend' in peer else 'N/A'
+            peer['lastrecv'] = generic.twitterizeDate(peer['lastrecv']) if 'lastrecv' in peer else 'N/A'
+            peer['conntime'] = generic.timeSince(peer['conntime']) if 'conntime' in peer else 'N/A'
+            peer['syncnode'] = peer['syncnode'] if 'syncnode' in peer else False
     
     currency_codes = []
     currency_names = {}
@@ -75,7 +80,8 @@ def index(request, selected_currency=sorted(connector.config.keys())[0]):
                'currency_symbols': currency_symbols,
                'selected_currency': selected_currency,
                'userinfo': userinfo,
-               'peers': peers
+               'peers': peers,
+               'notsupported': notsupported
                }
     return render(request, 'network/index.html', context)
 

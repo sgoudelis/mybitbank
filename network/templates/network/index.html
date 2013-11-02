@@ -9,6 +9,7 @@
 {% block site_brand %}{{ globals.site_brand }}{% endblock %}
 
 {% block content %}
+
 <div class="row">
 	<div class="col-lg-12">
 		<div id="map" style="height:400px;"></div>
@@ -22,7 +23,7 @@
 	{% endfor %}
 </ul>
 <div class="panel panel-default no-border-top no-border-radius">
-
+	{% if peers|length > 0 %}
 	<!-- Table -->
 	<table class="table table-condensed no-border-top no-border-radius vertical-align-middle">
 		<thead>
@@ -62,6 +63,18 @@
 			{% endfor %}
 		</tbody>
 	</table>
+	 {% else %}
+	 <div class="row">
+		 <div class="col-sm-10 col-sm-offset-1">
+		 	<br>
+		 		{% if notsupported == 1 %}
+		 			<div class="alert alert-warning">Your coind does not support peer information :(</div>
+	     	    {% else %}
+	     	    	<div class="alert alert-info">Currently, your selected coind is not connected to any peers</div>
+	     	    {% endif %}
+	       </div>
+     </div>
+    {% endif %}
 
 </div>
 
