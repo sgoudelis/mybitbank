@@ -1,5 +1,7 @@
 {% extends "dashboard/base.html" %}
 
+{% load static %}
+
 {% load dashboard_extras %}
 
 {% block page_title %}{{ page_title }}{% endblock %}
@@ -7,6 +9,8 @@
 {% block site_brand %}{{ globals.site_brand }}{% endblock %}
 
 {% block content %}
+
+<div id="map" style="height:400px;"></div>
 
 <ul class="nav nav-tabs">
 	{% for currency in currency_codes %}
@@ -58,5 +62,84 @@
 	</table>
 
 </div>
+
+<link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css">
+<link rel="stylesheet" type="text/css" href="{% static 'dashboard/css/leaflet.awesome-markers.css' %}">
+<script type='text/javascript' src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+<script type='text/javascript' src="{% static 'dashboard/js/leaflet/leaflet.awesome-markers.min.js' %}"></script>
+   
+<script>
+
+var userLocation = new L.LatLng('{{ userinfo.lat }}', '{{ userinfo.lon }}');
+var map = L.map('map', {
+      	center: userLocation,
+    	zoom: 2,
+        worldCopyJump: true,
+      });
+     
+L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+    styleId: 999,
+    key : '699736f928ae42ac843ca20ec4b5f664',
+    detectRetina: true,
+    attribution: 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade. Font Awesome by Dave Gandy',
+}).addTo(map);
+
+
+var marker = new L.Marker(userLocation, {
+	icon: L.AwesomeMarkers.icon({icon: 'home', prefix: 'icon', markerColor: 'purple'})
+});
+map.addLayer(marker);
+
+
+var items = [
+{% for peer in peers %}
+{
+    lat: "{{ peer.lat }}",
+    lon: "{{ peer.lon }}"
+},
+{% endfor %}
+];
+
+drawData();
+
+//draw all the data on the map
+function drawData() {
+    var item, o;
+    //draw markers for all items
+    for (item in items) {
+        o = items[item];
+        var loc = new L.LatLng(o.lat, o.lon);
+        createPolyLine(loc, userLocation);
+    }
+}
+
+//draw polyline
+function createPolyLine(loc1, loc2) {
+    
+    var latlongs = [loc1, loc2];
+    if (Math.abs(loc1.lng - loc2.lng) > 180) {
+        latlongs = [loc1.wrap(179, -179), loc2];
+    }
+    var polyline = new L.Polyline(latlongs, {
+        color: '#4FEE1D',
+        opacity: 1,
+        weight: 1,
+        clickable: false
+    }).addTo(map);
+
+    //distance
+    var s = '<strong>About</strong> ' + (loc1.distanceTo(loc2) / 1000).toFixed(0) + 'km away from you.</p>';
+
+    var marker = L.marker(loc1, {
+    	icon: L.AwesomeMarkers.icon({icon: 'map-marker', prefix: 'icon', markerColor: 'blue'})
+    }).addTo(map);
+    if (marker) {
+        marker.bindPopup(s);
+    }
+
+}
+
+
+</script>
 
 {% endblock %}
