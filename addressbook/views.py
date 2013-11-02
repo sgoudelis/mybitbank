@@ -23,7 +23,7 @@ def index(request):
     '''
     
     context = getAddressBookCommonContext(request=request)
-    
+    print connector.errors
     return render(request, 'addressbook/index.html', context)
 
 def getAddressBookCommonContext(request, form=None):
@@ -55,6 +55,8 @@ def getAddressBookCommonContext(request, form=None):
     
     context = {
                'globals': config.MainConfig['globals'], 
+               'system_errors': connector.errors,
+               'system_alerts': connector.alerts,
                'user': request.user,
                'breadcrumbs': generic.buildBreadcrumbs(current_section), 
                'page_sections': sections, 

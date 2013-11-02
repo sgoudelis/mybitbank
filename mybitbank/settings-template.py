@@ -101,6 +101,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'connections.switcher.CurrencyEnabler',
 )
 
 ROOT_URLCONF = 'mybitbank.urls'

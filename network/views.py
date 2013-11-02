@@ -48,6 +48,7 @@ def index(request, selected_currency=sorted(connector.config.keys())[0]):
                'globals': config.MainConfig['globals'], 
                'breadcrumbs': generic.buildBreadcrumbs(current_section, 'all'), 
                'system_errors': connector.errors,
+               'system_alerts': connector.alerts,
                'page_title': page_title, 
                'page_sections': sections, 
                'request': request,

@@ -36,6 +36,7 @@ def index(request):
                'globals': config.MainConfig['globals'], 
                'breadcrumbs': generic.buildBreadcrumbs(current_section, 'all'), 
                'system_errors': connector.errors,
+               'system_alerts': connector.alerts,
                'page_title': page_title, 
                'page_sections': sections, 
                'accounts': accounts,
@@ -67,6 +68,8 @@ def getAddAccountFormContext(account_name='', currency='btc', error=None, form=N
     sections = generic.getSiteSections(current_section)
     context = {
                'globals': config.MainConfig['globals'], 
+               'system_alerts': connector.alerts,
+               'system_errors': connector.errors,
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', 'Create'),
                'page_sections': sections, 
                'page_title': page_title, 
@@ -167,6 +170,7 @@ def details(request, account_address="pipes"):
     context = {
                'globals': config.MainConfig['globals'],
                'request': request,
+               'system_alerts': connector.alerts,
                'system_errors': connector.errors,
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', account['name'] or account['alternative_name']), 
                'page_title': page_title, 

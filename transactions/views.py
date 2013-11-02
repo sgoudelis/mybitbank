@@ -98,6 +98,7 @@ def index(request, page=0):
     context = {
                'globals': config.MainConfig['globals'],
                'system_errors': connector.errors,
+               'system_alerts': connector.alerts,
                'request': request,
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', current_activesession), 
                'page_title': page_title, 

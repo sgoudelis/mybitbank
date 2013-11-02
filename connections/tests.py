@@ -268,7 +268,7 @@ class ConnectorsTests(TestCase):
         '''
         
         new_address = self.connector.getnewaddress('INV', rawData['new_account_address'])
-        self.assertEquals(new_address, None)
+        self.assertEquals(new_address, False)
 
     def test_getnewaddress_unicode_account_name(self):
         '''

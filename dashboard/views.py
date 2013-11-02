@@ -54,6 +54,7 @@ def index(request):
     context = {
                'globals': config.MainConfig['globals'], 
                'system_errors': connector.errors,
+               'system_alerts': connector.alerts,
                'request': request,
                'breadcrumbs': generic.buildBreadcrumbs(currect_section), 
                'page_title': page_title, 

@@ -52,6 +52,7 @@ def commonContext(request={}, selected_currency='btc', form=None, errors=[], sho
     context = {
                'globals': config.MainConfig['globals'], 
                'system_errors': connector.errors,
+               'system_alerts': connector.alerts,
                'request': request,
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', currency_names[selected_currency]), 
                'page_sections': generic.getSiteSections('transfer'), 

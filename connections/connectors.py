@@ -9,10 +9,12 @@ from bitcoinrpc.authproxy import JSONRPCException
 
 class Connector(object):
     # how long to cache responses
-    caching_time = 60
+    caching_time = 10
+    disable_time = 10
     config = {}
     services = {}
     errors = []
+    alerts = []
     
     # source: https://github.com/zamgo/PHPCoinAddress/blob/master/README.md
     prefixes = {
@@ -31,7 +33,7 @@ class Connector(object):
         '''
         Constructor, load config 
         '''
-        
+        print "Connector class initializing..."
         self.cache = Cacher({
              'accounts': {},
              'transactions': {},
@@ -50,7 +52,10 @@ class Connector(object):
                                                                            self.config[currency]['rpchost'], 
                                                                            self.config[currency]['rpcport'])
                                                   )
-    
+            # true is enabled, anything but bool is disabled up to the value as a timestamp
+            # this will caught by the Middleware
+            self.config[currency]['enabled'] = True
+            
     def getNet(self, currency):
         return self.config[currency].get('network', 'testnet')
 
@@ -58,7 +63,9 @@ class Connector(object):
         '''
         Remove the ServiceProxy object from the list of service in case of a xxxcoind daemon not responding in time
         '''
-        if self.services[currency]:
+        if self.services.get(currency, False):
+            self.alerts.append({'type': 'currencybackend', 'currency': currency, 'message': 'Currency service for %s is disabled for %s secs due an error communicating.' % (currency.upper(), self.disable_time), 'when': datetime.datetime.utcnow()})
+            self.config[currency]['enabled'] = datetime.datetime.utcnow() + datetime.timedelta(0,self.disable_time)
             del self.services[currency]
 
     def longNumber(self, x):
@@ -69,8 +76,10 @@ class Connector(object):
     
     def getpeerinfo(self, currency):
         # get data from the connector (coind)
+        peers = []
         try:
-            peers = self.services[currency].getpeerinfo()
+            if self.config[currency]['enabled'] is True:
+                peers = self.services[currency].getpeerinfo()
         except Exception, e:
             # in case of an error, store the error, remove the service and move on
             self.errors.append({'message': 'Error occurred while getting peers info of accounts (currency: %s, error:%s)' % (currency, e), 'when': datetime.datetime.utcnow()})
@@ -94,13 +103,14 @@ class Connector(object):
         
         # get data from the connector (coind)
         fresh_accounts = {}
-        for currency in self.services.keys():
-            try:
-                fresh_accounts[currency] = self.services[currency].listaccounts()
-            except Exception, e:
-                # in case of an error, store the error, remove the service and move on
-                self.errors.append({'message': 'Error occurred while getting a list of accounts (currency: %s, error:%s)' % (currency, e), 'when': datetime.datetime.utcnow()})
-                self.removeCurrencyService(currency)
+        for currency in self.config.keys():
+            if self.config[currency]['enabled'] is True:
+                try:
+                    fresh_accounts[currency] = self.services[currency].listaccounts()
+                except Exception, e:
+                    # in case of an error, store the error, remove the service and move on
+                    self.errors.append({'message': 'Error occurred while getting a list of accounts (currency: %s, error:%s)' % (currency, e), 'when': datetime.datetime.utcnow()})
+                    self.removeCurrencyService(currency)
             
         # get a list of archived address
         address_ignore_list = []
@@ -118,44 +128,45 @@ class Connector(object):
         
         try:
             accounts = {}
-            for currency in self.services.keys():
-                accounts[currency] = []
-                if fresh_accounts.get(currency, False):
-                    accounts_for_currency = fresh_accounts[currency]
-        
-                    for account_name, account_balance in accounts_for_currency.items():
-                        try:
-                            account_addresses = self.getaddressesbyaccount(account_name, currency)
-                        except Exception, e:
-                            self.errors.append({'message': 'Error getting addresses for account %s (currency: %s, error:%s)' % (account_name, currency, e), 'when': datetime.datetime.utcnow()})
+            for currency in self.config.keys():
+                if self.config[currency]['enabled'] is True:
+                    accounts[currency] = []
+                    if fresh_accounts.get(currency, False):
+                        accounts_for_currency = fresh_accounts[currency]
+            
+                        for account_name, account_balance in accounts_for_currency.items():
+                            try:
+                                account_addresses = self.getaddressesbyaccount(account_name, currency)
+                            except Exception, e:
+                                self.errors.append({'message': 'Error getting addresses for account %s (currency: %s, error:%s)' % (account_name, currency, e), 'when': datetime.datetime.utcnow()})
+                                
+                            # check all addresses if they are in the archive list
+                            for ignored_address in address_ignore_list:
+                                if ignored_address in account_addresses:
+                                    del account_addresses[account_addresses.index(ignored_address)]
                             
-                        # check all addresses if they are in the archive list
-                        for ignored_address in address_ignore_list:
-                            if ignored_address in account_addresses:
-                                del account_addresses[account_addresses.index(ignored_address)]
-                        
-                        # check all addresses if they are in the hidden list
-                        hidden_flag = False
-                        for hidden_address in address_hidden_list:
-                            if hidden_address in account_addresses:
-                                hidden_flag = True
-                        
-                        # catch default address without name
-                        if account_name == "":
-                            alternative_name = '(no name)'
-                        else:
-                            alternative_name = account_name
-                        
-                        # if there any address left then add it to the list
-                        if account_addresses:
-                            accounts[currency].append({
-                                                       'name': account_name, 
-                                                       'balance': self.longNumber(account_balance), 
-                                                       'addresses': account_addresses, 
-                                                       'hidden': hidden_flag,
-                                                       'alternative_name': alternative_name,
-                                                       'currency': currency.upper(),
-                                                       })
+                            # check all addresses if they are in the hidden list
+                            hidden_flag = False
+                            for hidden_address in address_hidden_list:
+                                if hidden_address in account_addresses:
+                                    hidden_flag = True
+                            
+                            # catch default address without name
+                            if account_name == "":
+                                alternative_name = '(no name)'
+                            else:
+                                alternative_name = account_name
+                            
+                            # if there any address left then add it to the list
+                            if account_addresses:
+                                accounts[currency].append({
+                                                           'name': account_name, 
+                                                           'balance': self.longNumber(account_balance), 
+                                                           'addresses': account_addresses, 
+                                                           'hidden': hidden_flag,
+                                                           'alternative_name': alternative_name,
+                                                           'currency': currency.upper(),
+                                                           })
                     
         except Exception as e:
             self.errors.append({'message': 'Error occurred while compiling list of accounts (currency: %s, error:%s)' % (currency, e), 'when': datetime.datetime.utcnow()})
@@ -190,7 +201,7 @@ class Connector(object):
         except:
             pass
         
-        if self.services[currency]:
+        if self.config.get(currency, False) and self.config[currency]['enabled'] is True:
             addresses = self.services[currency].getaddressesbyaccount(name)
             addresses_list = []
             for address in addresses:
@@ -219,11 +230,12 @@ class Connector(object):
             pass
         
         transactions = []
-        try:
-            transactions = self.services[currency].listtransactions(account_name, limit, start)
-        except Exception as e:
-            self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listtransactions()' % (e), 'when': datetime.datetime.utcnow()})
-            self.removeCurrencyService(currency)
+        if self.config[currency]['enabled'] is True:
+            try:
+                transactions = self.services[currency].listtransactions(account_name, limit, start)
+            except Exception as e:
+                self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listtransactions()' % (e), 'when': datetime.datetime.utcnow()})
+                self.removeCurrencyService(currency)
             
         for transaction in transactions:
             transaction['timereceived_pretty'] = generic.twitterizeDate(transaction.get('timereceived', 'never'))
@@ -264,10 +276,17 @@ class Connector(object):
         '''
         Create a new address
         '''
-        if self.services.get(currency, False) and type(account_name) in [str, unicode] and len(account_name):
-            new_address = self.services[currency].getnewaddress(account_name)
+        new_address = None
+        
+        if currency not in self.config.keys():
+            return False
+        
+        if self.config[currency]['enabled'] is True:
+            if self.services.get(currency, False) and type(account_name) in [str, unicode] and len(account_name):
+                new_address = self.services[currency].getnewaddress(account_name)
         else:
-            new_address = None
+            return False
+        
         return new_address
     
     def getbalance(self):
@@ -286,13 +305,14 @@ class Connector(object):
             pass
         
         balances = {}
-        for currency in self.services.keys():
-            try:
-                balances[currency] = generic.longNumber(self.services[currency].getbalance())
-            except Exception as e:
-                # in case of an Exception continue on to the next currency service (xxxcoind)
-                self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e), 'when': datetime.datetime.utcnow()})
-                self.removeCurrencyService(currency)
+        for currency in self.config.keys():
+            if self.config[currency]['enabled'] is True:
+                try:
+                    balances[currency] = generic.longNumber(self.services[currency].getbalance())
+                except Exception as e:
+                    # in case of an Exception continue on to the next currency service (xxxcoind)
+                    self.errors.append({'message': 'Error occurred while getting balances (currency: %s, error: %s)' % (currency, e), 'when': datetime.datetime.utcnow()})
+                    self.removeCurrencyService(currency)
         
         self.cache['balances'][cache_hash] = {'data': balances, 'when': datetime.datetime.now()}
         
@@ -320,6 +340,9 @@ class Connector(object):
         
         if currency not in self.services.keys():
             return {'message': 'Non-existing currency %s' % currency, 'code':-100}
+        
+        if self.config[currency]['enabled'] is not True:
+            return {'message': 'Currency service %s disabled for now' % currency, 'code':-150}
         
         if not generic.isFloat(amount) or type(amount) is bool:
             return {'message': 'Amount is not a number', 'code':-102}
@@ -394,8 +417,11 @@ class Connector(object):
         if type(transaction) is not dict:
             return {'message': 'Invalid transaction details', 'code': -120}
         
-        if currency not in self.services.keys():
+        if currency not in self.config.keys():
             return {'message': 'Non-existing currency %s' % currency, 'code': -121}
+        
+        if self.config[currency]['enabled'] is not True:
+            return {'message': 'Currency service %s disabled for now' % currency, 'code':-150}
         
         txid = transaction.get('txid', "")
         
@@ -458,7 +484,7 @@ class Connector(object):
         '''
         Unlock the wallet
         '''
-        
+
         if type(passphrase) not in [str, unicode]:
             return {'message': 'Incorrect data type for passphrase', 'code': -110}
         
@@ -467,6 +493,9 @@ class Connector(object):
         
         if currency not in self.services.keys():
             return {'message': 'Invalid non-existing or disabled currency', 'code': -112}
+        
+        if self.config[currency]['enabled'] is not True:
+            return {'message': 'Currency service %s disabled for now' % currency, 'code':-150}
         
         try:
             unload_exit = self.services[currency].walletpassphrase(passphrase, 30)
