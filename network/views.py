@@ -45,6 +45,7 @@ def index(request, selected_currency=sorted(connector.config.keys())[0]):
     
     currency_codes = sorted(currency_codes)
     
+    ip = '127.0.0.1'
     try :
         '''
         We need some cache here or another way to detect *coind bind address
@@ -52,8 +53,8 @@ def index(request, selected_currency=sorted(connector.config.keys())[0]):
         data = urllib2.urlopen('http://wtfismyip.com/json')
         data = json.load(data)
         ip = data['YourFuckingIPAddress']
-    except (urllib2.URLError, TypeError) as e :
-        ip = '127.0.0.1'
+    except (urllib2.URLError, urllib2.HTTPError, TypeError) as e :
+        print e
     
     info =  g.city(ip)
     userinfo = {}
