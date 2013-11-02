@@ -64,7 +64,7 @@ def index(request, selected_currency=sorted(connector.config.keys())[0]):
     page_title = _("Network")
     context = {
                'globals': config.MainConfig['globals'], 
-               'breadcrumbs': generic.buildBreadcrumbs(current_section, 'all'), 
+               'breadcrumbs': generic.buildBreadcrumbs(current_section, '', currency_names[selected_currency]), 
                'system_errors': connector.errors,
                'page_title': page_title, 
                'page_sections': sections, 
