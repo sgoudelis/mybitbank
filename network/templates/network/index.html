@@ -9,9 +9,11 @@
 {% block site_brand %}{{ globals.site_brand }}{% endblock %}
 
 {% block content %}
-
-<div id="map" style="height:400px;"></div>
-
+<div class="row">
+	<div class="col-lg-12">
+		<div id="map" style="height:400px;"></div>
+	</div>
+</div>
 <ul class="nav nav-tabs">
 	{% for currency in currency_codes %}
 	<li {% if selected_currency == currency %}class="active"{% endif %}>
@@ -28,11 +30,11 @@
 			<th>IP : port</th>
 			<th>Country</th>
 			<th>Version</th>
-			<th class="text-center">In / Out</th>
-			<th class="text-center">Last Send/Rec.</th>
-			<th class="text-center">Connect Time</th>
-			<th class="text-center">Ban Score</th>
-			<th class="text-center">Sync Node</th>
+			<th class="hidden-xs text-center">In / Out</th>
+			<th class="hidden-xs text-center">Last Send/Rec.</th>
+			<th class="hidden-sm hidden-xs text-center">Connect Time</th>
+			<th class="hidden-sm hidden-xs text-center">Ban Score</th>
+			<th class="hidden-sm hidden-xs text-center">Sync Node</th>
 		</thead>
 		<tbody>
 			{% for peer in peers %}
@@ -41,17 +43,17 @@
 				<td>{{ peer.addr }}</td>
 				<td>{{ peer.country }} ({{ peer.city }})</td>
 				<td>{{ peer.subver }}</td>
-				<td class="text-right">
+				<td class="hidden-xs text-right">
 					<p class="text-success">{{ peer.in }} <span class="glyphicon glyphicon-circle-arrow-down"></span></p>
 					<p class="text-danger">{{ peer.out }} <span class="glyphicon glyphicon-circle-arrow-up"></span></p>
 				</td>
-				<td class="text-right">
+				<td class="hidden-xs text-right">
 					<p class="text-success">{{ peer.lastrecv }} <span class="glyphicon glyphicon-circle-arrow-down"></span></p>
 					<p class="text-danger">{{ peer.lastsend }} <span class="glyphicon glyphicon-circle-arrow-up"></span></p>
 				</td>
-				<td class="text-center">{{ peer.conntime }}</td>
-				<td class="text-center">{{ peer.banscore }}</td>
-				<td class="text-center">
+				<td class="hidden-sm hidden-xs text-center">{{ peer.conntime }}</td>
+				<td class="hidden-sm hidden-xs text-center">{{ peer.banscore }}</td>
+				<td class="hidden-sm hidden-xs text-center">
 					{% if peer.syncnode %}
 					<span style="color: #1C9E3F;" class="bigger-icon glyphicon glyphicon-ok-circle"></span>
 					{% endif %}
