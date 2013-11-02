@@ -80,6 +80,9 @@ class Connector(object):
         try:
             if self.config[currency]['enabled'] is True:
                 peers = self.services[currency].getpeerinfo()
+        except JSONRPCException:
+            # in case coind not support getpeerinfo command
+            return {'error'} 
         except Exception, e:
             # in case of an error, store the error, remove the service and move on
             self.errors.append({'message': 'Error occurred while getting peers info of accounts (currency: %s, error:%s)' % (currency, e), 'when': datetime.datetime.utcnow()})
