@@ -44,7 +44,10 @@
 				<td class="text-center"><span class="label label-primary">{{ forloop.counter }}</span></td>
 				<td>{{ peer.ip }}</td>
 				<td class="hidden-xs text-center">{{ peer.port }}</td>
-				<td><img src="{% static 'dashboard/images/flags/' %}{{ peer.country_code|lower }}.png" /> {{ peer.country }} {% if peer.city|length > 0 %} ({{ peer.city }}) {% endif %}</td>
+				<td>
+					<img src="{% static 'dashboard/images/flags/' %}{{ peer.country_code|lower }}.png" /> 
+					<a href="#" onclick="javascript: return zoomTo({{ peer.lat }}, {{ peer.lon }});">{{ peer.country }} {% if peer.city|length > 0 %} ({{ peer.city }}) {% endif %}</a>
+				</td>
 				<td>{{ peer.subver }}</td>
 				<td class="hidden-xs text-right">
 					<p class="text-success">{{ peer.in }} <span class="glyphicon glyphicon-circle-arrow-down"></span></p>
@@ -157,6 +160,12 @@ function createPolyLine(loc1, loc2) {
         marker.bindPopup(s);
     }
 
+}
+
+function zoomTo(lat, lon) {
+	map.panTo((new L.LatLng(lat, lon)));
+	map.setZoom(11);
+	return false;
 }
 
 
