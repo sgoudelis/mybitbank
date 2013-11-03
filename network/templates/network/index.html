@@ -25,6 +25,7 @@
 <div class="panel panel-default no-border-top no-border-radius">
 	{% if peers|length > 0 %}
 	<!-- Table -->
+	<div class="table-responsive">
 	<table class="table table-condensed no-border-top no-border-radius vertical-align-middle">
 		<thead>
 			<th class="text-center">#</th>
@@ -68,6 +69,7 @@
 			{% endfor %}
 		</tbody>
 	</table>
+	</div>
 	 {% else %}
 	 <div class="row">
 		 <div class="col-sm-10 col-sm-offset-1">
