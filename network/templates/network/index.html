@@ -28,8 +28,9 @@
 	<table class="table table-condensed no-border-top no-border-radius vertical-align-middle">
 		<thead>
 			<th class="text-center">#</th>
-			<th>IP : port</th>
-			<th>Country</th>
+			<th>IP</th>
+			<th class="hidden-xs text-center">Port</th>
+			<th>Location</th>
 			<th>Version</th>
 			<th class="hidden-xs text-center">In / Out</th>
 			<th class="hidden-xs text-center">Last Send/Rec.</th>
@@ -41,8 +42,9 @@
 			{% for peer in peers %}
 			<tr>
 				<td class="text-center"><span class="label label-primary">{{ forloop.counter }}</span></td>
-				<td>{{ peer.addr }}</td>
-				<td>{{ peer.country }} ({{ peer.city }})</td>
+				<td>{{ peer.ip }}</td>
+				<td class="hidden-xs text-center">{{ peer.port }}</td>
+				<td><img src="{% static 'dashboard/images/flags/' %}{{ peer.country_code|lower }}.png" /> {{ peer.country }} {% if peer.city|length > 0 %} ({{ peer.city }}) {% endif %}</td>
 				<td>{{ peer.subver }}</td>
 				<td class="hidden-xs text-right">
 					<p class="text-success">{{ peer.in }} <span class="glyphicon glyphicon-circle-arrow-down"></span></p>

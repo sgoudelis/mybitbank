@@ -28,8 +28,11 @@ def index(request, selected_currency=sorted(connector.config.keys())[0]):
     else :
         for peer in peers:
             info = g.city(peer['addr'].partition(':')[0])
+            peer['ip'] = peer['addr'].partition(':')[0]
+            peer['port'] = peer['addr'].partition(':')[2]
             peer['country'] = info['country_name']
-            peer['city'] =  info['city'] if info['city'] != None else 'N/A'
+            peer['country_code'] = info['country_code']
+            peer['city'] =  info['city'] if info['city'] != None else ''
             peer['lat'] =  info['latitude'];
             peer['lon'] =  info['longitude'];
             peer['subver'] = peer['subver'].replace("/","")
