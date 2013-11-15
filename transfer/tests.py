@@ -303,9 +303,9 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[1]/div/div/ul[@class='errorlist']"), []) 
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[2]/div/div/ul[@class='errorlist']"), [])
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[5]/div/div/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/div/div/ul[@class='errorlist']"), []) 
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[3]/div/div/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[6]/div/div/ul[@class='errorlist']"), [])
         
     def test_tranfer_submit_with_from_account_value(self):
         '''
@@ -333,9 +333,9 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[1]/div/div/ul[@class='errorlist']"), []) 
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[2]/div/div/ul[@class='errorlist']"), [])
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[5]/div/div/ul[@class='errorlist']"), [])
+        self.assertEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/div/div/ul[@class='errorlist']"), []) 
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[3]/div/div/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[6]/div/div/ul[@class='errorlist']"), [])
        
     def test_tranfer_submit_with_to_account_value(self):
         '''
@@ -363,13 +363,13 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[1]/div/div/ul[@class='errorlist']"), []) 
-        self.assertEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[2]/div/div/ul[@class='errorlist']"), [])
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[5]/div/div/ul[@class='errorlist']"), []) 
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/div/div/ul[@class='errorlist']"), []) 
+        self.assertEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[3]/div/div/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[6]/div/div/ul[@class='errorlist']"), []) 
         
     def test_tranfer_submit_with_from_to_values(self):
         '''
-        Test with empty addresses
+        Test with from/to addresses without amount
         '''
         
         currency = 'btc'
@@ -393,9 +393,9 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[1]/div/div/ul[@class='errorlist']"), []) 
-        self.assertEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[2]/div/div/ul[@class='errorlist']"), [])
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[5]/div/div/ul[@class='errorlist']"), []) 
+        self.assertEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/div/div/ul[@class='errorlist']"), []) 
+        self.assertEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[3]/div/div/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[6]/div/div/ul[@class='errorlist']"), []) 
         
     def test_tranfer_submit_with_from_to_same_values(self):
         '''
@@ -423,7 +423,7 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/div[2]/ul[@class='errorlist']"), []) 
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/ul[@class='errorlist']"), []) 
         
     def test_tranfer_submit_with_correct_values_move(self):
         '''
@@ -473,7 +473,7 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/div[2]/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/ul[@class='errorlist']"), [])
     
     def test_tranfer_submit_invalid_address(self):
         '''
@@ -489,7 +489,7 @@ class TransferIndexTests(TestCase):
                     'comment': "",    
                     'comment_to': "",   
                     'csrfmiddlewaretoken': "",
-                    'from_address': "mxgWFbqGPywQUKNXdAd3G2",
+                    'from_address': "mxgWFbqGPywQUK",
                     'selected_currency': "inv",
                     'to_address': "mox7nxwfu9hrTQCn24RBTDce"
                     }
@@ -501,8 +501,8 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
 
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[1]/div/div/ul[@class='errorlist']"), [])
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[2]/div/div/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath("//div/div/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath("//div/div/ul[@class='errorlist']"), [])
         
     def test_tranfer_submit_required_pass(self):
         '''
