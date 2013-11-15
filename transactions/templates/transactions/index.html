@@ -84,8 +84,8 @@
                     {% endif %}
                 </table>
                 
-		  <div class="row" style="margin: 20px;">
-		    <div class="col-md-1">Legend:</div>
+		  <div class="well row" style="margin: 20px;">
+		    <div class="col-md-1"><strong>Legend:</strong></div>
 		 	<div class="col-md-2"><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> local address alias</span></div>
 		 	<div class="col-md-2"><span class="addressbook-label address-label label-default">$ address book entry</span></div>
 		 	<div class="col-md-4"><span class="sender-address address-label label-default">$ resolved address from ScriptSig <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="{{ sender_address_tooltip_text }}"></span></span></div>
@@ -93,14 +93,16 @@
 		  </div>
                 
                 {% if show_pager %}
+                <div class="panel-footer">
                 <div class="text-center">
-                <ul class="pagination">
+                <ul class="pagination no-margin">
                   <li {% if current_page == prev_page %}class="disabled"{% endif %}><a href="/transactions/{{ prev_page }}">&laquo;</a></li>
                   {% for i in pages%}
                   <li {% if current_page == i %}class="active"{% endif %}><a href="/transactions/{{ i }}">{{ i }}</a></li>
                   {% endfor %}
                   <li {% if current_page == next_page %}class="disabled"{% endif %}><a href="/transactions/{{ next_page }}">&raquo;</a></li>
                 </ul>
+                </div>
                 {% endif %}
             </div>
         </div>

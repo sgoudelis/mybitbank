@@ -12,6 +12,10 @@
 	margin-bottom: 0px;
 }
 
+.no-margin {
+	margin: 0px !important;
+}
+
 .table-head th {
 	background-color: #f5f5f5;
 }
