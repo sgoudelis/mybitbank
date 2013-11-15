@@ -121,7 +121,7 @@
 	       		<td class="hidden-xs"><span style="color:#ccc;">this account</span></td>
 	       {% elif transaction.category = 'receive' %}
 			  {% if transaction.address.aliases.0.alias %}
-		    	<td class="hidden-xs" nowrap><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag small-info-icon"></span> {{ transaction.address.aliases.0.alias }}</span></td>
+		    	<td class="hidden-xs" nowrap><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> {{ transaction.address.aliases.0.alias }}</span></td>
 	       	  {% else %}
 	       	    <td class="hidden-xs" nowrap><span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span></td>
 	       	  {% endif %}

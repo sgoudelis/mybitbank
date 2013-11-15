@@ -63,10 +63,16 @@ html {
 
 .addressalias-label {
 	font-family: Helvetica !important;
+	background-color: #FFA852;
+	color: #330F0F;
 }
 
 .small-info-icon {
 	font-size: 12px;
+}
+
+.very-small-info-icon {
+    font-size: 10px;
 }
 
 .table thead>tr>th {
