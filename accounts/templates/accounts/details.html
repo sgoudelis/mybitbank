@@ -7,50 +7,83 @@
 {% block content %}   
 	<div class="panel panel-primary">
 	  <div class="panel-heading">
-	    <h3 class="panel-title">{% if account.name %}{{ account.name }}{% else %}{{ account.alternative_name }}{% endif %}</h3>
+	  <div class="row">
+		  <div class="col-md-6">
+		    <h3 class="panel-title">{% if account.name %}{{ account.name }}{% else %}{{ account.alternative_name }}{% endif %}</h3>
+		  </div>
+		  <div class="col-md-6 text-right">
+		  <h3 class="panel-title">{{ account.balance }} {{ account.currency|upper }}</h3>
+		  </div>
+	  </div>
 	  </div>
 	  <div class="panel-body">
 	  
 	  
 	<div class="row">
-	  <div class="col-md-6">
-	  <h4>Details</h4>
-	  <table class="table">
-	  
+	  <div class="col-md-5">
+	  <table class="table no-border table-condensed">
+	  <tr>
+	  	<td>
+	  	<h4>Details</h4>
+	  	</td>
+	  </tr>
 	  <tr>
 	  	<td class="no-top-solid-border" width="10%">Currency</td>
 	  	<td class="no-top-solid-border text-right" width="40%">{{ currency_name }} ({{ currency_symbol }})</td>
 	  </tr>
-	  
 	  <tr>
-	  	<td class="no-top-solid-border" width="10%">Addresses</td>
-	  	<td class="no-top-solid-border" width="40%">
-	  	{% for address in account.addresses %}
-	  	<div style="padding: 4px;" class="row text-right"><span class="address-label label-default">{{ account.currency_symbol }} {{ address }}</span></div>
-	  	{% endfor %}
-	  	</td>
+		<td width="10%">Last activity</td>
+	 	<td width="40%" class="text-right">{{ transactions.0.time_human }}</td>
 	  </tr>
-		<tr>
-			<td width="10%">Last activity</td>
-		 	<td width="40%" class="text-right fixed-font-width">{{ transactions.0.time_pretty }}</td>
-		</tr>
+	  <tr>
+	  	<td>Balance</td>
+	  	<td class="text-right fixed-width-font"><strong>{{ account.balance }}</strong> {{ account.currency|upper }}</td>
+	  </tr>
 	  </table>
 	  </div>
-		<div class="col-md-6">
-		<table class="table">
-		<tr>
-			<td class="no-top-solid-border" width="10%"><h4>Balance</h4></td>
-		 	<td class="no-top-solid-border text-right fixed-font-width" width="40%"><h3>{{ account.balance }} {{ account.currency|upper }}</h3></td>
-		</tr>
-		</table>
+		<div class="col-md-7">
+			
+			<table class="table no-border fat-table">
+			<tr>
+				<td><h4>Addresses</h4></td>
+			</tr>
+		  	{% for address in account.addresses %}
+		  	<tr>
+		  		<td><span class="address-label label-default">{{ account.currency_symbol }} {{ address }}</span></td>
+		  		<td>
+		  		{% if address.aliases.0 %}
+					<div id="link_{{ address }}"><a href="#" onclick="$('div#edit_{{ address }}').toggle(); $('div#link_{{ address }}').toggle(); return false;">{{ address.aliases.0.alias }}</a></div>
+		  		{% else %}
+		  			<div id="link_{{ address }}"><a href="#" onclick="$('div#edit_{{ address }}').toggle(); $('div#link_{{ address }}').toggle(); return false;">add alias</a></div>
+		  		{% endif %}
+		  			<div class="no-display" id="edit_{{ address }}">
+						<form onsubmit="sendAddressAlias('{{ address }}'); return false;" class="form-inline" role="form" id="set_alias_form_{{ address }}" action="{% url 'accounts:set_address_alias' %}">
+						  {% csrf_token %}
+						  <div class="form-group">
+						    <input type="text" class="form-control tiny-text-field" name="alias" id="new_alias_{{ address }}" placeholder="enter alias">
+						  </div>
+						  <input type="hidden" name="address" value="{{ address }}">
+						  <button type="button" onclick="sendAddressAlias('{{ address }}')" class="btn btn-success btn-xs">+</button>
+						  <button type="button" onclick="$('div#edit_{{ address }}').toggle(); $('div#link_{{ address }}').toggle(); return false;" class="btn btn-danger btn-xs">-</button>
+						</form>
+					</div>
+		  		</td>
+		  	</tr>
+		  	{% endfor %}
+		  	<tr>
+			  	<td>
+			  		<form method="post" class="form-inline" role="form" id="create_new_address_form" action="{% url 'accounts:create_new_address' account.addresses.0 %}">
+			  		{% csrf_token %}
+			  		<input type="submit" class="btn btn-info btn-xs" type="button" name="fsdf" value="create new addess"/>
+			  		</form>
+			  	</td>
+		  	</tr>
+			</table>
   	  </div>
 	</div>
 	
 	<h4>Transactions</h4>
   </div>
-
-
-
      <table class="smaller-font-size table table-hover table-striped table-condensed">
       <thead>
         <tr class="top-solid-border">
@@ -84,14 +117,14 @@
            <div class="visible-xs text-center"><span class="glyphicon {{ transaction.icon }}"></span></div>
          </td>
         
-        
-        
 	       {% if transaction.category = 'move' %}
 	       		<td class="hidden-xs"><span style="color:#ccc;">this account</span></td>
 	       {% elif transaction.category = 'receive' %}
-	       
-		    <td class="hidden-xs" nowrap><span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span></td>
-	       
+			  {% if transaction.address.aliases.0.alias %}
+		    	<td class="hidden-xs" nowrap><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag small-info-icon"></span> {{ transaction.address.aliases.0.alias }}</span></td>
+	       	  {% else %}
+	       	    <td class="hidden-xs" nowrap><span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span></td>
+	       	  {% endif %}
 	        {% elif transaction.category = 'send' %}
 	        
 		        {% if transaction.addressbook_name %}

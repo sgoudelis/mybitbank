@@ -2,6 +2,7 @@ import generic
 from django import forms
 from django.forms import CharField
 from connections import connector
+from transfer.forms import CoinAddress
 
 class CoinAccountName(CharField):
     def validate(self, value):
@@ -27,9 +28,18 @@ class CreateAccountForm(forms.Form):
     
     def clean(self):
         cleaned_data = super(CreateAccountForm, self).clean()
-        account_name = cleaned_data.get('account_name', "")
-        currency = cleaned_data.get('currency', "")
+        #account_name = cleaned_data.get('account_name', "")
+        #currency = cleaned_data.get('currency', "")
         
         # clean data ?
         
+        return cleaned_data
+    
+class SetAddressAliasForm(forms.Form):
+    alias = forms.CharField(initial="", required=True)
+    address = CoinAddress(initial="", required=True)
+    
+    def clean(self):
+        cleaned_data = super(SetAddressAliasForm, self).clean()
+
         return cleaned_data

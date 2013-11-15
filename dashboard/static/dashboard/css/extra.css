@@ -20,6 +20,10 @@
 	display: none;
 }
 
+.no-border tr td {
+	border: 0px !important;
+}
+
 html {
 	overflow-y: scroll;
 }
@@ -54,6 +58,10 @@ html {
 
 .addressbook-label {
 	background-color: #7C9E41;
+	font-family: Helvetica !important;
+}
+
+.addressalias-label {
 	font-family: Helvetica !important;
 }
 
@@ -253,4 +261,14 @@ table.vertical-align-middle tbody > tr > td {
 
 .yellow-font {
 	color: yellow;'
+}
+
+.tiny-text-field {
+	height: 22px;
+	font-size: 11px;
+	padding: 4px;
+}
+
+.fat-table tr td {
+	line-height: 20px !important;
 }

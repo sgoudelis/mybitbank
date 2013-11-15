@@ -10,3 +10,14 @@ class accountFilter(models.Model):
     name = models.CharField(max_length=200)
     status = models.IntegerField()
     entered = models.DateTimeField('date published')
+
+class addressAliases(models.Model):
+    '''
+    model for address aliases
+    '''
+    address = models.CharField(max_length=200, unique=False)
+    alias = models.CharField(max_length=200)
+    status = models.IntegerField()
+    entered = models.DateTimeField('date published')
+    
+    

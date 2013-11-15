@@ -1,13 +1,16 @@
-from connections import connector
 import config
 import forms
 import generic
-from django.http import HttpResponseRedirect
+import datetime
+from connections import connector
+from accounts.models import addressAliases
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from addressbook.models import savedAddress
+from django.utils import simplejson
 
 current_section = 'accounts'
 
@@ -183,4 +186,43 @@ def details(request, account_address="pipes"):
                }
     
     return render(request, 'accounts/details.html', context)
+    
+@login_required  
+def setAddressAlias(request):
+    '''
+    Set address alias
+    '''
+    if request.method == 'POST': 
+        form = forms.SetAddressAliasForm(request.POST)
+        if form.is_valid():
+            # form is valid
+            alias = form.cleaned_data['alias']
+            address = form.cleaned_data['address']
+            
+            # check if address already has an alias, if multiple aliases exist for the same address, ignore them for now
+            address_alias = addressAliases.objects.filter(address=address, status__gt=1)
+            if address_alias:
+                address_alias[0].alias = alias
+                address_alias[0].save()
+            else:
+                address_alias = addressAliases.objects.create(address=address, alias=alias, status=2, entered=datetime.datetime.utcnow())
+            
+            if address_alias:
+                return_msg = {'alias': alias}
+            else:
+                return_msg = {'alias': 'sugnomi xasate'}
+                
+    json = simplejson.dumps(return_msg)             
+    return HttpResponse(json, mimetype="application/x-javascript")
+
+def createNewAddress(request, old_address):
+    '''
+    Create a new address for the account of old_address
+    '''
+    if request.method == 'POST': 
+        account_details = connector.getaccountdetailsbyaddress(old_address)
+        if account_details:
+            connector.getnewaddress(account_details['currency'], account_details['name'])
+        return HttpResponseRedirect(reverse('accounts:details', kwargs={'account_address': old_address}))
+    
     

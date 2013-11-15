@@ -1,11 +1,12 @@
 import datetime
 import generic
 import hashlib
+from coinaddress import CoinAddress
 from jsonrpc import ServiceProxy
 from connections.cacher import Cacher 
 from accounts.models import accountFilter
 from bitcoinrpc.authproxy import JSONRPCException
-
+from accounts.models import addressAliases
 
 class Connector(object):
     # how long to cache responses
@@ -183,8 +184,9 @@ class Connector(object):
     def getParamHash(self, param=""):
         '''
         This function takes a string and calculates a sha224 hash out of it. 
-        It is used to hash the input parameters of functions/method in order to uniquely identify a cached result based only
-        on the input parameters of the function/method call.
+        It is used to hash the input parameters of functions/method in order to 
+        uniquely identify a cached result based  only on the input parameters of 
+        the function/method call.
         '''
         cache_hash = hashlib.sha224(param).hexdigest()
         return cache_hash
@@ -208,7 +210,8 @@ class Connector(object):
             addresses = self.services[currency].getaddressesbyaccount(name)
             addresses_list = []
             for address in addresses:
-                addresses_list.append(address.encode('ascii','ignore'))
+                coinaddr = CoinAddress(address)
+                addresses_list.append(coinaddr)
         else:
             addresses_list = []
             
@@ -241,6 +244,9 @@ class Connector(object):
                 self.removeCurrencyService(currency)
             
         for transaction in transactions:
+            if transaction.get('address', False):
+                transaction['address'] = CoinAddress(transaction['address'])
+                
             transaction['timereceived_pretty'] = generic.twitterizeDate(transaction.get('timereceived', 'never'))
             transaction['time_pretty'] = generic.twitterizeDate(transaction.get('time', 'never'))
             transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction.get('timereceived', 0))
@@ -287,6 +293,9 @@ class Connector(object):
         if self.config[currency]['enabled'] is True:
             if self.services.get(currency, False) and type(account_name) in [str, unicode] and len(account_name):
                 new_address = self.services[currency].getnewaddress(account_name)
+                # clear cache
+                self.cache['accounts'] = {}
+                return new_address
         else:
             return False
         
