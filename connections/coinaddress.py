@@ -11,7 +11,7 @@ class CoinAddress(str):
     
     def __init__(self, string):
         # call the str constructor
-        super(CoinAddress, self).__init__(string)
+        super(CoinAddress, self).__init__()
         
         # fill in the aliases
         self.aliases = addressAliases.objects.filter(address=string, status__gt=1)

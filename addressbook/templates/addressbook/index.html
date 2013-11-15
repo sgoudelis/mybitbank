@@ -40,7 +40,7 @@
 						<td class="text-right">
 							<form action="{% url 'addressbook:disable' address.id %}" method="post" role="form" class="form-inline">
 	    					{% csrf_token %}
-	    					<input type="submit" class="btn  btn-xs {% if address.status == 2 %}btn-warning{% else %}btn-success{% endif %}" value="{{ address.button_text }}" name="disable"/>
+	    					<input type="submit" class="btn btn-xs {% if address.status == 2 %}btn-warning{% else %}btn-success{% endif %}" value="{{ address.button_text }}" name="disable"/>
 							</form>
 						</td>
 						<td class="text-right">
