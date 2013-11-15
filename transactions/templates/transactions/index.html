@@ -56,7 +56,7 @@
                         <td  class="hidden-xs">
                         	{% if transaction.category == "receive" %}
 	                        	{% if transaction.addressbook_name %}
-	                        		<span class="sender-address fixed-width-font addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.addressbook_name }} <span data-toggle="tooltip" title="{{ sender_address_tooltip_text }}" class="small-info-icon glyphicon glyphicon-info-sign"></span></span>
+	                        		<span class="fixed-width-font addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.addressbook_name }} <span data-toggle="tooltip" title="{{ sender_address_tooltip_text }}" class="small-info-icon glyphicon glyphicon-info-sign"></span></span>
 	                        	{% else %}
 	                        		<span class="sender-address fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.source_address }} <span data-toggle="tooltip" title="{{ sender_address_tooltip_text }}" class="small-info-icon glyphicon glyphicon-info-sign"></span></span>
 	                        	{% endif %}
@@ -83,6 +83,15 @@
                     </tr>
                     {% endif %}
                 </table>
+                
+		  <div class="row" style="margin: 20px;">
+		    <div class="col-md-1">Legend:</div>
+		 	<div class="col-md-2"><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> local address alias</span></div>
+		 	<div class="col-md-2"><span class="addressbook-label address-label label-default">$ address book entry</span></div>
+		 	<div class="col-md-4"><span class="sender-address address-label label-default">$ resolved address from ScriptSig <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="{{ sender_address_tooltip_text }}"></span></span></div>
+		 	<div class="col-md-2"><a href="#" class="btn btn-default btn-xs">$ <strong>account name</strong></a></div>
+		  </div>
+                
                 {% if show_pager %}
                 <div class="text-center">
                 <ul class="pagination">

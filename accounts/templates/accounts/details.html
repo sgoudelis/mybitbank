@@ -84,6 +84,8 @@
 	
 	<h4>Transactions</h4>
   </div>
+  	
+
      <table class="smaller-font-size table table-hover table-striped table-condensed">
       <thead>
         <tr class="top-solid-border">
@@ -138,7 +140,7 @@
             {% if transaction.category = 'receive' %}
             
 	            {% if transaction.addressbook_name %}
-	            	<td class="hidden-xs" nowrap><span class="sender-address address-label label-default">{{ transaction.currency_symbol }} {{ transaction.addressbook_name }} <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="{{ sender_address_tooltip_text }}"></span></span></td>
+	            	<td class="hidden-xs" nowrap><span class="addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.addressbook_name }} <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="{{ sender_address_tooltip_text }}"></span></span></td>
 	            {% else %}
 	            	<td class="hidden-xs" nowrap><span class="sender-address address-label label-default">{{ transaction.currency_symbol }} {{ transaction.details.sender_address }} <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="{{ sender_address_tooltip_text }}"></span></span></td>
 	            {% endif %}
@@ -164,7 +166,15 @@
         </tr>
         {% endif %}
     </table>
-
+    
+    
+	 <div class="row" style="margin: 20px;">
+	 	<div class="col-md-1">Legend:</div>
+  	 	<div class="col-md-2"><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> local address alias</span></div>
+  	 	<div class="col-md-2"><span class="addressbook-label address-label label-default">$ address book entry</span></div>
+  	 	<div class="col-md-4"><span class="sender-address address-label label-default">$ resolved address from ScriptSig <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="{{ sender_address_tooltip_text }}"></span></span></div>
+  	 	<div class="col-md-2"><a href="#" class="btn btn-default btn-xs">$ <strong>account name</strong></a></div>
+  	 </div>
 
 
 
