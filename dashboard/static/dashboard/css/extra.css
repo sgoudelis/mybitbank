@@ -282,3 +282,7 @@ table.vertical-align-middle tbody > tr > td {
 .fat-table tr td {
 	line-height: 20px !important;
 }
+
+.col-small {
+    width: 30.333%;
+}
