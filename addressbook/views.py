@@ -11,6 +11,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import utc
 from models import savedAddress
+from django.contrib import messages
 
 current_section = 'addressbook'
 
@@ -89,6 +90,7 @@ def create(request):
             # add address to addressbook
             newAddressEntry = savedAddress(name=name, address=address, currency=currency, comment=comment, status=2, entered=datetime.datetime.utcnow().replace(tzinfo=utc))
             newAddressEntry.save()
+            messages.success(request, 'Addressbook entry added for %s with address %s' % (name, address), extra_tags="success")
             return HttpResponseRedirect(reverse('addressbook:index'))
         else:
             # form not valid

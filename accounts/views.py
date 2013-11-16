@@ -11,6 +11,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from addressbook.models import savedAddress
 from django.utils import simplejson
+from django.contrib import messages
 
 current_section = 'accounts'
 
@@ -20,7 +21,6 @@ def index(request):
     Handler for the accounts
     '''
     sections = generic.getSiteSections(current_section)
-    
     accounts = generic.getAllAccounts(connector)
     transactions = generic.getTransactions(connector = connector, reverse_order = True)
     
@@ -106,6 +106,10 @@ def create(request):
             
             # all ok, create account
             new_address = connector.getnewaddress(currency, new_account_name)
+            
+            if new_address:
+                messages.success(request, 'New account created with one address (%s)' % new_address, extra_tags="success")
+            
             return HttpResponseRedirect(reverse('accounts:index'))
 
     else:

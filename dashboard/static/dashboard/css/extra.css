@@ -294,3 +294,7 @@ ul.navbar-nav li a {
 ul.navbar-right li a {
 	font-weight: normal;
 }
+
+.navbar-brand {
+	padding: 9px;
+}

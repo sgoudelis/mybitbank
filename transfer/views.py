@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from addressbook.models import savedAddress
+from django.contrib import messages
 
 current_section = 'transfer'
 
@@ -92,6 +93,10 @@ def send(request, currency):
             selected_currency = form.cleaned_data['selected_currency']
             passphrase = form.cleaned_data['passphrase']
             
+            # main exit flags
+            move_exit = False
+            sendfrom_exit = False
+            
             # get account details
             from_account = connector.getaccountdetailsbyaddress(from_address)
             to_account = connector.getaccountdetailsbyaddress(to_address)
@@ -158,6 +163,10 @@ def send(request, currency):
                 connector.walletlock(currency)
                 
             # process the data in form.cleaned_data
+            if move_exit:
+                messages.success(request, 'Local move of %s %s completed from account "%s" to "%s"' % (amount, currency.upper(), from_account['name'], to_account['name']), extra_tags="success")
+            elif sendfrom_exit:
+                messages.success(request, 'Transfer of %s %s initialized with transaction id %s' % (amount, currency.upper(), sendfrom_exit), extra_tags="success")
             return HttpResponseRedirect('/transactions/') # Redirect after POST
     else:
         form = forms.SendCurrencyForm()

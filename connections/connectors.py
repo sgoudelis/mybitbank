@@ -34,7 +34,6 @@ class Connector(object):
         '''
         Constructor, load config 
         '''
-        print "Connector class initializing..."
         self.cache = Cacher({
              'accounts': {},
              'transactions': {},
