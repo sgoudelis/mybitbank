@@ -112,9 +112,12 @@ def delete(request, addressid):
     addressbook = savedAddress.objects.filter(id=addressid)
     
     if addressbook:
+        name = addressbook[0].name
+        address = addressbook[0].address
         addressbook[0].status=0
         addressbook[0].save()
-        
+        messages.success(request, 'Addressbook entry %s with address %s deleted' % (name, address), extra_tags="warning")
+    
     return HttpResponseRedirect(reverse('addressbook:index'))
     
 def toggleStatus(request, addressid):
@@ -124,12 +127,16 @@ def toggleStatus(request, addressid):
     addressbook = savedAddress.objects.filter(id=addressid)
     
     if len(addressbook):
+        name = addressbook[0].name
+        address = addressbook[0].address
         if addressbook[0].status == 1:
             addressbook[0].status=2
             addressbook[0].save()
+            messages.success(request, 'Addressbook entry %s with address %s enabled' % (name, address), extra_tags="info")
         else:
             addressbook[0].status=1
             addressbook[0].save()
+            messages.success(request, 'Addressbook entry %s with address %s disabled.' % (name, address), extra_tags="warning")
             
     return HttpResponseRedirect(reverse('addressbook:index'))
     
