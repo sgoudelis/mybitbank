@@ -40,35 +40,39 @@ html {
 }
 
 .address-label {
-	border-radius: 0.25em 0.25em 0.25em 0.25em;
-	color: #FFFFFF;
-	background-color: #AAAAAA;
-	display: inline;
-	font-size: 99%;
-	font-weight: normal;
-	line-height: 1;
-	padding: 0.2em 0.3em 0.1em;
-	text-align: center;
-	vertical-align: baseline;
-	white-space: nowrap;
-	font-family: Monospace;
+    background-color: #AAAAAA;
+    border-radius: 0.25em;
+    color: #FFFFFF;
+    display: inline;
+    font-family: Monaco;
+    font-size: 89%;
+    line-height: 1;
+    padding: 0.1em 0.3em 0.1em;
+    text-align: center;
+    vertical-align: baseline;
+    white-space: nowrap;
 }
 
 .sender-address {
 	background-color: #826599 !important;
-	padding: 0.2em 0.3em 0.1em;
+	padding: 0.1em 0.3em;
 	font-weight: normal;
+	font-size: 89% !important;
 }
 
 .addressbook-label {
 	background-color: #7C9E41;
 	font-family: Helvetica !important;
+	font-size: 99% !important;
+	padding: 0.25em 0.3em 0.15em;
 }
 
 .addressalias-label {
 	font-family: Helvetica !important;
 	background-color: #FFA852;
 	color: #330F0F;
+	font-size: 99% !important;
+	padding: 0.2em 0.3em 0.1em;
 }
 
 .small-info-icon {
