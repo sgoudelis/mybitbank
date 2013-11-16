@@ -4,7 +4,7 @@ from jsonrpc import ServiceProxy
 
 class CurrencyEnabler():
     '''
-    Re-enable currency service after time has elapsed
+    Re-enable currency service after time has elapsed. This is a Django middleware.
     '''
     
     def process_request(self, request):
