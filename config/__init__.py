@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_noop as _
 
 MainConfig = {
               'globals' : {
-                    'site_brand': "MyBitBank",
+                    'site_brand': "", # change this to whatever you want
                     'confirmation_limit': 6,
                },
                   
