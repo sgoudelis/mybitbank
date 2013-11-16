@@ -58,7 +58,7 @@
 	                        	{% if transaction.addressbook_name %}
 	                        		<span class="fixed-width-font addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.addressbook_name }} <span data-toggle="tooltip" title="{{ sender_address_tooltip_text }}" class="small-info-icon glyphicon glyphicon-info-sign"></span></span>
 	                        	{% else %}
-	                        		<span class="sender-address fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.source_address }} <span data-toggle="tooltip" title="{{ sender_address_tooltip_text }}" class="small-info-icon glyphicon glyphicon-info-sign"></span></span>
+	                        		<span class="sender-address address-label label-default">{{ transaction.currency_symbol }} {{ transaction.source_address }} <span data-toggle="tooltip" title="{{ sender_address_tooltip_text }}" class="small-info-icon glyphicon glyphicon-info-sign"></span></span>
 	                        	{% endif %}
 	                        {% elif transaction.category == "send" %}
 	                        <a href="/accounts/details/{{ transaction.source_addresses.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{% if not transaction.account %}{{ transaction.alternative_account }}{% else %}{{ transaction.account }}{% endif %}</strong></a>
@@ -74,7 +74,7 @@
                         </td>
                         <td class="hidden-xs text-center"><span style="color: {{ transaction.status_color }};" class="bigger-icon glyphicon {{ transaction.status_icon }}" title="{{ transaction.tooltip }}" data-toggle="tooltip"></span></td>
                         <td>{{ transaction.time_pretty }}</td>
-                        <td class="text-right" style="font-family: courier;"><strong>{{ transaction.amount }}</strong> {{ transaction.currency|upper }}</td>
+                        <td class="text-right fixed-width-font" ><strong>{{ transaction.amount }}</strong> {{ transaction.currency|upper }}</td>
                     </tr>
                     {% endfor %}
                     {% else %}

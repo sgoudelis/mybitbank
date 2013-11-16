@@ -226,7 +226,8 @@ def createNewAddress(request, old_address):
     if request.method == 'POST': 
         account_details = connector.getaccountdetailsbyaddress(old_address)
         if account_details:
-            connector.getnewaddress(account_details['currency'], account_details['name'])
+            new_address = connector.getnewaddress(account_details['currency'], account_details['name'])
+            messages.success(request, 'New address %s created' % new_address, extra_tags="success")
         return HttpResponseRedirect(reverse('accounts:details', kwargs={'account_address': old_address}))
     
     
