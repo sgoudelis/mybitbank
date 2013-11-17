@@ -38,7 +38,7 @@
 			        			<strong>Account:</strong> 
 			        			</td>
 			        			<td>
-			        			<a href="/accounts/details/{{ transaction.source_addresses.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.details.0.account }}</strong></a>
+			        			<a href="/accounts/details/{{ account.addresses.0}}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.details.0.account }}</strong></a>
 			        			</td>
 			        		</tr>
 			        		
@@ -59,13 +59,31 @@
 			        			{{ transaction.confirmations }}
 			        			</td>
 			        		</tr>
+			        		
+			        		<tr>
+			        			<td>
+			        			<strong>Fee:</strong> 
+			        			</td>
+			        			<td>
+			        			{{ transaction.fee }}
+			        			</td>
+			        		</tr>
 		        		
 			        		<tr>
 			        			<td>
-			        			<strong>Transmitted:</strong> 
+			        			<strong>Time:</strong> 
 			        			</td>
 			        			<td>
 			        			{{ transaction.time_pretty }} ({{ transaction.time_human }})
+			        			</td>
+			        		</tr>
+			        		
+			        		<tr>
+			        			<td>
+			        			<strong>Time received:</strong> 
+			        			</td>
+			        			<td>
+			        			{{ transaction.timereceived_pretty }} ({{ transaction.timereceived_human }})
 			        			</td>
 			        		</tr>
 			        		

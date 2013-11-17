@@ -124,6 +124,17 @@ def transactionDetails(request, txid, currency):
     transaction['blocktime_pretty'] = generic.twitterizeDate(transaction.get('blocktime', 'never'))
     transaction['currency'] = currency
     
+    if transaction.get('fee', False):
+        transaction['fee'] = generic.longNumber(transaction['fee'])
+    else:
+        transaction['fee'] = ""
+        
+    if transaction['details'][0]['category'] == 'receive':
+        account = connector.getaccountdetailsbyaddress(transaction['details'][0]['address'])
+    elif transaction['details'][0]['category'] == 'send':
+        account_addresses = connector.getaddressesbyaccount(transaction['details'][0]['account'], currency)
+        account = connector.getaccountdetailsbyaddress(account_addresses[0])
+        
     page_title = "Transaction details for %s" % txid
     context = {
            'globals': config.MainConfig['globals'],
@@ -134,6 +145,7 @@ def transactionDetails(request, txid, currency):
            'page_title': page_title, 
            'page_sections': generic.getSiteSections(current_section), 
            'transaction': transaction,
+           'account': account,
            'conf_limit': config.MainConfig['globals']['confirmation_limit'],
            }
     return render(request, 'transactions/details.html', context)
