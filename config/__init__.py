@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_noop as _
 MainConfig = {
               'globals' : {
                     'site_brand': "", # change this to whatever you want
-                    'confirmation_limit': 6,
+                    'confirmation_limit': 5,
                },
                   
               'site_sections' : [

@@ -1,0 +1,126 @@
+{% extends "dashboard/base.html" %}
+{% load dashboard_extras %} 
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block site_brand %}{{ globals.site_brand }}{% endblock %}
+
+{% block content %}
+        <div class="panel panel-default">
+            <div class="panel-heading panel-dark-header">
+                <div class="row">
+                  <div class="col-xs-8"><h3 class="panel-title">Transaction details for {{ transaction.txid }}</h3></div>
+	                  <div class="col-xs-4 text-right">
+	                  </div>
+                  </div>
+	            </div>
+		        <div class="panel-body">
+		        	<div class="row">
+		        		<div class="col-md-1">
+		        		{% if transaction.confirmations > conf_limit%}
+		        		<span class="glyphicon glyphicon-ok-circle green-font huge-icon"><span>
+		        		{% else %}
+		        		<span class="glyphicon glyphicon-time huge-icon"><span>
+		        		{% endif %}
+		        		</div>
+		        		<div class="col-md-11">
+		        		<table class="table table-condensed no-border">
+		        			<tr>
+			        			<td>
+			        			<strong>Category:</strong> 
+			        			</td>
+			        			<td>
+			        			{{ transaction.details.0.category }}
+			        			</td>
+			        		</tr>
+			        		
+			        		<tr>
+			        			<td>
+			        			<strong>Account:</strong> 
+			        			</td>
+			        			<td>
+			        			<a href="/accounts/details/{{ transaction.source_addresses.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.details.0.account }}</strong></a>
+			        			</td>
+			        		</tr>
+			        		
+			        		<tr>
+			        			<td>
+			        			<strong>Address:</strong> 
+			        			</td>
+			        			<td>
+			        			<span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.details.0.address }}</span>
+			        			</td>
+			        		</tr>
+			        		
+			        		<tr>
+			        			<td>
+			        			<strong>Confirmations:</strong> 
+			        			</td>
+			        			<td>
+			        			{{ transaction.confirmations }}
+			        			</td>
+			        		</tr>
+		        		
+			        		<tr>
+			        			<td>
+			        			<strong>Transmitted:</strong> 
+			        			</td>
+			        			<td>
+			        			{{ transaction.time_pretty }} ({{ transaction.time_human }})
+			        			</td>
+			        		</tr>
+			        		
+			        		<tr>
+			        			<td>
+			        			<strong>Block time:</strong> 
+			        			</td>
+			        			<td>
+			        			{{ transaction.blocktime_pretty }} ({{ transaction.blocktime_human }})
+			        			</td>
+			        		</tr>
+			        		
+			        		<tr>
+			        			<td>
+			        			<strong>Amount:</strong> 
+			        			</td>
+			        			<td>
+			        			{{ transaction.amount }} {{ transaction.currency|upper }}
+			        			</td>
+			        		</tr>
+			        		
+			        		<tr>
+			        			<td>
+			        			<strong>Blockhash:</strong> 
+			        			</td>
+			        			<td>
+			        			{{ transaction.blockhash }}
+			        			</td>
+			        		</tr>
+			        		
+			        		<tr>
+			        			<td>
+			        			<strong>Blockindex:</strong> 
+			        			</td>
+			        			<td>
+			        			{{ transaction.blockindex }}
+			        			</td>
+			        		</tr>
+			        		
+			        		<tr>
+			        			<td>
+			        			<strong>Transaction ID:</strong> 
+			        			</td>
+			        			<td>
+			        			{{ transaction.txid }}
+			        			</td>
+			        		</tr>
+		        		</table>
+		        		</div>
+		        	</div>
+		        	
+		        </div>
+		      	<div class="panel-footer">
+		      	{{transaction}}
+		        </div>
+	        </div>
+	    </div>
+{% endblock %}

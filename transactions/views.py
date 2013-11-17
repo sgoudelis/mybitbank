@@ -1,11 +1,11 @@
 import math
 import config
 import generic
+import datetime
 from connections import connector
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from addressbook.models import savedAddress
-from django.contrib.auth.models import User
 
 current_section = 'transactions'
 
@@ -90,9 +90,6 @@ def index(request, page=0):
         show_pager = True
         current_activesession = 'Page %s' % page
     
-    # add a list of pages in the view
-    sections = generic.getSiteSections(current_section)
-    
     sender_address_tooltip_text = "This address has been calculated using the Input Script Signature. You should verify before using it."
     
     context = {
@@ -102,7 +99,7 @@ def index(request, page=0):
                'request': request,
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', current_activesession), 
                'page_title': page_title, 
-               'page_sections': sections, 
+               'page_sections': generic.getSiteSections(current_section), 
                'transactions': selected_transactions, 
                'show_pager': show_pager, 
                'next_page': min((page+1), len(pages)), 
@@ -113,3 +110,30 @@ def index(request, page=0):
                'sender_address_tooltip_text': sender_address_tooltip_text,
                }
     return render(request, 'transactions/index.html', context)
+
+@login_required
+def transactionDetails(request, txid, currency):
+    
+    transaction = connector.gettransaction(txid, currency)
+    
+    transaction['timereceived_pretty'] = generic.twitterizeDate(transaction.get('timereceived', 'never'))
+    transaction['time_pretty'] = generic.twitterizeDate(transaction.get('time', 'never'))
+    transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction.get('timereceived', 0))
+    transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 0))
+    transaction['blocktime_human'] = datetime.datetime.fromtimestamp(transaction.get('blocktime', 0))
+    transaction['blocktime_pretty'] = generic.twitterizeDate(transaction.get('blocktime', 'never'))
+    transaction['currency'] = currency
+    
+    page_title = "Transaction details for %s" % txid
+    context = {
+           'globals': config.MainConfig['globals'],
+           'system_errors': connector.errors,
+           'system_alerts': connector.alerts,
+           'request': request,
+           'breadcrumbs': generic.buildBreadcrumbs(current_section, '', 'Details of %s' % txid), 
+           'page_title': page_title, 
+           'page_sections': generic.getSiteSections(current_section), 
+           'transaction': transaction,
+           'conf_limit': config.MainConfig['globals']['confirmation_limit'],
+           }
+    return render(request, 'transactions/details.html', context)

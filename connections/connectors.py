@@ -423,7 +423,7 @@ class Connector(object):
 
     def gettransactiondetails(self, transaction, currency):
         '''
-        Return transaction details
+        Return transaction details, like sender address
         '''
         if type(transaction) is not dict:
             return {'message': 'Invalid transaction details', 'code': -120}
@@ -453,7 +453,30 @@ class Connector(object):
             sender_address = ""
         
         return {'sender_address': sender_address}
+    
+    def gettransaction(self, txid, currency):
+        '''
+        Return transaction
+        '''
+        if currency not in self.config.keys():
+            return {'message': 'Non-existing currency %s' % currency, 'code': -121}
         
+        if self.config[currency]['enabled'] is not True:
+            return {'message': 'Currency service %s disabled for now' % currency, 'code':-150}
+        
+        if type(txid) not in [str, unicode] or not len(txid):
+            return {'message': 'Transaction ID is not valid', 'code': -127} 
+        
+        transaction_details = None
+        try:
+            transaction_details = self.services[currency].gettransaction(txid)
+        except JSONRPCException, e:
+            return {}
+        except Exception, e:
+            return {}
+    
+        return transaction_details
+
     def decodeScriptSig(self, rawtransaction, currency, net='testnet'):
         '''
         Decode input script signature, courtesy of:
