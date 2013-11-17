@@ -167,7 +167,7 @@ def send(request, currency):
                 messages.success(request, 'Local move of %s %s completed from account "%s" to "%s"' % (amount, currency.upper(), from_account['name'], to_account['name']), extra_tags="success")
             elif sendfrom_exit:
                 messages.success(request, 'Transfer of %s %s initialized with transaction id %s' % (amount, currency.upper(), sendfrom_exit), extra_tags="success")
-            return HttpResponseRedirect('/transactions/') # Redirect after POST
+            return HttpResponseRedirect('/transactions/1') # Redirect after POST
     else:
         form = forms.SendCurrencyForm()
         

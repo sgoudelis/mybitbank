@@ -277,8 +277,7 @@ class CreateAccountTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[1]/ul[@class='errorlist']"), []) 
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div[2]/form/div[2]/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div/ul[@class='errorlist']"), []) 
         
     def test_create_accounts_proper_values(self):
         '''

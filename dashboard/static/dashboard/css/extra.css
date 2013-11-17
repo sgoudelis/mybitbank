@@ -302,3 +302,16 @@ ul.navbar-right li a {
 .navbar-brand {
 	padding: 7px;
 }
+
+.alert-message {
+	height:38px;
+	padding: 9px;
+}
+
+.tiny-col {
+	width: 53px
+}
+
+.message-icon {
+	font-size: 30px;
+}
