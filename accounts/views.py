@@ -196,7 +196,9 @@ def setAddressAlias(request):
     '''
     Set address alias
     '''
-    if request.method == 'POST': 
+    return_msg = {'alias': ''}
+    
+    if request.method == 'POST':
         form = forms.SetAddressAliasForm(request.POST)
         if form.is_valid():
             # form is valid
@@ -219,6 +221,7 @@ def setAddressAlias(request):
     json = simplejson.dumps(return_msg)             
     return HttpResponse(json, mimetype="application/x-javascript")
 
+@login_required
 def createNewAddress(request, old_address):
     '''
     Create a new address for the account of old_address

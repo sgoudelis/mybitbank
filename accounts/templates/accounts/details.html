@@ -49,12 +49,12 @@
 			</tr>
 		  	{% for address in account.addresses %}
 		  	<tr>
-		  		<td><span class="address-label label-default">{{ account.currency_symbol }} {{ address }}</span></td>
+		  		<td width="200"><span class="address-label label-default">{{ account.currency_symbol }} {{ address }}</span></td>
 		  		<td>
 		  		{% if address.aliases.0 %}
-					<div id="link_{{ address }}"><a href="#" onclick="$('div#edit_{{ address }}').toggle(); $('div#link_{{ address }}').toggle(); return false;">{{ address.aliases.0.alias }}</a></div>
+					<div id="link_{{ address }}"><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> <a href="#" onclick="editAlias('{{ address }}')">{{ address.aliases.0.alias }}</a></span></div>
 		  		{% else %}
-		  			<div id="link_{{ address }}"><a href="#" onclick="$('div#edit_{{ address }}').toggle(); $('div#link_{{ address }}').toggle(); return false;">add alias</a></div>
+		  			<div id="link_{{ address }}"><span class="faded addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> <a href="#" onclick="editAlias('{{ address }}')">add an alias</a></span></div>
 		  		{% endif %}
 		  			<div class="no-display" id="edit_{{ address }}">
 						<form onsubmit="sendAddressAlias('{{ address }}'); return false;" class="form-inline" role="form" id="set_alias_form_{{ address }}" action="{% url 'accounts:set_address_alias' %}">
@@ -63,8 +63,8 @@
 						    <input type="text" class="form-control tiny-text-field" name="alias" id="new_alias_{{ address }}" placeholder="enter alias">
 						  </div>
 						  <input type="hidden" name="address" value="{{ address }}">
-						  <button type="button" onclick="sendAddressAlias('{{ address }}')" class="btn btn-success btn-xs">+</button>
-						  <button type="button" onclick="$('div#edit_{{ address }}').toggle(); $('div#link_{{ address }}').toggle(); return false;" class="btn btn-danger btn-xs">-</button>
+						  <button type="button" onclick="sendAddressAlias('{{ address }}')" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok-circle"></span></button>
+						  <button type="button" onclick="$('div#edit_{{ address }}').toggle(); $('div#link_{{ address }}').toggle(); return false;" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove-circle"></span></button>
 						</form>
 					</div>
 		  		</td>
@@ -74,7 +74,7 @@
 			  	<td>
 			  		<form method="post" class="form-inline" role="form" id="create_new_address_form" action="{% url 'accounts:create_new_address' account.addresses.0 %}">
 			  		{% csrf_token %}
-			  		<input type="submit" class="btn btn-info btn-xs" type="button" name="fsdf" value="create new addess"/>
+			  		<input type="submit" class="btn btn-info btn-xs" type="button" name="fsdf" value="+ create new addess"/>
 			  		</form>
 			  	</td>
 		  	</tr>

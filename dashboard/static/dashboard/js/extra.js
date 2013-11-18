@@ -27,11 +27,28 @@ function sendAddressAlias(address) {
 	      type: "POST",
 	      url: form.attr( 'action' ),
 	      data: form.serialize(),
+	      dataType: 'json',
 	      success: function( response ) {
-	    	console.info('pipes');
-	        $('div#link_'+address).html(response.alias);
+	    	$('div#link_'+address+'>span').removeClass('faded');
+	    	var tag_a = $('div#link_'+address+'>span>a');
+	    	if (tag_a) {
+	    		tag_a.html(response.alias);
+	    	}
+	        
 	        $('div#edit_'+address).toggle(); 
 	        $('div#link_'+address).toggle();
 	      }
 	    });
+}
+
+function editAlias (address) {
+	var alias = $('div#link_'+address+'>span>a').html();
+	$('input#new_alias_'+address).val(alias);
+	$('div#edit_'+address).toggle();
+	$('div#link_'+address).toggle();
+	return false;
+}
+
+function setAlias (address, alias) {
+	sendAddressAlias('{{ address }}');
 }

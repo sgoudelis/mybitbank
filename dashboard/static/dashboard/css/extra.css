@@ -69,10 +69,14 @@ html {
 
 .addressalias-label {
 	font-family: Helvetica !important;
-	background-color: #FFA852;
-	color: #330F0F;
+	background-color: #6D7BA8;
+	color: #FFF;
 	font-size: 99% !important;
 	padding: 0.2em 0.3em 0.1em;
+}
+
+.addressalias-label a {
+	color: #FFF;
 }
 
 .small-info-icon {
@@ -283,7 +287,7 @@ table.vertical-align-middle tbody > tr > td {
 }
 
 .tiny-text-field {
-	height: 22px;
+	height: 23px;
 	font-size: 11px;
 	padding: 4px;
 }
@@ -319,4 +323,8 @@ ul.navbar-right li a {
 
 .message-icon {
 	font-size: 30px;
+}
+
+.faded {
+	opacity: 0.4;
 }

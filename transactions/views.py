@@ -148,4 +148,9 @@ def transactionDetails(request, txid, currency):
            'account': account,
            'conf_limit': config.MainConfig['globals']['confirmation_limit'],
            }
-    return render(request, 'transactions/details.html', context)
+    
+    if request.method == 'GET':
+        return render(request, 'transactions/details.html', context)
+    else:
+        # maybe convert to PDF ?
+        return render(request, 'transactions/details.html', context)
