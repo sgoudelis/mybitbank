@@ -20,7 +20,7 @@
 	  
 	  
 	<div class="row">
-	  <div class="col-md-5">
+	  <div class="col-md-4">
 	  <table class="table no-border table-condensed">
 	  <tr>
 	  	<td>
@@ -41,7 +41,7 @@
 	  </tr>
 	  </table>
 	  </div>
-		<div class="col-md-7">
+		<div class="col-md-6">
 			
 			<table class="table no-border fat-table">
 			<tr>
@@ -52,9 +52,9 @@
 		  		<td width="200"><span class="address-label label-default">{{ account.currency_symbol }} {{ address }}</span></td>
 		  		<td>
 		  		{% if address.aliases.0 %}
-					<div id="link_{{ address }}"><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> <a href="#" onclick="editAlias('{{ address }}')">{{ address.aliases.0.alias }}</a></span></div>
+					<div id="link_{{ address }}"><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> <a href="javascript:void();" onclick="editAlias('{{ address }}')">{{ address.aliases.0.alias }}</a></span></div>
 		  		{% else %}
-		  			<div id="link_{{ address }}"><span class="faded addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> <a href="#" onclick="editAlias('{{ address }}')">add an alias</a></span></div>
+		  			<div id="link_{{ address }}"><span class="faded addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> <a href="javascript:void();" onclick="editAlias('{{ address }}')">add an alias</a></span></div>
 		  		{% endif %}
 		  			<div class="no-display" id="edit_{{ address }}">
 						<form onsubmit="sendAddressAlias('{{ address }}'); return false;" class="form-inline" role="form" id="set_alias_form_{{ address }}" action="{% url 'accounts:set_address_alias' %}">
@@ -68,6 +68,9 @@
 						</form>
 					</div>
 		  		</td>
+		  		<td>
+		  		<button data-toggle="tooltip" title="show QR code" type="button" onclick="updateQRImage('{{ address }}')" class="btn btn-success btn-xs"><i class="fa fa-qrcode"></i></span></button>
+		  		</td>
 		  	</tr>
 		  	{% endfor %}
 		  	<tr>
@@ -80,6 +83,11 @@
 		  	</tr>
 			</table>
   	  </div>
+  	  
+  	  <div class="col-md-2 text-right">
+  	  <img id="qrthumb" src="http://chart.apis.google.com/chart?chld=L|1&choe=ISO-8859-1&chs=100x100&cht=qr&chl={{ account.addresses.0 }}">
+  	  </div>
+  	  
 	</div>
 	
 	<h4>Transactions</h4>
@@ -175,7 +183,7 @@
   	 	<div class="col-md-2"><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> local address alias</span></div>
   	 	<div class="col-md-2"><span class="addressbook-label address-label label-default">$ address book entry</span></div>
   	 	<div class="col-md-4"><span class="sender-address address-label label-default">$ resolved address from ScriptSig <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="{{ sender_address_tooltip_text }}"></span></span></div>
-  	 	<div class="col-md-2"><a href="#" class="btn btn-default btn-xs">$ <strong>account name</strong></a></div>
+  	 	<div class="col-md-2"><a href="javascript:void();" class="btn btn-default btn-xs">$ <strong>account name</strong></a></div>
   	 </div>
 
   

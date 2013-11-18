@@ -79,6 +79,11 @@ html {
 	color: #FFF;
 }
 
+.addressalias-label a:hover {
+	color: #DDD;
+	text-decoration: none;
+}
+
 .small-info-icon {
 	font-size: 12px;
 }
