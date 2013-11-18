@@ -2,6 +2,7 @@ import config
 import generic
 import forms
 import events
+import socket
 from connections import connector
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -9,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-import socket
+
 
 current_section = 'login'
 

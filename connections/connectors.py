@@ -1,12 +1,12 @@
 import datetime
 import generic
 import hashlib
+import events
 from coinaddress import CoinAddress
 from jsonrpc import ServiceProxy
 from connections.cacher import Cacher 
 from accounts.models import accountFilter
 from bitcoinrpc.authproxy import JSONRPCException
-from accounts.models import addressAliases
 
 class Connector(object):
     # how long to cache responses
@@ -53,7 +53,7 @@ class Connector(object):
                                                                            self.config[currency]['rpcport'])
                                                   )
             # true is enabled, anything but bool is disabled up to the value as a timestamp
-            # this will caught by the Middleware
+            # this will caught by the middleware
             self.config[currency]['enabled'] = True
             
     def getNet(self, currency):
@@ -66,6 +66,7 @@ class Connector(object):
         if self.services.get(currency, False):
             self.alerts.append({'type': 'currencybackend', 'currency': currency, 'message': 'Currency service for %s is disabled for %s secs due an error communicating.' % (currency.upper(), self.disable_time), 'when': datetime.datetime.utcnow()})
             self.config[currency]['enabled'] = datetime.datetime.utcnow() + datetime.timedelta(0,self.disable_time)
+            events.addEvent(None, "Currency service %s has being disabled for %s seconds" % (currency.upper(), self.disable_time), 'alert')
             del self.services[currency]
 
     def longNumber(self, x):
