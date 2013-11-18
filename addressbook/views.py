@@ -91,7 +91,7 @@ def create(request):
             newAddressEntry = savedAddress(name=name, address=address, currency=currency, comment=comment, status=2, entered=datetime.datetime.utcnow().replace(tzinfo=utc))
             newAddressEntry.save()
             messages.success(request, 'Addressbook entry added for %s with address %s' % (name, address), extra_tags="success")
-            generic.addEvent('Addressbook entry added for %s with name "%s"' % (address, name), 'info')
+            generic.addEvent(request, 'Addressbook entry added for %s with name "%s"' % (address, name), 'info')
             
             return HttpResponseRedirect(reverse('addressbook:index'))
         else:
@@ -119,7 +119,7 @@ def delete(request, addressid):
         addressbook[0].status=0
         addressbook[0].save()
         messages.success(request, 'Addressbook entry %s with address %s deleted' % (name, address), extra_tags="warning")
-        generic.addEvent('Addressbook entry deleted with name "%s" and address "%s"' % (name, address), 'info')
+        generic.addEvent(request, 'Addressbook entry deleted with name "%s" and address "%s"' % (name, address), 'info')
         
     return HttpResponseRedirect(reverse('addressbook:index'))
     
@@ -136,12 +136,12 @@ def toggleStatus(request, addressid):
             addressbook[0].status=2
             addressbook[0].save()
             messages.success(request, 'Addressbook entry %s with address %s enabled' % (name, address), extra_tags="info")
-            generic.addEvent('Addressbook entry enabled with name "%s" and address "%s"' % (name, address), 'info')
+            generic.addEvent(request, 'Addressbook entry enabled with name "%s" and address "%s"' % (name, address), 'info')
         else:
             addressbook[0].status=1
             addressbook[0].save()
             messages.success(request, 'Addressbook entry %s with address %s disabled.' % (name, address), extra_tags="warning")
-            generic.addEvent('Addressbook entry disabled with name "%s" and address "%s"' % (name, address), 'info')
+            generic.addEvent(request, 'Addressbook entry disabled with name "%s" and address "%s"' % (name, address), 'info')
             
     return HttpResponseRedirect(reverse('addressbook:index'))
     

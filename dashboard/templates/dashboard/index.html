@@ -31,20 +31,20 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading">
 			<h3 class="panel-title">
-				<i class="icon-time"></i> Events
+				<i class="fa fa-clock-o"></i> Events
 			</h3>
 		</div>
 		
 		<table class="table">
 		<thead>
 		<tr>
-			<th class="header">
+			<th width="65" class="header">
 			Level
 			</th>
 			<th class="header">
 			Description
 			</th>
-			<th class="header">
+			<th width="140" class="header text-right">
 			Time
 			</th>
 		</tr>
@@ -58,7 +58,7 @@
 				<td>
 				{{ event.description }}
 				</td>
-				<td>
+				<td class="text-right">
 				{{ event.entered_pretty }}
 				</td>
 			</tr>	
@@ -113,7 +113,7 @@
 		<div class="panel panel-primary">
 			<div class="panel-heading">
 				<h3 class="panel-title">
-					<i class="icon-money"></i> Recent Transactions
+					<i class="fa fa-money"></i> Recent Transactions
 				</h3>
 			</div>
 			<table class="table table-hover table-striped">

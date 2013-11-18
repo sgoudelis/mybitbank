@@ -185,11 +185,23 @@ def humanBytes(num):
             return "%3.1f %s" % (num, x)
         num /= 1024.0
 
-def addEvent(description='no description', level='info'):
+def addEvent(request, description='no description', level='info'):
     '''
     Add an Event in the database
     '''
+    print request
     if level in ['info', 'debug', 'warning', 'alert', 'error']:
-        event = Events.objects.create(description=description, level=level, entered=datetime.datetime.now())
+        event = Events.objects.create(user_id=request.user.id, description=description, level=level, entered=datetime.datetime.now())
         event.save()
-        
+    
+def getClientIp(request):
+    '''
+    Get client IP address
+    '''
+    
+    x_forwarded_header = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_header:
+        ip = x_forwarded_header.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
