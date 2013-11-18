@@ -53,7 +53,8 @@ def processLogin(request):
             if user is not None and user.is_active:
                 # authenticated, log user in
                 login(request, user)
-
+                generic.addEvent('Login occurred', 'info')
+                
                 if remember:
                     request.session.set_expiry(0)
                 else:
@@ -97,5 +98,5 @@ def processLogout(request):
     Logout
     '''
     logout(request)
-
+    generic.addEvent('Logout occurred', 'info')
     return HttpResponseRedirect(reverse('login:index'))

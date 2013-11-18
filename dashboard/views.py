@@ -1,8 +1,10 @@
 from connections import connector
 import config
 import generic
+import calendar
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from dashboard.models import Events
 
 @login_required
 def index(request):
@@ -49,6 +51,12 @@ def index(request):
     for currency in connector.config:
         currency_names[currency] = connector.config[currency]['currency_name']
     
+    # events
+    events = Events.objects.all().order_by('-entered')[:10]  
+    for event in events:
+        timestamp = calendar.timegm(event.entered.timetuple())
+        event.entered_pretty = generic.twitterizeDate(timestamp)
+    
     page_title = "Dashboard"
     sections = generic.getSiteSections('dashboard')
     context = {
@@ -63,5 +71,6 @@ def index(request):
                'currency_symbols': currency_symbols,
                'currency_names': currency_names,
                'transactions': transactions,
+               'events': events
                }
     return render(request, 'dashboard/index.html', context)

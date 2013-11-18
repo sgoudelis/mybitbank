@@ -3,6 +3,7 @@ import datetime
 import dateutil.relativedelta
 import connections
 import config
+from dashboard.models import Events 
 
 def longNumber(x):
     '''
@@ -117,6 +118,9 @@ def getSiteSections(active):
     return sections
 
 def getCurrencySymbol(for_currency='*'):
+    '''
+    Return the currency symbol
+    '''
     currencies = {}
     connection_config = connections.connector.config
     for currency in connection_config.keys():
@@ -150,6 +154,9 @@ def buildBreadcrumbs(current_section='dashboard', currect_subsection='', current
     return breadcrumbs
     
 def prettyPrint(o):
+    '''
+    Print in a pretty way something
+    '''
     try:
         import pprint 
         pp = pprint.PrettyPrinter(indent=4)
@@ -157,8 +164,10 @@ def prettyPrint(o):
     except:
         print o
     
-    
 def isFloat(s):
+    '''
+    Check if s is float
+    '''
     try:
         float(s)
         return True
@@ -168,7 +177,19 @@ def isFloat(s):
         return False
     
 def humanBytes(num):
+    '''
+    Humanize bytes
+    '''
     for x in ['bytes','KB','MB','GB','TB']:
         if num < 1024.0:
             return "%3.1f %s" % (num, x)
         num /= 1024.0
+
+def addEvent(description='no description', level='info'):
+    '''
+    Add an Event in the database
+    '''
+    if level in ['info', 'debug', 'warning', 'alert', 'error']:
+        event = Events.objects.create(description=description, level=level, entered=datetime.datetime.now())
+        event.save()
+        

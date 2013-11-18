@@ -166,9 +166,11 @@ def send(request, currency):
             # process the data in form.cleaned_data
             if move_exit:
                 messages.success(request, 'Local move of %s %s completed from account "%s" to "%s"' % (amount, currency.upper(), from_account['name'], to_account['name']), extra_tags="success")
+                generic.addEvent('Local move occurred from "%s" to "%s" in the amount of %s %s' % (from_account['name'], to_account['name'], amount, currency.upper()), 'info')
                 return HttpResponseRedirect(reverse('transactions:index', kwargs={'page': '1'})) # Redirect after POST
             elif sendfrom_exit:
                 messages.success(request, 'Transfer of %s %s initialized with transaction id %s' % (amount, currency.upper(), sendfrom_exit), extra_tags="success")
+                generic.addEvent('Transfer initialized from "%s" to "%s" of %s %s' % (from_account['name'], to_address, amount, currency.upper()), 'info')
                 return HttpResponseRedirect(reverse('transactions:details', kwargs={'currency':currency, 'txid':sendfrom_exit})) # Redirect after POST
             
     else:

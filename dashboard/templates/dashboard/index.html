@@ -24,6 +24,68 @@
 	{% endfor %}
 </div>
 -->
+
+<div class="row">
+<div class="col-lg-12">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				<i class="icon-time"></i> Events
+			</h3>
+		</div>
+		
+		<table class="table">
+		<thead>
+		<tr>
+			<th class="header">
+			Level
+			</th>
+			<th class="header">
+			Description
+			</th>
+			<th class="header">
+			Time
+			</th>
+		</tr>
+		</thead>
+		{% if events %}
+		{% for event in events %}
+			<tr>
+				<td>
+				{{ event.level }}
+				</td>
+				<td>
+				{{ event.description }}
+				</td>
+				<td>
+				{{ event.entered_pretty }}
+				</td>
+			</tr>	
+		{% endfor %}
+		{% else %}
+			<tr>
+				<td class="text-center" colspan="3">
+				No events yet
+				</td>
+			</tr>
+		{% endif %}
+		</table>
+		<!-- 
+		<div class="panel-body">
+	    	<div class="text-right">
+				<a href="{% url 'accounts:index' %}"><strong>View All Accounts</strong> <i class="icon-circle-arrow-right"></i></a>
+			</div>
+		</div>
+		-->
+	</div>
+
+
+</div>
+</div>
+
+
+
 <div class="row">
 
 
