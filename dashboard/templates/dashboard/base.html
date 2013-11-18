@@ -57,7 +57,7 @@
                 
 	            <ul class="nav navbar-nav navbar-right navbar-user">
 		           <li class="dropdown alerts-dropdown messages-dropdown">
-	              <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-bell-alt"></i> Alerts <span class="badge {% if system_alerts %}badge-alert{% endif %}">{{ system_alerts|length }}</span> <b class="caret"></b></a>
+	              <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-bell"></i> Alerts <span class="badge {% if system_alerts %}badge-alert{% endif %}">{{ system_alerts|length }}</span> <b class="caret"></b></a>
 	              
 	              <ul class="dropdown-menu">
 	              {% if system_alerts %}
@@ -84,7 +84,7 @@
 	           
 	           
 	            <li class="dropdown user-dropdown">
-	              <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-user"></i> {{ user.first_name }} {{ user.last_name  }} <b class="caret"></b></a>
+	              <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-user"></i> {{ user.first_name }} {{ user.last_name  }} <b class="caret"></b></a>
 	              <ul class="dropdown-menu">
 	                <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
                        <li class="dropdown-submenu dropdown">
