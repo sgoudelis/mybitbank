@@ -35,11 +35,11 @@
 			</h3>
 		</div>
 		
-		<table class="table">
+		<table class="table table-condensed">
 		<thead>
-		<tr>
-			<th width="65" class="header">
-			Level
+		<tr style="background-color:#f5f5f5;">
+			<th width="20" class="header">
+			
 			</th>
 			<th class="header">
 			Description
@@ -52,8 +52,19 @@
 		{% if events %}
 		{% for event in events %}
 			<tr>
-				<td>
-				{{ event.level }}
+				<td class="text-center">
+				{% if event.level == 'info' %}
+				<i data-toggle="tooltip" title="informational" class="fa fa-info-circle light-blue-font smaller-font-2"></i>
+				{% elif event.level == 'error' %}
+				<i data-toggle="tooltip" title="error" class="fa fa-times-circle-o red-font smaller-font-2"></i>
+				{% elif event.level == 'warning' %}
+				<i data-toggle="tooltip" title="warning" class="fa fa-exclamation-triangle orange-font smaller-font-2"></i>
+				{% elif event.level == 'debug' %}
+				<i data-toggle="tooltip" title="debug" class="fa fa-bug green-font smaller-font-2"></i>
+				{% elif event.level == 'alert' %}
+				<i data-toggle="tooltip" title="alert" class="fa fa-minus-circle red-font smaller-font-2"></i>
+				{% endif %}
+				
 				</td>
 				<td>
 				{{ event.description }}

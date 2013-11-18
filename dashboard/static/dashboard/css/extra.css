@@ -262,8 +262,20 @@ table.vertical-align-middle tbody > tr > td {
 	color: green;
 }
 
+.orange-font {
+	color: #FF8000;
+}
+
+.light-blue-font {
+	color: #416AB5;
+}
+
 .red-font {
 	color: red;
+}
+
+.blue-font {
+	color: blue;
 }
 
 .grey-font {
@@ -276,6 +288,10 @@ table.vertical-align-middle tbody > tr > td {
 
 .black-font {
 	color: #000;
+}
+
+.smaller-font-2 {
+	font-size: 16px;
 }
 
 .badge-alert {

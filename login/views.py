@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+import socket
 
 current_section = 'login'
 
@@ -55,7 +56,12 @@ def processLogin(request):
                 # authenticated, log user in
                 login(request, user)
                 client_ip = generic.getClientIp(request)
-                events.addEvent(request, 'Login occurred from %s' % client_ip, 'info')
+                client_hostname_tuple = socket.gethostbyaddr(client_ip)
+                if client_hostname_tuple:
+                    client_hostname = client_hostname_tuple[0]
+                else:
+                    client_hostname = 'n/a'
+                events.addEvent(request, 'Login occurred from %s (%s)' % (client_hostname, client_ip), 'info')
                 
                 if remember:
                     request.session.set_expiry(0)
