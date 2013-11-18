@@ -3,7 +3,6 @@ import datetime
 import dateutil.relativedelta
 import connections
 import config
-from dashboard.models import Events 
 
 def longNumber(x):
     '''
@@ -185,15 +184,6 @@ def humanBytes(num):
             return "%3.1f %s" % (num, x)
         num /= 1024.0
 
-def addEvent(request, description='no description', level='info'):
-    '''
-    Add an Event in the database
-    '''
-    print request
-    if level in ['info', 'debug', 'warning', 'alert', 'error']:
-        event = Events.objects.create(user_id=request.user.id, description=description, level=level, entered=datetime.datetime.now())
-        event.save()
-    
 def getClientIp(request):
     '''
     Get client IP address

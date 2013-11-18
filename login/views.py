@@ -1,6 +1,7 @@
 import config
 import generic
 import forms
+import events
 from connections import connector
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -54,7 +55,7 @@ def processLogin(request):
                 # authenticated, log user in
                 login(request, user)
                 client_ip = generic.getClientIp(request)
-                generic.addEvent(request, 'Login occurred from %s' % client_ip, 'info')
+                events.addEvent(request, 'Login occurred from %s' % client_ip, 'info')
                 
                 if remember:
                     request.session.set_expiry(0)
@@ -99,7 +100,7 @@ def processLogout(request):
     Logout
     '''
     
-    generic.addEvent(request, 'Logout occurred', 'info')
+    events.addEvent(request, 'Logout occurred', 'info')
     logout(request)
     
     return HttpResponseRedirect(reverse('login:index'))

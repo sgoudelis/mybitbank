@@ -2,9 +2,10 @@ from connections import connector
 import config
 import generic
 import calendar
+import events
+from events.models import Events
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from dashboard.models import Events
 
 @login_required
 def index(request):
@@ -52,10 +53,10 @@ def index(request):
         currency_names[currency] = connector.config[currency]['currency_name']
     
     # events
-    events = Events.objects.all().order_by('-entered')[:10]  
-    for event in events:
-        timestamp = calendar.timegm(event.entered.timetuple())
-        event.entered_pretty = generic.twitterizeDate(timestamp)
+    list_of_events = Events.objects.all().order_by('-entered')[:10]  
+    for single_event in list_of_events:
+        timestamp = calendar.timegm(single_event.entered.timetuple())
+        single_event.entered_pretty = generic.twitterizeDate(timestamp)
     
     page_title = "Dashboard"
     sections = generic.getSiteSections('dashboard')
@@ -71,6 +72,6 @@ def index(request):
                'currency_symbols': currency_symbols,
                'currency_names': currency_names,
                'transactions': transactions,
-               'events': events
+               'events': list_of_events
                }
     return render(request, 'dashboard/index.html', context)

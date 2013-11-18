@@ -2,6 +2,7 @@ import config
 import forms
 import generic
 import datetime
+import events
 from connections import connector
 from accounts.models import addressAliases
 from django.http import HttpResponseRedirect, HttpResponse
@@ -109,7 +110,7 @@ def create(request):
             
             if new_address:
                 messages.success(request, 'New account created with one address (%s)' % new_address, extra_tags="success")
-                generic.addEvent(request, "Created new account with address %s" % (new_address), 'info')
+                events.addEvent(request, "Created new account with address %s" % (new_address), 'info')
                 
             return HttpResponseRedirect(reverse('accounts:index'))
 
@@ -211,9 +212,9 @@ def setAddressAlias(request):
             if address_alias:
                 address_alias[0].alias = alias
                 address_alias[0].save()
-                generic.addEvent(request, "Updated alias for address %s to %s" % (address, alias), 'info')
+                events.addEvent(request, "Updated alias for address %s to %s" % (address, alias), 'info')
             else:
-                generic.addEvent(request, "Added alias %s for address %s" % (alias, address), 'info')
+                events.addEvent(request, "Added alias %s for address %s" % (alias, address), 'info')
                 address_alias = addressAliases.objects.create(address=address, alias=alias, status=2, entered=datetime.datetime.utcnow())
             
             if address_alias:
@@ -234,7 +235,7 @@ def createNewAddress(request, old_address):
         if account_details:
             new_address = connector.getnewaddress(account_details['currency'], account_details['name'])
             messages.success(request, 'New address %s created' % new_address, extra_tags="success")
-            generic.addEvent(request, "New address %s created for account %s" % (new_address, account_details['name']), 'info')
+            events.addEvent(request, "New address %s created for account %s" % (new_address, account_details['name']), 'info')
         return HttpResponseRedirect(reverse('accounts:details', kwargs={'account_address': old_address}))
     
     

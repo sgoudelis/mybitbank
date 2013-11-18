@@ -111,7 +111,7 @@ L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
 
 
 var marker = new L.Marker(userLocation, {
-	icon: L.AwesomeMarkers.icon({icon: 'home', prefix: 'icon', markerColor: 'purple'})
+	icon: L.AwesomeMarkers.icon({icon: 'home', prefix: 'fa fa', markerColor: 'purple'})
 });
 map.addLayer(marker);
 
@@ -156,7 +156,7 @@ function createPolyLine(loc1, loc2) {
     var s = '<strong>About</strong> ' + (loc1.distanceTo(loc2) / 1000).toFixed(0) + 'km away from you.</p>';
 
     var marker = L.marker(loc1, {
-    	icon: L.AwesomeMarkers.icon({icon: 'map-marker', prefix: 'icon', markerColor: 'blue'})
+    	icon: L.AwesomeMarkers.icon({icon: 'map-marker', prefix: 'fa fa', markerColor: 'blue'})
     }).addTo(map);
     if (marker) {
         marker.bindPopup(s);
