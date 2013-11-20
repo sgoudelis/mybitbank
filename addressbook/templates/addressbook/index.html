@@ -16,9 +16,9 @@
 						<th class="header">Name</th>
 						<th class="header hidden-xs">Address</th>
 						<th class="header">Currency</th>
-						<th class="header">Comment</th>
+						<th class="hidden-xs header">Comment</th>
 						<th class="header">Entered</th>
-						<th class="header text-center">Status</th>
+						<th class="hidden-xs header text-center">Status</th>
 						<th colspan="2" width="25" class="header text-center">Actions</th>
 					</tr>
 				</thead>
@@ -33,9 +33,9 @@
 							<span class="address-label label-default">{{ currency_symbols|keyvalue:address.currency }} {{ address.address }}</span>
 						</td>
 						<td>{{ address.currency|upper }}</td>
-						<td>{{ address.comment }}</td>
+						<td class="hidden-xs">{{ address.comment }}</td>
 						<td>{{ address.time_pretty }}</td>
-						<td class="text-center fixed-width-font"><span data-toggle="tooltip" title="{{ address.status_text }}" class="glyphicon {{ address.icon }} {{ address.icon_color }}"></span></td>
+						<td class="hidden-xs text-center fixed-width-font"><span data-toggle="tooltip" title="{{ address.status_text }}" class="glyphicon {{ address.icon }} {{ address.icon_color }}"></span></td>
 						<td class="text-right">
 							<form action="{% url 'addressbook:disable' address.id %}" method="post" role="form" class="form-inline">
 	    					{% csrf_token %}
