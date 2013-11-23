@@ -57,7 +57,11 @@ def processLogin(request):
                 # authenticated, log user in
                 login(request, user)
                 client_ip = generic.getClientIp(request)
-                client_hostname_tuple = socket.gethostbyaddr(client_ip)
+                try:
+                    client_hostname_tuple = socket.gethostbyaddr(client_ip)
+                except:
+                    client_hostname_tuple = ()
+                    
                 if client_hostname_tuple:
                     client_hostname = client_hostname_tuple[0]
                 else:

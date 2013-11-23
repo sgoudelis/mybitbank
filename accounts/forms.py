@@ -1,8 +1,7 @@
-import generic
 from django import forms
 from django.forms import CharField
 from connections import connector
-from transfer.forms import CoinAddress
+from transfer.forms import CoinAddress, CoinProviderId
 
 class CoinAccountName(CharField):
     def validate(self, value):
@@ -16,23 +15,12 @@ class CoinCurrency(CharField):
             raise forms.ValidationError("This currency is not supported: %s" % value)
 
 class CreateAccountForm(forms.Form):
-    
-    try:
-        # try to get the last currency in the services list
-        initial_currency = connector.services.keys()[-1]
-    except:
-        initial_currency = ""
-    
+    initial_provider_id = connector.config.keys()[0]
     account_name = CoinAccountName(required=True, initial="")
-    currency = CoinCurrency(required=True, initial=initial_currency)
+    provider_id = CoinProviderId(required=True, initial=initial_provider_id)
     
     def clean(self):
         cleaned_data = super(CreateAccountForm, self).clean()
-        #account_name = cleaned_data.get('account_name', "")
-        #currency = cleaned_data.get('currency', "")
-        
-        # clean data ?
-        
         return cleaned_data
     
 class SetAddressAliasForm(forms.Form):

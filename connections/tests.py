@@ -1,6 +1,7 @@
 from django.test import TestCase
 from decimal import Decimal
 from connections import Connector
+from django.contrib.auth.models import User
 # import generic
 
 rawData = {
@@ -158,8 +159,26 @@ class ConnectorsTests(TestCase):
     connector = None
 
     def setUp(self):
+        '''
+        Setup the test
+        '''
         self.connector = Connector()
-        self.connector.services = {'btc': ServiceProxyStubBTC()}
+        self.connector.services = {1: ServiceProxyStubBTC()}
+        self.connector.config = {1: {'id': int(1),
+                                     'rpcusername': "testuser",
+                                     'rpcpassword': "testnet",
+                                     'rpchost': "localhost",
+                                     'rpcport': "7000",
+                                     'name': 'Bitcoin (BTC)',
+                                     'currency': 'btc',
+                                     'symbol': "B",
+                                     'code': 'BTC',
+                                     'network': "testnet",
+                                     'enabled': True,
+                                   },}
+        
+        user = User.objects.create_user('testing', 'testing@testingpipes.com', 'testingpassword')
+        user.save()
         
     def test_if_type_object(self):
         '''
@@ -181,12 +200,11 @@ class ConnectorsTests(TestCase):
         Test listaccounts() method
         '''
         accounts = self.connector.listaccounts(gethidden=True, getarchived=True)
-        
-        # generic.prettyPrint(accounts)
+        provider_id = 1
         
         # check number of in and out accounts        
-        number_raw_accounts = len(self.connector.services['btc'].listaccounts().keys())
-        number_processed_accounts = len(accounts['btc'])
+        number_raw_accounts = len(self.connector.services[provider_id].listaccounts().keys())
+        number_processed_accounts = len(accounts[provider_id])
         
         self.assertEquals(number_raw_accounts, number_processed_accounts, "Connector.listaccounts() method did not deliver correct number of accounts")
         
@@ -202,7 +220,8 @@ class ConnectorsTests(TestCase):
         Test getaddressesbyaccount() method
         '''
         account_name = "pipes"
-        addresses = self.connector.services['btc'].getaddressesbyaccount(account_name)
+        provider_id = 1
+        addresses = self.connector.services[provider_id].getaddressesbyaccount(account_name)
 
         # check number of address        
         self.assertEquals(len(addresses), 2, 'Connector.getaddressesbyaccount() method is not functioning properly, wrong count returned')
@@ -217,7 +236,8 @@ class ConnectorsTests(TestCase):
         Test getaddressesbyaccount() method test with no account name
         '''
         account_name = False
-        addresses = self.connector.services['btc'].getaddressesbyaccount(account_name)
+        provider_id = 1
+        addresses = self.connector.services[provider_id].getaddressesbyaccount(account_name)
         self.assertTrue(addresses is False, 'Connector.getaddressesbyaccount() method error, wrong address returned')
         
     def test_listtransactionsbyaccount(self):
@@ -226,7 +246,8 @@ class ConnectorsTests(TestCase):
         '''
         
         account_name = "pipes"
-        transactions = self.connector.listtransactionsbyaccount(account_name, 'btc')
+        provider_id = 1
+        transactions = self.connector.listtransactionsbyaccount(account_name, provider_id)
         
         # test number of transactions returned
         number_transactions = len(transactions)
@@ -247,19 +268,19 @@ class ConnectorsTests(TestCase):
         Test listtransactions() method
         '''
         
-        currency = 'btc'
+        provider_id = 1
         transactions = self.connector.listtransactions()
         
         # test number of transactions returned
-        number_transactions = len(transactions[currency])
+        number_transactions = len(transactions[provider_id])
         self.assertEquals(number_transactions, 4, 'Connector.listtransactions() method retured wrong number of transactions')
         
     def test_getnewaddress(self):
         '''
         Test getnewaddress() method
         '''
-        
-        new_address = self.connector.getnewaddress('btc', rawData['new_account_address'])
+        provider_id = 1
+        new_address = self.connector.getnewaddress(provider_id, rawData['new_account_address'])
         self.assertEquals(new_address, rawData['new_account_address'])
         
     def test_getnewaddress_invalid_currency(self):
@@ -276,7 +297,8 @@ class ConnectorsTests(TestCase):
         '''
         
         account_name = u'thisisunicode'
-        new_address = self.connector.getnewaddress('btc', account_name)
+        provider_id = 1
+        new_address = self.connector.getnewaddress(provider_id, account_name)
         self.assertEquals(new_address, 'new account address')        
         
     def test_getnewaddress_nonstring_account_name(self):
@@ -285,24 +307,25 @@ class ConnectorsTests(TestCase):
         '''
         
         account_name = False
-        new_address = self.connector.getnewaddress('btc', account_name)
+        provider_id = 1
+        new_address = self.connector.getnewaddress(provider_id, account_name)
         self.assertEquals(new_address, None)
         
     def test_getnewaddress_no_name(self):
         '''
         Test getnewaddress() method with empty name
         '''
-        
-        new_address = self.connector.getnewaddress('btc', "")
+        provider_id = 1
+        new_address = self.connector.getnewaddress(provider_id, "")
         self.assertEquals(new_address, None)
         
     def test_getbalance(self):
         '''
         Test getbalance() method
         '''        
-        
+        provider_id = 1
         balance = self.connector.getbalance()
-        correct_result = {'btc': self.connector.longNumber(rawData['balance'])}
+        correct_result = {provider_id: self.connector.longNumber(rawData['balance'])}
         self.assertEquals(balance, correct_result)
         
     def test_getaccountdetailsbyaddress(self):
@@ -344,12 +367,12 @@ class ConnectorsTests(TestCase):
         
         from_account = "pipes"
         to_account = "another account"
-        currency = 'btc'
+        provider_id = 1
         amount = "1"
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
+        move_result = self.connector.moveamount(from_account, to_account, provider_id, amount, minconf, comment)
         self.assertEquals(move_result, True)
         
     def test_moveamount_nonexisting_from_account(self):
@@ -682,8 +705,8 @@ class ConnectorsTests(TestCase):
         '''
 
         transaction = rawData['transactions']['pipes'][0]
-        currency = 'btc'
-        transaction_details = self.connector.gettransactiondetails(transaction, currency)
+        provider_id = 1
+        transaction_details = self.connector.gettransactiondetails(transaction, provider_id)
         self.assertEquals(type(transaction_details.get('sender_address', False)), str)
         
     def test_gettransactiondetails_invalid_currency_1(self):

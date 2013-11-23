@@ -1,5 +1,6 @@
 import connections
 import datetime
+from django.utils.timezone import utc
 
 class SSLChecker():
     '''
@@ -12,4 +13,4 @@ class SSLChecker():
         else:
             if not any(alert.get('type', None) == 'sslchecker' for alert in connections.connector.alerts):
                 # add alert about non-existing SSL
-                connections.connector.alerts.append({'type': 'sslchecker', 'message': 'You are currently not secure. No HTTPS/SSL connection detected!', 'when': datetime.datetime.utcnow()})
+                connections.connector.alerts.append({'type': 'sslchecker', 'message': 'You are currently not secure. No HTTPS/SSL connection detected!', 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})

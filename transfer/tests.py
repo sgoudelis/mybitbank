@@ -1,3 +1,5 @@
+import io
+import StringIO
 from django.test.utils import setup_test_environment
 from django.test.client import Client
 from django.core.urlresolvers import reverse
@@ -5,8 +7,7 @@ from django.test import TestCase
 from decimal import Decimal
 from connections import connector
 from lxml import etree
-import io
-import StringIO
+from django.contrib.auth.models import User
 
 '''
 Bogus currency services
@@ -202,9 +203,20 @@ class ServiceProxyStubBTCWithPass(object):
 class TransferIndexTests(TestCase):
     def setUp(self):
         setup_test_environment()
-        connector.services = {'btc': ServiceProxyStubBTC()}
-        
-        from django.contrib.auth.models import User
+        connector.services = {1: ServiceProxyStubBTC()}
+        connector.config = {1: {'id': int(1),
+                             'rpcusername': "testuser",
+                             'rpcpassword': "testnet",
+                             'rpchost': "localhost",
+                             'rpcport': "7000",
+                             'name': 'Bitcoin (BTC)',
+                             'currency': 'btc',
+                             'symbol': "B",
+                             'code': 'BTC',
+                             'network': "testnet",
+                             'enabled': True,
+                           },}
+                
         user = User.objects.create_user('testing', 'testing@testingpipes.com', 'testingpassword')
         user.save()
 
@@ -259,7 +271,7 @@ class TransferIndexTests(TestCase):
         Test XSRF errors come out an empty POST
         '''
         
-        currency = 'btc'
+        provider_id = 1
         client = Client(enforce_csrf_checks=True)
         client.login(username='testing', password='testingpassword')
         
@@ -269,11 +281,11 @@ class TransferIndexTests(TestCase):
                     'comment_to': "",   
                     'csrfmiddlewaretoken': "",
                     'from_address': "",
-                    'selected_currency': "btc",
+                    'provider_id': provider_id,
                     'to_address': ""
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
+        response = client.post(reverse('transfer:send', kwargs={'selected_provider_id': provider_id}), post_data)
         
         self.assertContains(response, '403', status_code=403)
         
@@ -282,7 +294,7 @@ class TransferIndexTests(TestCase):
         Test empty form submittion
         '''
         
-        currency = 'btc'
+        provider_id = 1
         client = Client()
         client.login(username='testing', password='testingpassword')
         
@@ -292,11 +304,11 @@ class TransferIndexTests(TestCase):
                     'comment_to': "",   
                     'csrfmiddlewaretoken': "",
                     'from_address': "",
-                    'selected_currency': "btc",
+                    'provider_id': provider_id,
                     'to_address': ""
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
+        response = client.post(reverse('transfer:send', kwargs={'selected_provider_id': provider_id}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
@@ -312,7 +324,7 @@ class TransferIndexTests(TestCase):
         Test with from address value only
         '''
         
-        currency = 'btc'
+        provider_id = 1
         client = Client()
         client.login(username='testing', password='testingpassword')
         
@@ -322,11 +334,11 @@ class TransferIndexTests(TestCase):
                     'comment_to': "",   
                     'csrfmiddlewaretoken': "",
                     'from_address': "mox7nxwfu9hrTQCn24RBTDce1wiHEP1NQp",
-                    'selected_currency': "btc",
+                    'provider_id': provider_id,
                     'to_address': ""
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
+        response = client.post(reverse('transfer:send', kwargs={'selected_provider_id': provider_id}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
@@ -342,7 +354,7 @@ class TransferIndexTests(TestCase):
         Test with to address value only
         '''
         
-        currency = 'btc'
+        provider_id = 1
         client = Client()
         client.login(username='testing', password='testingpassword')
         
@@ -352,11 +364,11 @@ class TransferIndexTests(TestCase):
                     'comment_to': "",   
                     'csrfmiddlewaretoken': "",
                     'from_address': "",
-                    'selected_currency': "btc",
+                    'provider_id': 1,
                     'to_address': "mox7nxwfu9hrTQCn24RBTDce1wiHEP1NQp"
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
+        response = client.post(reverse('transfer:send', kwargs={'selected_provider_id': provider_id}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
@@ -372,7 +384,7 @@ class TransferIndexTests(TestCase):
         Test with from/to addresses without amount
         '''
         
-        currency = 'btc'
+        provider_id = 1
         client = Client()
         client.login(username='testing', password='testingpassword')
         
@@ -382,11 +394,11 @@ class TransferIndexTests(TestCase):
                     'comment_to': "",   
                     'csrfmiddlewaretoken': "",
                     'from_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP",
-                    'selected_currency': "btc",
+                    'provider_id': provider_id,
                     'to_address': "mox7nxwfu9hrTQCn24RBTDce1wiHEP1NQp"
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
+        response = client.post(reverse('transfer:send', kwargs={'selected_provider_id': provider_id}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
@@ -402,7 +414,7 @@ class TransferIndexTests(TestCase):
         Test same address for from and to
         '''
         
-        currency = 'btc'
+        provider_id = 1
         client = Client()
         client.login(username='testing', password='testingpassword')
         
@@ -416,7 +428,7 @@ class TransferIndexTests(TestCase):
                     'to_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP"
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
+        response = client.post(reverse('transfer:send', kwargs={'selected_provider_id': provider_id}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
@@ -430,7 +442,7 @@ class TransferIndexTests(TestCase):
         Test correct value -> move
         '''
         
-        currency = 'btc'
+        provider_id = 1
         client = Client()
         client.login(username='testing', password='testingpassword')
         
@@ -440,19 +452,19 @@ class TransferIndexTests(TestCase):
                     'comment_to': "",   
                     'csrfmiddlewaretoken': "",
                     'from_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP",
-                    'selected_currency': "btc",
+                    'provider_id': provider_id,
                     'to_address': "mox7nxwfu9hrTQCn24RBTDce1wiHEP1NQp"
                     }
         
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
+        response = client.post(reverse('transfer:send', kwargs={'selected_provider_id': provider_id}), post_data)
         self.assertContains(response, text='', count=None, status_code=302)
         
-    def test_tranfer_submit_test_invalid_currency(self):
+    def test_tranfer_submit_test_invalid_provider_id(self):
         '''
-        Test invalid currency
+        Test invalid provider_id
         '''
         
-        currency = 'btc'
+        provider_id = 9
         client = Client()
         client.login(username='testing', password='testingpassword')
         
@@ -462,17 +474,16 @@ class TransferIndexTests(TestCase):
                     'comment_to': "",   
                     'csrfmiddlewaretoken': "",
                     'from_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP",
-                    'selected_currency': "inv",
+                    'provider_id': provider_id,
                     'to_address': "mox7nxwfu9hrTQCn24RBTDce1wiHEP1NQp"
                     }
 
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
+        response = client.post(reverse('transfer:send', kwargs={'selected_provider_id': provider_id}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
         # validate HTML
         self.assertNotEquals(html_tree, False)
-        
         self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/ul[@class='errorlist']"), [])
     
     def test_tranfer_submit_invalid_address(self):
@@ -480,7 +491,7 @@ class TransferIndexTests(TestCase):
         Test invalid address
         '''
         
-        currency = 'btc'
+        provider_id = 1
         client = Client()
         client.login(username='testing', password='testingpassword')
         
@@ -490,11 +501,11 @@ class TransferIndexTests(TestCase):
                     'comment_to': "",   
                     'csrfmiddlewaretoken': "",
                     'from_address': "mxgWFbqGPywQUK",
-                    'selected_currency': "inv",
+                    'provider_id': provider_id,
                     'to_address': "mox7nxwfu9hrTQCn24RBTDce"
                     }
 
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
+        response = client.post(reverse('transfer:send', kwargs={'selected_provider_id': provider_id}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
@@ -509,11 +520,11 @@ class TransferIndexTests(TestCase):
         Test invalid address
         '''
         
-        currency = 'btc'
+        provider_id = 1
         client = Client()
         client.login(username='testing', password='testingpassword')
         
-        connector.services['btc'] = ServiceProxyStubBTCWithPass()
+        connector.services = {provider_id: ServiceProxyStubBTCWithPass()}
         
         post_data = {
                     'amount': 3,    
@@ -521,15 +532,14 @@ class TransferIndexTests(TestCase):
                     'comment_to': "",   
                     'csrfmiddlewaretoken': "",
                     'from_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP",
-                    'selected_currency': "btc",
+                    'provider_id': provider_id,
                     'to_address': "mox7n3wfu9hrT3Cn24RBTDce1wiHEP1NQp"
                     }
 
-        response = client.post(reverse('transfer:send', kwargs={'currency': currency}), post_data)
+        response = client.post(reverse('transfer:send', kwargs={'selected_provider_id': provider_id}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
 
         # validate HTML
         self.assertNotEquals(html_tree, False)
-
         self.assertNotEquals(html_tree.xpath("//*[@id='passphrase']"), [])

@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from addressbook.models import savedAddress
 from django.utils import simplejson
 from django.contrib import messages
+from django.utils.timezone import utc
 
 current_section = 'accounts'
 
@@ -58,15 +59,15 @@ def add(request):
     context['breadcrumbs'] = generic.buildBreadcrumbs(current_section, '', 'Create')
     return render(request, 'accounts/add.html', context)
 
-def getAddAccountFormContext(account_name='', currency='btc', error=None, form=None):
+def getAddAccountFormContext(account_name='', error=None, form=None):
     '''
     Provide a common context between the account view and create account view
     '''
     # get available currencies
-    currencies_available = []
-    currencies = connector.services.keys()
-    for curr in currencies:
-        currencies_available.append({'name': curr, 'title': connector.config[curr]['currency_name']})
+    providers_available = []
+    providers = connector.config.keys()
+    for provider_id in providers:
+        providers_available.append({'id': provider_id, 'code': connector.config[provider_id]['code'], 'name': connector.config[provider_id]['name']})
         
     page_title = _("Create account")
     sections = generic.getSiteSections(current_section)
@@ -77,10 +78,9 @@ def getAddAccountFormContext(account_name='', currency='btc', error=None, form=N
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', 'Create'),
                'page_sections': sections, 
                'page_title': page_title, 
-               'currencies': currencies_available, 
+               'providers': providers_available, 
                'account_name': account_name, 
-               'currency': currency, 
-               'selected_currency': currency, 
+               'provider_id': provider_id, 
                'error_message': error,
                'form': form,
                }
@@ -92,21 +92,17 @@ def create(request):
     Handler for POST of create account form
     '''
     
-    # put default values
-    new_account_name = ""
-    currency = ""
-    
     if request.method == 'POST': 
         
         # we have a POST request
         form = forms.CreateAccountForm(request.POST)
-    
+
         if form.is_valid(): 
             new_account_name = form.cleaned_data['account_name']
-            currency = form.cleaned_data['currency']
+            provider_id = form.cleaned_data['provider_id']
             
             # all ok, create account
-            new_address = connector.getnewaddress(currency, new_account_name)
+            new_address = connector.getnewaddress(provider_id, new_account_name)
             
             if new_address:
                 messages.success(request, 'New account created with one address (%s)' % new_address, extra_tags="success")
@@ -117,7 +113,7 @@ def create(request):
     else:
         form = forms.CreateAccountForm()
     
-    context = getAddAccountFormContext(account_name=new_account_name, currency=currency, form=form)
+    context = getAddAccountFormContext(account_name="", form=form)
     return render(request, 'accounts/add.html', context)
     
 @login_required        
@@ -132,7 +128,7 @@ def details(request, account_address="pipes"):
     # get account details
     account = connector.getaccountdetailsbyaddress(account_address)
     currency_symbol = generic.getCurrencySymbol(account['currency'])
-    currency_name = connector.config[account['currency']]['currency_name']
+    currency_name = connector.config[account['provider_id']]['name']
     
     # get addressbook
     addressBookAddresses = savedAddress.objects.filter(status__gt=1)
@@ -142,7 +138,7 @@ def details(request, account_address="pipes"):
     
     if account:
         # get transaction details
-        transactions = generic.getTransactionsByAccount(connector, account['name'], account['currency'], reverse_order=True)
+        transactions = generic.getTransactionsByAccount(connector, account['name'], account['provider_id'], reverse_order=True)
         for transaction in transactions:
             transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
             if not transaction.get('details', {}).get('sender_address', False):
@@ -215,7 +211,7 @@ def setAddressAlias(request):
                 events.addEvent(request, "Updated alias for address %s to %s" % (address, alias), 'info')
             else:
                 events.addEvent(request, "Added alias %s for address %s" % (alias, address), 'info')
-                address_alias = addressAliases.objects.create(address=address, alias=alias, status=2, entered=datetime.datetime.utcnow())
+                address_alias = addressAliases.objects.create(address=address, alias=alias, status=2, entered=datetime.datetime.utcnow().replace(tzinfo=utc))
             
             if address_alias:
                 return_msg = {'alias': alias}
@@ -233,7 +229,7 @@ def createNewAddress(request, old_address):
     if request.method == 'POST': 
         account_details = connector.getaccountdetailsbyaddress(old_address)
         if account_details:
-            new_address = connector.getnewaddress(account_details['currency'], account_details['name'])
+            new_address = connector.getnewaddress(account_details['provider_id'], account_details['name'])
             messages.success(request, 'New address %s created' % new_address, extra_tags="success")
             events.addEvent(request, "New address %s created for account %s" % (new_address, account_details['name']), 'info')
         return HttpResponseRedirect(reverse('accounts:details', kwargs={'account_address': old_address}))

@@ -23,7 +23,6 @@ def index(request):
     '''
     
     context = getAddressBookCommonContext(request=request)
-    print connector.errors
     return render(request, 'addressbook/index.html', context)
 
 def getAddressBookCommonContext(request, form=None):
@@ -35,9 +34,8 @@ def getAddressBookCommonContext(request, form=None):
     currency_symbols = generic.getCurrencySymbol()
     book = savedAddress.objects.filter(status__gt=0)
     currencies_available = []
-    currencies = connector.services.keys()
-    for curr in currencies:
-        currencies_available.append({'name': curr, 'title': connector.config[curr]['currency_name']})
+    for provider_id in connector.services.keys():
+        currencies_available.append({'provider_id': provider_id, 'code': connector.config[provider_id]['code'], 'name': connector.config[provider_id]['name']})
         
     for address in book:
         timestamp = calendar.timegm(address.entered.timetuple())
@@ -85,11 +83,11 @@ def create(request):
             # form is valid
             name = form.cleaned_data['name']
             address = form.cleaned_data['address']
-            currency = form.cleaned_data['currency']
+            provider_id = form.cleaned_data['provider_id']
             comment =  form.cleaned_data['comment']
             
             # add address to addressbook
-            newAddressEntry = savedAddress(name=name, address=address, currency=currency, comment=comment, status=2, entered=datetime.datetime.utcnow().replace(tzinfo=utc))
+            newAddressEntry = savedAddress(name=name, address=address, currency=connector.config[provider_id]['currency'], comment=comment, status=2, entered=datetime.datetime.utcnow().replace(tzinfo=utc))
             newAddressEntry.save()
             messages.success(request, 'Addressbook entry added for %s with address %s' % (name, address), extra_tags="success")
             events.addEvent(request, 'Addressbook entry added for %s with name "%s"' % (address, name), 'info')

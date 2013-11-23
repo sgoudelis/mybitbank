@@ -1,5 +1,6 @@
 import datetime
 from accounts.models import addressAliases
+from django.utils.timezone import utc
 
 class CoinAddress(str):
     '''
@@ -20,7 +21,7 @@ class CoinAddress(str):
         # set the alias in the db
         if alias:
             self.aliases.append(alias)
-            newaddralias = addressAliases.objects.create(address=str(self), alias=alias, status=2, entered=datetime.datetime.utcnow())
+            newaddralias = addressAliases.objects.create(address=str(self), alias=alias, status=2, entered=datetime.datetime.utcnow().replace(tzinfo=utc))
             return newaddralias
         else:
             return False

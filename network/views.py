@@ -13,15 +13,16 @@ import urllib2
 current_section = 'network'
 
 @login_required
-def index(request, selected_currency=sorted(connector.config.keys())[0]):
+def index(request, selected_provider_id=sorted(connector.config.keys())[0]):
     '''
     Handler for the accounts
     '''
     sections = generic.getSiteSections(current_section)
+    selected_provider_id= int(selected_provider_id)
     
     g = GeoIP()
     notsupported = 0;
-    peers = generic.getPeerInfo(connector, selected_currency)
+    peers = generic.getPeerInfo(connector, selected_provider_id)
     if 'error' in peers :
         peers = {}
         notsupported = 1
@@ -43,13 +44,13 @@ def index(request, selected_currency=sorted(connector.config.keys())[0]):
             peer['conntime'] = generic.timeSince(peer['conntime']) if 'conntime' in peer else 'N/A'
             peer['syncnode'] = peer['syncnode'] if 'syncnode' in peer else False
     
-    currency_codes = []
+    currency_codes = {}
     currency_names = {}
     currency_symbols = {}
-    for currency in connector.config:
-        currency_names[currency] = connector.config[currency]['currency_name']
-        currency_symbols[currency] = connector.config[currency]['symbol']
-        currency_codes.append(currency)
+    for provider_id in connector.config:
+        currency_names[provider_id] = connector.config[provider_id]['name']
+        currency_symbols[provider_id] = connector.config[provider_id]['symbol']
+        currency_codes[provider_id] = connector.config[provider_id]['code']
     
     currency_codes = sorted(currency_codes)
     
@@ -69,10 +70,11 @@ def index(request, selected_currency=sorted(connector.config.keys())[0]):
     userinfo['lat'] = info['latitude'] if info is not None  else 1
     userinfo['lon'] = info['longitude'] if info is not None else 1
     
+    print currency_names
     page_title = _("Network")
     context = {
                'globals': config.MainConfig['globals'], 
-               'breadcrumbs': generic.buildBreadcrumbs(current_section, '', currency_names[selected_currency]), 
+               'breadcrumbs': generic.buildBreadcrumbs(current_section, '', currency_names[selected_provider_id]), 
                'system_errors': connector.errors,
                'system_alerts': connector.alerts,
                'page_title': page_title, 
@@ -81,7 +83,7 @@ def index(request, selected_currency=sorted(connector.config.keys())[0]):
                'currency_codes': currency_codes,
                'currency_names': currency_names,
                'currency_symbols': currency_symbols,
-               'selected_currency': selected_currency,
+               'selected_provider_id': selected_provider_id,
                'userinfo': userinfo,
                'peers': peers,
                'notsupported': notsupported

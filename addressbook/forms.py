@@ -1,8 +1,7 @@
-import generic
 from django import forms
 from django.forms import CharField
 from connections import connector
-from transfer.forms import CoinAddress
+from transfer.forms import CoinAddress, CoinProviderId
 
 class CoinAccountName(CharField):
     def validate(self, value):
@@ -16,28 +15,17 @@ class CoinCurrency(CharField):
             raise forms.ValidationError("This currency is not supported: %s" % value)
 
 class AddAddressBookForm(forms.Form):
-    
-    try:
-        # try to get the last currency in the services list
-        initial_currency = connector.services.keys()[-1]
-    except:
-        initial_currency = ""
-    
+    initial_provider_id = connector.config.keys()[0]
     name = forms.CharField(required=True, initial="")
-    address = CoinAddress(initial="")
-    currency = CoinCurrency(required=True, initial=initial_currency)
+    address = CoinAddress(required=True, initial="")
+    provider_id = CoinProviderId(required=True, initial=initial_provider_id)
     comment = forms.CharField(required=False, initial="")
-    
+
     def clean_address(self):
         address = self.cleaned_data['address']
         return address.strip()
     
     def clean(self):
         cleaned_data = super(AddAddressBookForm, self).clean()
-        #name = cleaned_data.get('name', "")
-        #address = cleaned_data.get('address', "")
-        #currency = cleaned_data.get('currency', self.initial_currency)
-        #comment = cleaned_data.get('comment', "")
-        
-        # clean data ?
         return cleaned_data
+    

@@ -7,7 +7,7 @@
 {% block site_brand %}{{ globals.site_brand }}{% endblock %}
 
 {% block content %}
-<form action="{% url 'transfer:send' selected_currency %}" method="post" role="form" id="transfer_form">
+<form action="{% url 'transfer:send' selected_provider_id %}" method="post" role="form" id="transfer_form">
 {% csrf_token %}
     <div class="panel panel-danger">
 
@@ -18,25 +18,25 @@
           <div class="panel-body">
             
             <ul class="nav nav-tabs">
-            {% for currency in currency_codes %}
-			  <li {% if selected_currency == currency %}class="active"{% endif %}><a href="{% url 'transfer:index' %}{{ currency }}"><strong>{{ currency_names|keyvalue:currency }}</strong></a></li>
+            {% for provider_id, currency_code in currency_codes.items %}
+			  <li {% if selected_provider_id == provider_id %}class="active"{% endif %}><a href="{% url 'transfer:index' %}{{ provider_id }}"><strong>{{ currency_names|keyvalue:provider_id }}</strong></a></li>
 			{% endfor %}
 			</ul>
             <div class="row">&nbsp;</div>
             
-            {% if form.non_field_errors or form.selected_currency.errors %}
+            {% if form.non_field_errors or form.provider_id.errors %}
             <div class="alert alert-dismissable alert-danger">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ form.non_field_errors }}{{ form.selected_currency.errors }}
+            {{ form.non_field_errors }}{{ form.provider_id.errors }}
             </div>
             {% endif %}
-            
-            {% if ssl_warning %}
+
+            {% if ssl_warning == 1 %}
             <div class="alert alert-dismissable alert-danger">
 			  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			  <strong>Warning!</strong> You are NOT over SSL! Please re-consider transmitting your passphrase over an insecure connection.
 			</div>
-			{% elif show_passphrase %}
+			{% elif ssl_warning == -1 %}
 			<div class="alert alert-dismissable alert-success">
 			  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			  <strong>Safety assured!</strong> You are over SSL. You may proceed safely.
@@ -44,13 +44,13 @@
 			{% endif %}
             
             {% if errors %}
+            {% for error in errors %}
             <div class="alert alert-dismissable alert-danger">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ errors }}
+            {{ error.message }}
             </div>
+            {% endfor %}
             {% endif %}
-            
-
             
             {% if show_passphrase %}
             <div class="row alert-danger">
@@ -65,7 +65,7 @@
             
             {% endif %}
             
-            <input type="hidden" name="selected_currency" value="{{ selected_currency }}"/>
+            <input type="hidden" name="provider_id" value="{{ selected_provider_id }}"/>
             <div class="row">
               <div class="col-md-4">
                   <div class="form-group {% if form.from_address.errors %}has-error{% endif %}">
@@ -79,8 +79,8 @@
               <label for="">&nbsp;</label>
                 <select class="grey-font form-control fixed-width-font" id="from_account_menu" onchange="callAccountsOptionClick(this)">
                 <option onclick="javascript:updateTransferDialog('', '0.00000000', 'from_address');">or select an account</option>
-                {% if accounts|keyvalue:selected_currency %}
-                {% for account in accounts|keyvalue:selected_currency %}
+                {% if accounts|keyvalue:selected_provider_id %}
+                {% for account in accounts|keyvalue:selected_provider_id %}
                     {% if account.name %}
                       <option value="{{ account.addresses.0 }}" class="dark-font fixed-width-font" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'from_address');" >{{ account.name }} - {{ account.addresses.0 }}</option>
                     {% endif %}
@@ -91,7 +91,7 @@
 			  
 			  <div class="col-md-2">
 			  <div class="row">&nbsp;</div>
-			  <div class="row text-center"><span class="large-text-1" id="from_address_currency">{{ currency_symbols|keyvalue:selected_currency }}</span> <span class="large-text-1" id="from_address_balance">0.00000000</span></div>
+			  <div class="row text-center"><span class="large-text-1" id="from_address_currency">{{ currency_symbols|keyvalue:selected_provider_id }}</span> <span class="large-text-1" id="from_address_balance">0.00000000</span></div>
 			  </div>
 
             </div>
@@ -115,9 +115,9 @@
                 	<optgroup label=""></optgroup>
                 {% endif %}
                 
-                {% if accounts|keyvalue:selected_currency %}
+                {% if accounts|keyvalue:selected_provider_id %}
                 <optgroup class="black-font" label="local accounts"></optgroup>
-                {% for account in accounts|keyvalue:selected_currency %}
+                {% for account in accounts|keyvalue:selected_provider_id %}
                     {% if account.name %}
                       <option value="{{ account.addresses.0 }}" class="dark-font fixed-width-font" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'to_address');" >{{ account.name }} - {{ account.addresses.0 }}</option>
                     {% endif %}
@@ -127,7 +127,7 @@
               </div>
              <div class="col-md-2">
 			  <div class="row">&nbsp;</div>
-			  <div class="row text-center"><span class="large-text-1" id="to_address_currency">{{ currency_symbols|keyvalue:selected_currency }}</span> <span class="large-text-1" id="to_address_balance">0.00000000</span></div>
+			  <div class="row text-center"><span class="large-text-1" id="to_address_currency">{{ currency_symbols|keyvalue:selected_provider_id }}</span> <span class="large-text-1" id="to_address_balance">0.00000000</span></div>
 			  </div>
             </div>
             
@@ -163,7 +163,7 @@
               <label for="amount">Amount</label>
               <div class="form-group {% if form.amount.errors %}has-error{% endif %}">
                 <div class="input-group">
-                  <span class="input-group-addon">{{ currency_symbols|keyvalue:selected_currency }}</span>
+                  <span class="input-group-addon">{{ currency_symbols|keyvalue:selected_provider_id }}</span>
                   <input type="text" class="form-control" name="amount" style="text-align:right;" value="{{ form.amount.value }}">
                 </div>
                 {{ form.amount.errors }}
@@ -176,7 +176,7 @@
           </div>
         </div>
         </form>
-        {% if not accounts|keyvalue:selected_currency %}
+        {% if not accounts|keyvalue:selected_provider_id %}
         <script type="text/javascript">
         $('form#transfer_form :input').attr("disabled", "disabled");
         </script>

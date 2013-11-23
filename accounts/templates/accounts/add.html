@@ -24,16 +24,16 @@
       	{% endif %}
       </div>
       <div class="form-group">
-      {% for currency in currencies %}
+      {% for provider in providers %}
         <div class="radio">
           <label>
-            <input type="radio" name="currency" id="currency" value="{{ currency.name }}" {% ifequal form.currency.value currency.name %}checked{% endifequal %}>
-            {{ currency.title }}
+            <input type="radio" name="provider_id" id="provider_id" value="{{ provider.id }}" {% ifequal form.provider_id.value|stringformat:"s" provider.id|stringformat:"s" %}checked{% endifequal %}>
+            {{ provider.name }}
           </label>
         </div>
        {% endfor %}
-	     {% if form.errors.currency %}
-	   	{{ form.errors.currency }}
+	     {% if form.errors.provider_id %}
+	   	{{ form.errors.provider_id }}
 	   	{% endif %}
       </div>
     

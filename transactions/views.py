@@ -62,13 +62,13 @@ def index(request, page=0):
         elif transaction['category'] == 'send':
             if not len(transaction['account']):
                 transaction['alternative_account'] = "(no name)"
-            transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
+            transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['provider_id'])
             transaction['destination_address'] = transaction['address']
             transaction['icon'] = 'glyphicon-circle-arrow-up'
             transaction['addressbook_name'] = saved_addresses.get(transaction['address'], False)
         elif transaction['category'] == 'move':
-            transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
-            transaction['destination_addresses'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['currency'])
+            transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['provider_id'])
+            transaction['destination_addresses'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['provider_id'])
             if not transaction['account']:
                 transaction['alternative_name'] = '(no name)'
             transaction['icon'] = 'glyphicon-circle-arrow-right'
@@ -112,9 +112,9 @@ def index(request, page=0):
     return render(request, 'transactions/index.html', context)
 
 @login_required
-def transactionDetails(request, txid, currency):
-    
-    transaction = connector.gettransaction(txid, currency)
+def transactionDetails(request, txid, provider_id):
+    provider_id = int(provider_id)
+    transaction = connector.gettransaction(txid, provider_id)
     
     transaction['timereceived_pretty'] = generic.twitterizeDate(transaction.get('timereceived', 'never'))
     transaction['time_pretty'] = generic.twitterizeDate(transaction.get('time', 'never'))
@@ -122,7 +122,7 @@ def transactionDetails(request, txid, currency):
     transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 0))
     transaction['blocktime_human'] = datetime.datetime.fromtimestamp(transaction.get('blocktime', 0))
     transaction['blocktime_pretty'] = generic.twitterizeDate(transaction.get('blocktime', 'never'))
-    transaction['currency'] = currency
+    transaction['currency'] = connector.config[provider_id]['currency']
     
     if transaction.get('fee', False):
         transaction['fee'] = generic.longNumber(transaction['fee'])
@@ -132,7 +132,7 @@ def transactionDetails(request, txid, currency):
     if transaction['details'][0]['category'] == 'receive':
         account = connector.getaccountdetailsbyaddress(transaction['details'][0]['address'])
     elif transaction['details'][0]['category'] == 'send':
-        account_addresses = connector.getaddressesbyaccount(transaction['details'][0]['account'], currency)
+        account_addresses = connector.getaddressesbyaccount(transaction['details'][0]['account'], provider_id)
         account = connector.getaccountdetailsbyaddress(account_addresses[0])
         
     page_title = "Transaction details for %s" % txid

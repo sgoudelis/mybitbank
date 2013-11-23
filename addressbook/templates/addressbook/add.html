@@ -38,14 +38,16 @@
        {% for currency in currencies %}
         <div class="radio">
           <label>
-            <input type="radio" name="currency" id="currency" value="{{ currency.name }}" {% ifequal form.currency.value currency.name %}checked{% endifequal %}>
-            {{ currency.title }}
+            <input type="radio" name="provider_id" id="provider_id" value="{{ currency.provider_id }}" {% ifequal form.provider_id.value currency.provider_id|stringformat:"s" %}checked{% endifequal %}>
+            {{ currency.name }}
           </label>
         </div>
        {% endfor %}
+       {% if form.errors.provider_id %}
+       {{ form.errors.provider_id }}
+       {% endif %}
       </div>
     </div>
-    
     
     <div class="row">
       <div class="col-md-4 form-group">

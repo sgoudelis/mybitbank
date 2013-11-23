@@ -17,10 +17,10 @@ def index(request):
     balances = connector.getbalance()
     transactions_by_currency = connector.listtransactions(limit=20, start=0)
     transactions = []
-    for currency in transactions_by_currency:
-        for transaction in transactions_by_currency[currency]:
+    for provider_id in transactions_by_currency:
+        for transaction in transactions_by_currency[provider_id]:
             if transaction['category'] != 'move':
-                transaction['currency'] = currency
+                transaction['currency'] = connector.config[provider_id]['currency']
                 transactions.append(transaction)
     
     # sort result
@@ -46,11 +46,13 @@ def index(request):
                 transaction['alternative_name'] = '(no name)'
             transaction['icon'] = 'glyphicon-circle-arrow-right'
 
-    currency_symbols = generic.getCurrencySymbol('*')
-    
+    currency_codes = {}
     currency_names = {}
-    for currency in connector.config:
-        currency_names[currency] = connector.config[currency]['currency_name']
+    currency_symbols = {}
+    for provider_id in connector.config:
+        currency_names[provider_id] = connector.config[provider_id]['name']
+        currency_symbols[provider_id] = connector.config[provider_id]['symbol']
+        currency_codes[provider_id] = connector.config[provider_id]['code']
     
     # events
     list_of_events = Events.objects.all().order_by('-entered')[:10]  

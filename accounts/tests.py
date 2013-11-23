@@ -248,7 +248,7 @@ class CreateAccountTests(TestCase):
             'comment_to': "",   
             'csrfmiddlewaretoken': "",
             'from_address': "",
-            'selected_currency': "btc",
+            'provider_id': 1,
             'to_address': ""
             }
         
@@ -258,15 +258,15 @@ class CreateAccountTests(TestCase):
  
     def test_create_accounts_empty_values(self):
         '''
-        Test empty form submittion
+        Test empty form submission
         '''
         
         client = Client()
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'account_name': "",    
-                    'currency': "",    
+                    'account_name': None,    
+                    'provider_id': None,      
                     'csrfmiddlewaretoken': "",
                     }
         
@@ -289,7 +289,7 @@ class CreateAccountTests(TestCase):
         
         post_data = {
                     'account_name': "new account name",    
-                    'currency': "btc",    
+                    'provider_id': 1,    
                     'csrfmiddlewaretoken': "",
                     }
         

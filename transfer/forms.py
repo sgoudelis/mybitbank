@@ -1,6 +1,6 @@
-from django import forms
-from django.forms import CharField
 import generic
+from django import forms
+from django.forms import CharField, IntegerField
 from connections import connector
 
 class CoinAddress(CharField):
@@ -32,24 +32,33 @@ class CoinCurrency(CharField):
         if value not in supported_currencies:
             raise forms.ValidationError("This currency is not supported: %s" % value)
 
-
+class CoinProviderId(IntegerField):
+    def validate(self, value):
+        super(IntegerField, self).validate(value)
+        if value not in connector.config.keys():
+            raise forms.ValidationError("This currency provider id is not supported: %s" % value)
+        
+    def to_python(self, value):
+        try:
+            return int(value)
+        except:
+            return 0
+        
 class SendCurrencyForm(forms.Form):
+    initial_provider_id = connector.config.keys()[0]
+    
     from_address = CoinAddress(initial="")
     to_address = CoinAddress(initial="")
     comment = forms.CharField(initial="", required=False)
     comment_to = forms.CharField(initial="", required=False)
-    amount = CoinAmount(initial=0)
-    selected_currency = CoinCurrency(initial="")
+    amount = CoinAmount(initial=0, required=True)
+    provider_id = CoinProviderId(required=True, initial=initial_provider_id)
     passphrase = forms.CharField(initial="", required=False)
     
     def clean(self):
         cleaned_data = super(SendCurrencyForm, self).clean()
         from_address = cleaned_data.get('from_address', "")
         to_address = cleaned_data.get('to_address', "")
-        #comment = cleaned_data.get('comment', "")
-        #amount = cleaned_data.get('amount', 0)
-        #selected_currency = cleaned_data.get('selected_currency',"")
-        #passphrase = cleaned_data.get('passphrase',"")
         
         if from_address == to_address and (from_address and to_address):
             raise forms.ValidationError("You cannot move from and to the same account/address")
