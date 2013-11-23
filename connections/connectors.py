@@ -519,7 +519,6 @@ class Connector(object):
         
         # encode the address in base58
         encoded_address = base58.b58encode(address)
-        #print "resolved address: %s" % encoded_address
         
         return encoded_address
     

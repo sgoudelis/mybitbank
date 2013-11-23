@@ -1,14 +1,15 @@
 import config
 import generic
 import datetime
+import json
+import urllib2
 from connections import connector
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from django.contrib.gis.geoip import GeoIP
-import json
-import urllib2
+
 
 current_section = 'network'
 
@@ -50,7 +51,7 @@ def index(request, selected_provider_id=sorted(connector.config.keys())[0]):
     for provider_id in connector.config:
         currency_names[provider_id] = connector.config[provider_id]['name']
         currency_symbols[provider_id] = connector.config[provider_id]['symbol']
-        currency_codes[provider_id] = connector.config[provider_id]['code']
+        currency_codes[provider_id] = connector.config[provider_id]['currency']
     
     currency_codes = sorted(currency_codes)
     

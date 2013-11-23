@@ -52,7 +52,7 @@ def index(request):
     for provider_id in connector.config:
         currency_names[provider_id] = connector.config[provider_id]['name']
         currency_symbols[provider_id] = connector.config[provider_id]['symbol']
-        currency_codes[provider_id] = connector.config[provider_id]['code']
+        currency_codes[provider_id] = connector.config[provider_id]['currency']
     
     # events
     list_of_events = Events.objects.all().order_by('-entered')[:10]  

@@ -35,7 +35,7 @@ def getAddressBookCommonContext(request, form=None):
     book = savedAddress.objects.filter(status__gt=0)
     currencies_available = []
     for provider_id in connector.services.keys():
-        currencies_available.append({'provider_id': provider_id, 'code': connector.config[provider_id]['code'], 'name': connector.config[provider_id]['name']})
+        currencies_available.append({'provider_id': provider_id, 'currency': connector.config[provider_id]['currency'], 'name': connector.config[provider_id]['name']})
         
     for address in book:
         timestamp = calendar.timegm(address.entered.timetuple())

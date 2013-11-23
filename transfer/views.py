@@ -36,7 +36,7 @@ def commonContext(request={}, selected_provider_id=1, form=None, errors=[], show
     for provider_id in connector.config:
         currency_names[provider_id] = connector.config[provider_id]['name']
         currency_symbols[provider_id] = connector.config[provider_id]['symbol']
-        currency_codes[provider_id] = connector.config[provider_id]['code']
+        currency_codes[provider_id] = connector.config[provider_id]['currency']
             
     # sort in reverse
     #currency_codes = sorted(currency_codes)
