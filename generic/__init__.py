@@ -128,11 +128,12 @@ def getCurrencySymbol(for_currency='*'):
     currencies = {}
     connection_config = connections.connector.config
     for provider_id in connection_config.keys():
-        currencies[connections.connector.config[provider_id]['currency']] = connections.connector.config[provider_id]['symbol']
+        currencies[connections.connector.config[provider_id]['currency'].lower()] = connections.connector.config[provider_id]['symbol']
     
     if for_currency == '*':
         return currencies
     else:
+        for_currency = for_currency.lower()
         return currencies[for_currency]
 
 def getPeerInfo(connector, provider_id=0):
