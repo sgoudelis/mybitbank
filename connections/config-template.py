@@ -1,53 +1,53 @@
 # -*- coding: utf-8 -*-
-config = {
-    'btc' :  {
+config = [
+    {
         'rpcusername': "testuser",
         'rpcpassword': "testnet",
         'rpchost': "localhost",
         'rpcport': "7000",
-        'currency_name': 'Bitcoin (BTC)',
+        'name': 'Bitcoin (BTC)',
         'symbol': "฿",
-        'code': 'BTC',
+        'currency': 'BTC',
         'network': "mainnet",
     },
-    'ltc':  {
+    {
         'rpcusername': "testuser",
         'rpcpassword': "testnet",
         'rpchost': "localhost",
         'rpcport': "7001",
-        'currency_name': 'Litecoin (LTC)',
+        'name': 'Litecoin (LTC)',
         'symbol': "Ł",
-        'code': 'LTC',
+        'currency': 'LTC',
         'network': "mainnet",
     },
-    'nmc':  {
+    {
         'rpcusername': "testuser",
         'rpcpassword': "testnet",
         'rpchost': "localhost",
         'rpcport': "7002",
-        'currency_name': 'Namecoin (NMC)',
+        'name': 'Namecoin (NMC)',
         'symbol': "ℕ",
-        'code': 'NMC',
+        'currency': 'NMC',
         'network': "mainnet",
     },
-    'ppc':  {
+    {
         'rpcusername': "testuser",
         'rpcpassword': "testnet",
         'rpchost': "localhost",
         'rpcport': "7003",
-        'currency_name': 'PPcoin (PPC)',
+        'name': 'PPcoin (PPC)',
         'symbol': "Ᵽ",
-        'code': 'PPC',
+        'currency': 'PPC',
         'network': "mainnet",
     },
-    'ftc':  {
+    {
         'rpcusername': "testuser",
         'rpcpassword': "testnet",
         'rpchost': "localhost",
         'rpcport': "7003",
-        'currency_name': 'Feathercoin (FTC)',
+        'name': 'Feathercoin (FTC)',
         'symbol': "ƒ",
-        'code': 'FTC',
+        'currency': 'FTC',
         'network': "mainnet",
     },
-}
+]
