@@ -508,7 +508,7 @@ class Connector(object):
         ripe160.update(h)
         d = ripe160.digest()
         
-        prefix = self.prefixes[currency][net]
+        prefix = self.prefixes[currency.lower()][net]
         address = (prefix + d)
         
         # calculate checksum
