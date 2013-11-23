@@ -451,9 +451,9 @@ class Connector(object):
         transaction_details = None
         try:
             transaction_details = self.services[provider_id].getrawtransaction(txid, 1)
-        except JSONRPCException, e:
+        except JSONRPCException:
             return {}
-        except Exception, e:
+        except Exception:
             return {}
 
         if transaction['category'] == 'receive':
@@ -479,9 +479,9 @@ class Connector(object):
         transaction_details = None
         try:
             transaction_details = self.services[provider_id].gettransaction(txid)
-        except JSONRPCException, e:
+        except JSONRPCException:
             return {}
-        except Exception, e:
+        except Exception:
             return {}
     
         return transaction_details

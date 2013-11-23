@@ -2,7 +2,6 @@ from connections import connector
 import config
 import generic
 import calendar
-import events
 from events.models import Events
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
