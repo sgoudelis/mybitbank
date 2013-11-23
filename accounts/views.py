@@ -67,7 +67,7 @@ def getAddAccountFormContext(account_name='', error=None, form=None):
     providers_available = []
     providers = connector.config.keys()
     for provider_id in providers:
-        providers_available.append({'id': provider_id, 'code': connector.config[provider_id]['code'], 'name': connector.config[provider_id]['name']})
+        providers_available.append({'id': provider_id, 'currency': connector.config[provider_id]['currency'], 'name': connector.config[provider_id]['name']})
         
     page_title = _("Create account")
     sections = generic.getSiteSections(current_section)
