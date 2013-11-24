@@ -503,7 +503,35 @@ class Connector(object):
         else:
             sender_address = ""
         
+        '''
+        import json
+        import decimal
+        
+        class DecimalEncoder(json.JSONEncoder):
+            def _iterencode(self, o, markers=None):
+                if isinstance(o, decimal.Decimal):
+                    # wanted a simple yield str(o) in the next line,
+                    # but that would mean a yield on the line with super(...),
+                    # which wouldn't work (see my comment below), so...
+                    return (str(o) for o in [o])
+                return super(DecimalEncoder, self)._iterencode(o, markers)
+        
+        
+        addresses = []
+        print json.dump(self.services[provider_id].getrawtransaction(txid, 1))
+        raw_tx = self.decoderawtransaction(json.dumps(self.services[provider_id].getrawtransaction(txid, 1), cls=DecimalEncoder), provider_id)
+        for input_tx in raw_tx['vin']:
+            input_raw_tx = self.decoderawtransaction(json.dumps(self.services[provider_id].getrawtransaction(input_tx['txid']), cls=DecimalEncoder), provider_id)
+            addresses.push(input_raw_tx['vout'][input['vout']]['scriptPubKey']['addresses'][0])
+        
+        print addresses
+        '''
+            
         return {'sender_address': sender_address}
+    
+    def decoderawtransaction(self, transaction, provider_id):
+        return self.services[provider_id].decoderawtransaction(transaction)
+    
     
     def gettransaction(self, txid, provider_id):
         '''
@@ -533,10 +561,6 @@ class Connector(object):
         Decode input script signature, courtesy of:
         http://bitcoin.stackexchange.com/questions/7838/why-does-gettransaction-report-me-only-the-receiving-address/8864#8864
         '''
-        try:
-            import base58
-        except:
-            return "need base58"
         
         try:
             script_sig = rawtransaction['vin'][0]['scriptSig']['asm']
@@ -560,7 +584,7 @@ class Connector(object):
         address += checksum
         
         # encode the address in base58
-        encoded_address = base58.b58encode(address)
+        encoded_address = generic.b58encode(address)
         
         return encoded_address
     

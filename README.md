@@ -8,7 +8,6 @@ You should update pip and install project requirements.
 
 ```
 easy_install --upgrade pip
-easy_install base58
 pip install -r requirements.txt
 ```
 
