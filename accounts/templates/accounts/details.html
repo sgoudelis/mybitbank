@@ -69,7 +69,7 @@
 					</div>
 		  		</td>
 		  		<td>
-		  		<button data-toggle="tooltip" title="show QR code" type="button" onclick="updateQRImage('{{ address }}')" class="btn btn-success btn-xs"><i class="fa fa-qrcode"></i></span></button>
+		  		<button data-toggle="modal" data-target="#myModal" title="show QR code" type="button" onclick="updateQRImage('{{ address }}')" class="btn btn-success btn-xs"><i class="fa fa-qrcode"></i></span></button>
 		  		</td>
 		  	</tr>
 		  	{% endfor %}
@@ -83,10 +83,7 @@
 		  	</tr>
 			</table>
   	  </div>
-  	  
-  	  <div class="col-md-2 text-right">
-  	  <img id="qrthumb" src="http://chart.apis.google.com/chart?chld=L|1&choe=ISO-8859-1&chs=100x100&cht=qr&chl={{ account.addresses.0 }}">
-  	  </div>
+  	 
   	  
 	</div>
 	
@@ -186,4 +183,24 @@
   	 </div>
   
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">QR code</h4>
+      </div>
+      <div class="modal-body text-center">
+  	  <img id="qrthumb" src="">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 {% endblock %}

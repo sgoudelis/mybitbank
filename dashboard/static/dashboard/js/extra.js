@@ -54,5 +54,5 @@ function setAlias (address, alias) {
 }
 
 function updateQRImage(address) {
-	$('img#qrthumb').attr('src', 'http://chart.apis.google.com/chart?chld=L|1&choe=ISO-8859-1&chs=100x100&cht=qr&chl='+address);
+	$('img#qrthumb').attr('src', 'http://chart.apis.google.com/chart?chld=L|1&choe=ISO-8859-1&chs=300x300&cht=qr&chl='+address);
 }
