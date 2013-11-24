@@ -68,10 +68,11 @@ class Connector(object):
         is_testnet = False
         if info.get('testnet', False):
             is_testnet = info.get('testnet')
-            if is_testnet is True:
-                return 'testnet'
-            elif is_testnet is False:
-                return 'mainnet'
+            print is_testnet
+            if is_testnet is False:
+                return "mainnet"
+            elif is_testnet is True:
+                return "testnet"
         else:
             return None
 
