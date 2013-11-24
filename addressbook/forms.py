@@ -1,3 +1,4 @@
+import generic
 from django import forms
 from django.forms import CharField
 from connections import connector
@@ -15,10 +16,9 @@ class CoinCurrency(CharField):
             raise forms.ValidationError("This currency is not supported: %s" % value)
 
 class AddAddressBookForm(forms.Form):
-    initial_provider_id = connector.config.keys()[0]
     name = forms.CharField(required=True, initial="")
     address = CoinAddress(required=True, initial="")
-    provider_id = CoinProviderId(required=True, initial=initial_provider_id)
+    provider_id = CoinProviderId(required=True, initial=generic.getInitialProviderId())
     comment = forms.CharField(required=False, initial="")
 
     def clean_address(self):

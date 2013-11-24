@@ -201,3 +201,13 @@ def getClientIp(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+def getInitialProviderId():
+    '''
+    Get the first provider id if it exists
+    '''
+    keys = connections.connector.config.keys()
+    if keys:
+        return keys[0]
+    else:
+        return 0

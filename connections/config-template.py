@@ -8,7 +8,6 @@ config = [
         'name': 'Bitcoin (BTC)',
         'symbol': "฿",
         'currency': 'BTC',
-        'network': "mainnet",
     },
     {
         'rpcusername': "testuser",
@@ -18,7 +17,6 @@ config = [
         'name': 'Litecoin (LTC)',
         'symbol': "Ł",
         'currency': 'LTC',
-        'network': "mainnet",
     },
     {
         'rpcusername': "testuser",
@@ -28,7 +26,6 @@ config = [
         'name': 'Namecoin (NMC)',
         'symbol': "ℕ",
         'currency': 'NMC',
-        'network': "mainnet",
     },
     {
         'rpcusername': "testuser",
@@ -38,7 +35,6 @@ config = [
         'name': 'PPcoin (PPC)',
         'symbol': "Ᵽ",
         'currency': 'PPC',
-        'network': "mainnet",
     },
     {
         'rpcusername': "testuser",
@@ -48,6 +44,5 @@ config = [
         'name': 'Feathercoin (FTC)',
         'symbol': "ƒ",
         'currency': 'FTC',
-        'network': "mainnet",
     },
 ]

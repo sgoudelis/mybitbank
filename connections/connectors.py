@@ -40,6 +40,7 @@ class Connector(object):
              'transactions': {},
              'balances': {},
              'addressesbyaccount': {},
+             'info': {},
              })
         try:
             import config
@@ -58,9 +59,21 @@ class Connector(object):
                                                                               currency_config['rpcpassword'], 
                                                                               currency_config['rpchost'], 
                                                                               currency_config['rpcport']))
-                                                                            
+    
     def getNet(self, provider_id):
-        return self.config[provider_id].get('network', 'testnet')
+        '''
+        Return network value, mainnet or testnet
+        '''
+        info = self.getinfo(provider_id)
+        is_testnet = False
+        if info.get('testnet', False):
+            is_testnet = info.get('testnet')
+            if is_testnet is True:
+                return 'testnet'
+            elif is_testnet is False:
+                return 'mainnet'
+        else:
+            return None
 
     def removeCurrencyService(self, provider_id):
         '''
@@ -80,8 +93,36 @@ class Connector(object):
         '''
         return "{:.8f}".format(x)
     
+    def getinfo(self, provider_id):
+        '''
+        Get xxxcoind info
+        '''
+        
+        if provider_id not in self.services.keys():
+            return {'message': 'Non-existing currency provider id %s' % provider_id, 'code':-100}
+        
+        # check for cached data, use that or get it again
+        cache_hash = self.getParamHash("provider_id=%s" % provider_id)
+        try:
+            cache_object = self.cache['info'].get(cache_hash, None)
+            if ((datetime.datetime.utcnow().replace(tzinfo=utc) - cache_object['when']).seconds) < self.caching_time:
+                cached_info = self.cache['info'][cache_hash]['data']
+                return cached_info
+        except:
+            pass
+        
+        coind_info = {}
+        try:        
+            coind_info = self.services[provider_id].getinfo()
+        except (JSONRPCException, Exception), e:
+            self.errors.append({'message': 'Error occurred while getting info from currency provider (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+            self.removeCurrencyService(provider_id)
+        return coind_info
+    
     def getpeerinfo(self, provider_id):
-        # get data from the connector (coind)
+        '''
+        Get peer info from the connector (xxxcoind)
+        '''
         peers = []
         try:
             if self.config[provider_id]['enabled'] is True:

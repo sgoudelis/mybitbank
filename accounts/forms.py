@@ -1,3 +1,4 @@
+import generic
 from django import forms
 from django.forms import CharField
 from connections import connector
@@ -15,9 +16,8 @@ class CoinCurrency(CharField):
             raise forms.ValidationError("This currency is not supported: %s" % value)
 
 class CreateAccountForm(forms.Form):
-    initial_provider_id = connector.config.keys()[0]
     account_name = CoinAccountName(required=True, initial="")
-    provider_id = CoinProviderId(required=True, initial=initial_provider_id)
+    provider_id = CoinProviderId(required=True, initial=generic.getInitialProviderId())
     
     def clean(self):
         cleaned_data = super(CreateAccountForm, self).clean()
