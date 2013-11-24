@@ -65,6 +65,7 @@ class Connector(object):
         Return network value, mainnet or testnet
         '''
         info = self.getinfo(provider_id)
+        print info
         is_testnet = False
         if info.get('testnet', False):
             is_testnet = info.get('testnet')
