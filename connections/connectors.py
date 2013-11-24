@@ -65,17 +65,16 @@ class Connector(object):
         Return network value, mainnet or testnet
         '''
         info = self.getinfo(provider_id)
-        print info
         is_testnet = False
-        if info.get('testnet', False):
+        if info.has_key('testnet'):
             is_testnet = info.get('testnet')
-            print is_testnet
             if is_testnet is False:
                 return "mainnet"
             elif is_testnet is True:
                 return "testnet"
         else:
-            return None
+            # default to mainnet
+            return "mainnet"
 
     def removeCurrencyService(self, provider_id):
         '''
