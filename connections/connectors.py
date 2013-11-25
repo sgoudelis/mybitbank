@@ -204,7 +204,7 @@ class Connector(object):
                             
                             # catch default address without name
                             if account_name == "":
-                                alternative_name = '(no name)'
+                                alternative_name = '(default account)'
                             else:
                                 alternative_name = account_name
                             
@@ -381,7 +381,7 @@ class Connector(object):
     
     def getaccountdetailsbyaddress(self, address):
         '''
-        Return account details 
+        Return account details by address
         '''
         
         accounts = self.listaccounts(gethidden=True, getarchived=True)
@@ -395,6 +395,15 @@ class Connector(object):
                     target_account['provider_id'] = provider_id
                     break
         return target_account
+    
+    def getdefaultaccount(self, provider_id):
+        '''
+        Return the default (default account) account for a provider
+        '''
+        
+        account_addresses = self.getaddressesbyaccount(u'', provider_id)
+        account = self.getaccountdetailsbyaddress(account_addresses[0])
+        return account
 
     def moveamount(self, from_account, to_account, provider_id, amount, minconf=1, comment=""):
         if not from_account or not to_account or not provider_id:

@@ -57,21 +57,35 @@ def index(request, page=0):
         if transaction['category'] == 'receive':
             transaction['source_address'] = transaction.get('details', {}).get('sender_address', '(no sender address)')
             transaction['addressbook_name'] = saved_addresses.get(transaction['source_address'], False)
-            transaction['destination_address'] = transaction['address']
             transaction['icon'] = 'glyphicon-circle-arrow-down'
-        elif transaction['category'] == 'send':
             if not len(transaction['account']):
-                transaction['alternative_account'] = "(no name)"
+                transaction['account'] = "(default account)"
+                default_account = connector.getdefaultaccount(transaction['provider_id'])
+                transaction['destination_address'] = default_account['addresses'][0]
+            else:
+                transaction['destination_address'] = transaction['address']
+                
+        elif transaction['category'] == 'send':
             transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['provider_id'])
             transaction['destination_address'] = transaction['address']
             transaction['icon'] = 'glyphicon-circle-arrow-up'
             transaction['addressbook_name'] = saved_addresses.get(transaction['address'], False)
+            if not len(transaction['account']):
+                transaction['account'] = "(default account)"
+                default_account = connector.getdefaultaccount(transaction['provider_id'])
+                transaction['destination_address'] = default_account['addresses'][0]
+            else:
+                transaction['destination_address'] = transaction['address']
+            
         elif transaction['category'] == 'move':
             transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['provider_id'])
             transaction['destination_addresses'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['provider_id'])
-            if not transaction['account']:
-                transaction['alternative_name'] = '(no name)'
             transaction['icon'] = 'glyphicon-circle-arrow-right'
+            if not len(transaction['account']):
+                transaction['account'] = "(default account)"
+                default_account = connector.getdefaultaccount(transaction['provider_id'])
+                transaction['destination_address'] = default_account['addresses'][0]
+    
     
     # pagify
     if page is 0:
@@ -123,18 +137,28 @@ def transactionDetails(request, txid, provider_id):
     transaction['blocktime_human'] = datetime.datetime.fromtimestamp(transaction.get('blocktime', 0))
     transaction['blocktime_pretty'] = generic.twitterizeDate(transaction.get('blocktime', 'never'))
     transaction['currency'] = connector.config[provider_id]['currency']
+    transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'])
     
     if transaction.get('fee', False):
         transaction['fee'] = generic.longNumber(transaction['fee'])
     else:
         transaction['fee'] = ""
         
+    account_addresses = []
     if transaction['details'][0]['category'] == 'receive':
-        account = connector.getaccountdetailsbyaddress(transaction['details'][0]['address'])
+        if not len(transaction['details'][0]['account']):
+            # get the default account for provider_id
+            account = connector.getdefaultaccount(provider_id)
+        else:
+            account = connector.getaccountdetailsbyaddress(transaction['details'][0]['address'])
     elif transaction['details'][0]['category'] == 'send':
         account_addresses = connector.getaddressesbyaccount(transaction['details'][0]['account'], provider_id)
         account = connector.getaccountdetailsbyaddress(account_addresses[0])
         
+    if not len(transaction['details'][0]['account']):
+        transaction['details'][0]['account'] = '(default account)'
+    #print transaction
+    
     page_title = "Transaction details for %s" % txid
     context = {
            'globals': config.MainConfig['globals'],

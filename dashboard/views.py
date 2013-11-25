@@ -42,7 +42,7 @@ def index(request):
             transaction['source_address'] = connector.getaddressesbyaccount(transaction['account'], transaction['provider_id'])
             transaction['destination_address'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['provider_id'])
             if not transaction['account']:
-                transaction['alternative_name'] = '(no name)'
+                transaction['alternative_name'] = '(default account)'
             transaction['icon'] = 'glyphicon-circle-arrow-right'
 
     currency_codes = {}
