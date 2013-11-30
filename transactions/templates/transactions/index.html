@@ -44,9 +44,9 @@
                         	<a href="/accounts/details/{{ transaction.source_addresses.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account }}</strong></a>
                         	{% elif transaction.category == "send" %}
                         		{% if transaction.addressbook_name %}
-                        			<span class="fixed-width-font addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.addressbook_name }}</span>
+                        			<span class="addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.addressbook_name }}</span>
                         		{% else %}
-                        			<span class="fixed-width-font address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span>
+                        			<span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span>
                         		{% endif %}
                         	
                         	{% elif transaction.category == "receive" %}
