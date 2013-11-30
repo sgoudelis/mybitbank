@@ -3,7 +3,7 @@ import generic
 import hashlib
 import events
 from coinaddress import CoinAddress
-from jsonrpc import ServiceProxy
+from bitcoinrpc.authproxy import AuthServiceProxy
 from connections.cacher import Cacher 
 from accounts.models import accountFilter
 from bitcoinrpc.authproxy import JSONRPCException
@@ -54,7 +54,7 @@ class Connector(object):
             
             self.config[currency_config['id']] = currency_config
             self.config[currency_config['id']]['enabled'] = True
-            self.services[currency_config['id']] = ServiceProxy("http://%s:%s@%s:%s" % 
+            self.services[currency_config['id']] = AuthServiceProxy("http://%s:%s@%s:%s" % 
                                                                              (currency_config['rpcusername'], 
                                                                               currency_config['rpcpassword'], 
                                                                               currency_config['rpchost'], 
