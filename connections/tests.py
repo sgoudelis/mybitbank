@@ -251,17 +251,17 @@ class ConnectorsTests(TestCase):
         
         # test number of transactions returned
         number_transactions = len(transactions)
-        self.assertEquals(number_transactions, 2, 'Connector.listtransactionsbyaccount() method retured wrong number of transactions')
+        self.assertEquals(number_transactions, 2, 'Connector.listtransactionsbyaccount() method returned wrong number of transactions')
         
-        # test validity of transactions
-        for trasnaction in transactions:
-            self.assertTrue(account_name in trasnaction['account'], 'Connector.listtransactionsbyaccount() method error, wrong transactions returned')
-            self.assertIsNotNone(trasnaction['time_pretty'])
-            self.assertIsNotNone(trasnaction['currency'])
-            self.assertIsNotNone(trasnaction['timereceived_pretty'])
-            self.assertIsNotNone(trasnaction['time_human'])
-            self.assertIsNotNone(trasnaction['timereceived_human'])
-            self.assertIsNotNone(trasnaction['txid'])
+        # test validity of transaction dictionaries
+        for transaction in transactions:
+            self.assertTrue(account_name in transaction['account'], 'Connector.listtransactionsbyaccount() method error, wrong transactions returned')
+            self.assertIsNotNone(transaction['time_pretty'])
+            self.assertIsNotNone(transaction['currency'])
+            self.assertIsNotNone(transaction['timereceived_pretty'])
+            self.assertIsNotNone(transaction['time_human'])
+            self.assertIsNotNone(transaction['timereceived_human'])
+            self.assertIsNotNone(transaction['txid'])
         
     def test_listtransactions(self):
         '''
@@ -270,10 +270,12 @@ class ConnectorsTests(TestCase):
         
         provider_id = 1
         transactions = self.connector.listtransactions()
-        
+        print "TRANSACTIONS:"
+        print transactions
         # test number of transactions returned
         number_transactions = len(transactions[provider_id])
-        self.assertEquals(number_transactions, 4, 'Connector.listtransactions() method retured wrong number of transactions')
+        print "num: %s" % number_transactions
+        self.assertEquals(number_transactions, 2, 'Connector.listtransactions() method returned wrong number of transactions')
         
     def test_getnewaddress(self):
         '''

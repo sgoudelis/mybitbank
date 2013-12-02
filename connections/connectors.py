@@ -3,6 +3,8 @@ import generic
 import hashlib
 import events
 from coinaddress import CoinAddress
+from coinaccount import CoinAccount
+from cointransaction import CoinTransaction
 from bitcoinrpc.authproxy import AuthServiceProxy
 from connections.cacher import Cacher 
 from accounts.models import accountFilter
@@ -210,14 +212,14 @@ class Connector(object):
                             
                             # if there any address left then add it to the list
                             if account_addresses:
-                                accounts[provider_id].append({
+                                accounts[provider_id].append(CoinAccount({
                                                            'name': account_name, 
                                                            'balance': self.longNumber(account_balance), 
                                                            'addresses': account_addresses, 
                                                            'hidden': hidden_flag,
                                                            'alternative_name': alternative_name,
                                                            'currency': self.config[provider_id]['currency'],
-                                                           })
+                                                           }))
                     
         except Exception as e:
             self.errors.append({'message': 'Error occurred while compiling list of accounts (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
@@ -283,31 +285,33 @@ class Connector(object):
             pass
         
         transactions = []
+        transaction_list = []
         if self.config[provider_id]['enabled'] is True:
             try:
-                transactions = self.services[provider_id].listtransactions(account_name, limit, start)
+                transaction_list = self.services[provider_id].listtransactions(account_name, limit, start)
             except Exception as e:
                 self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listtransactions()' % (e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                 self.removeCurrencyService(provider_id)
             
-        for transaction in transactions:
-            if transaction.get('address', False):
-                transaction['address'] = CoinAddress(transaction['address'])
+        for entry in transaction_list:
+            if entry.get('address', False):
+                entry['address'] = CoinAddress(entry['address'])
             
-            transaction['provider_id'] = provider_id
-            transaction['timereceived_pretty'] = generic.twitterizeDate(transaction.get('timereceived', 'never'))
-            transaction['time_pretty'] = generic.twitterizeDate(transaction.get('time', 'never'))
-            transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction.get('timereceived', 0))
-            transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 0))
-            transaction['currency'] = self.config[provider_id]['currency']
+            entry['provider_id'] = provider_id
+            entry['timereceived_pretty'] = generic.twitterizeDate(entry.get('timereceived', 'never'))
+            entry['time_pretty'] = generic.twitterizeDate(entry.get('time', 'never'))
+            entry['timereceived_human'] = datetime.datetime.fromtimestamp(entry.get('timereceived', 0))
+            entry['time_human'] = datetime.datetime.fromtimestamp(entry.get('time', 0))
+            entry['currency'] = self.config[provider_id]['currency']
             
-            transaction['details'] = {}
-            if transaction.get('txid', False):
-                transaction_details = self.gettransactiondetails(transaction, provider_id)
+            entry['details'] = {}
+            if entry.get('txid', False):
+                transaction_details = self.gettransactiondetails(entry, provider_id)
                 if not transaction_details.get('code', False):
-                    transaction['details'] = transaction_details
+                    entry['details'] = transaction_details
                 else:
                     self.errors.append({'message': transaction_details, 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+            transactions.append(CoinTransaction(entry))
             
         # cache the result
         self.cache['transactions'][cache_hash] = {'data': transactions, 'when': datetime.datetime.utcnow().replace(tzinfo=utc)}
@@ -320,7 +324,6 @@ class Connector(object):
         '''
         
         accounts = self.listaccounts(gethidden=True, getarchived=True)
-
         transactions = {}
         for provider_id in accounts.keys():
             transactions[provider_id] = []
@@ -406,7 +409,11 @@ class Connector(object):
         return account
 
     def moveamount(self, from_account, to_account, provider_id, amount, minconf=1, comment=""):
-        if not from_account or not to_account or not provider_id:
+        '''
+        Move amount from local to local accounts
+        Note: from_account my be an empty string 
+        '''
+        if not to_account or not provider_id:
             return {'message': 'Invalid input data from/to account name', 'code':-101}
         
         if provider_id not in self.services.keys():
@@ -511,36 +518,11 @@ class Connector(object):
             sender_address = self.decodeScriptSig(transaction_details, self.config[provider_id]['currency'], self.getNet(provider_id))
         else:
             sender_address = ""
-        
-        '''
-        import json
-        import decimal
-        
-        class DecimalEncoder(json.JSONEncoder):
-            def _iterencode(self, o, markers=None):
-                if isinstance(o, decimal.Decimal):
-                    # wanted a simple yield str(o) in the next line,
-                    # but that would mean a yield on the line with super(...),
-                    # which wouldn't work (see my comment below), so...
-                    return (str(o) for o in [o])
-                return super(DecimalEncoder, self)._iterencode(o, markers)
-        
-        
-        addresses = []
-        print json.dump(self.services[provider_id].getrawtransaction(txid, 1))
-        raw_tx = self.decoderawtransaction(json.dumps(self.services[provider_id].getrawtransaction(txid, 1), cls=DecimalEncoder), provider_id)
-        for input_tx in raw_tx['vin']:
-            input_raw_tx = self.decoderawtransaction(json.dumps(self.services[provider_id].getrawtransaction(input_tx['txid']), cls=DecimalEncoder), provider_id)
-            addresses.push(input_raw_tx['vout'][input['vout']]['scriptPubKey']['addresses'][0])
-        
-        print addresses
-        '''
             
         return {'sender_address': sender_address}
     
     def decoderawtransaction(self, transaction, provider_id):
         return self.services[provider_id].decoderawtransaction(transaction)
-    
     
     def gettransaction(self, txid, provider_id):
         '''
@@ -563,7 +545,7 @@ class Connector(object):
         except Exception:
             return {}
     
-        return transaction_details
+        return CoinTransaction(transaction_details)
 
     def decodeScriptSig(self, rawtransaction, currency, net='testnet'):
         '''

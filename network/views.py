@@ -19,7 +19,7 @@ def index(request, selected_provider_id=sorted(connector.config.keys())[0]):
     Handler for the accounts
     '''
     sections = generic.getSiteSections(current_section)
-    selected_provider_id= int(selected_provider_id)
+    selected_provider_id = int(selected_provider_id)
     
     g = GeoIP()
     notsupported = 0;
@@ -30,13 +30,15 @@ def index(request, selected_provider_id=sorted(connector.config.keys())[0]):
     else :
         for peer in peers:
             info = g.city(peer['addr'].partition(':')[0])
+            if info is None:
+                info = {}
             peer['ip'] = peer['addr'].partition(':')[0]
             peer['port'] = peer['addr'].partition(':')[2]
-            peer['country'] = info['country_name']
-            peer['country_code'] = info['country_code']
-            peer['city'] =  info['city'] if info['city'] != None else ''
-            peer['lat'] =  info['latitude'];
-            peer['lon'] =  info['longitude'];
+            peer['country'] = info.get('country_name', "")
+            peer['country_code'] = info.get('country_code', "")
+            peer['city'] =  info.get('city', None) if info.get('city', None) != None else ''
+            peer['lat'] =  info.get('latitude', "");
+            peer['lon'] =  info.get('longitude', "");
             peer['subver'] = peer['subver'].replace("/","")
             peer['in'] = generic.humanBytes(peer['bytesrecv']) if 'bytesrecv' in peer else 'N/A'
             peer['out'] = generic.humanBytes(peer['bytessent']) if 'bytessent' in peer else 'N/A'

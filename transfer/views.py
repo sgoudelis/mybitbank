@@ -42,7 +42,7 @@ def commonContext(request={}, selected_provider_id=1, form=None, errors=[], show
     #currency_codes = sorted(currency_codes)
     
     # get a list of source accounts
-    accounts = connector.listaccounts()
+    accounts = connector.listaccounts(gethidden=True, getarchived=True)
     
     # adding currency symbol to accounts dictionary
     for currency in accounts.keys():

@@ -263,7 +263,7 @@ class TransferIndexTests(TestCase):
         from_account_options = html_tree.xpath("//select[@id='from_account_menu']/option")
         to_account_options = html_tree.xpath("//select[@id='to_account_menu']/option")
 
-        self.assertEquals(len(from_account_options), 6)
+        self.assertEquals(len(from_account_options), 7)
         self.assertEquals(len(to_account_options), 6)
         
     def test_tranfer_submit_XSRF_failure(self):
@@ -435,7 +435,7 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/ul[@class='errorlist']"), []) 
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/strong/ul[@class='errorlist']"), []) 
         
     def test_tranfer_submit_with_correct_values_move(self):
         '''
@@ -484,7 +484,7 @@ class TransferIndexTests(TestCase):
 
         # validate HTML
         self.assertNotEquals(html_tree, False)
-        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/strong/ul[@class='errorlist']"), [])
     
     def test_tranfer_submit_invalid_address(self):
         '''
