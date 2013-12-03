@@ -57,7 +57,7 @@
               <div class="col-md-6">
                   <div class="form-group {% if form.from_address.errors %}has-error{% endif %}">
                     <label for="passphrase"><h5>Passphrase</h5></label>
-                    <input type="password" class="form-control fixed-width-font" id="passphrase" name="passphrase" placeholder="passphrase" value="">
+                    <input type="password" class="form-control fixed-width-font2" id="passphrase" name="passphrase" placeholder="passphrase" value="">
                     {{ form.passphrase.errors }}
                   </div>
               </div>
@@ -70,11 +70,11 @@
               <div class="col-md-10">
               <div class="form-group {% if form.from_address.errors %}has-error{% endif %}">
               <label for="from_address">From</label>
-                <select class="grey-font form-control fixed-width-font" id="from_address" name="from_address" onchange="callAccountsOptionClick(this)">
+                <select class="grey-font form-control fixed-width-font2" id="from_address" name="from_address" onchange="callAccountsOptionClick(this)">
                 <option onclick="javascript:updateTransferDialog('', '0.00000000', '');">select an account</option>
                 {% if accounts|keyvalue:selected_provider_id %}
                 {% for account in accounts|keyvalue:selected_provider_id %}
-                      <option value="{{ account.addresses.0 }}" class="dark-font fixed-width-font" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'from_address');" {% if form.from_address.value == account.addresses.0 %}selected{% endif %}>{% if not account.name %}{{ account.alternative_name }}{% else %}{{ account.name }}{% endif %} - {{ account.addresses.0 }}</option>
+                      <option value="{{ account.addresses.0 }}" class="dark-font fixed-width-font2" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'from_address');" {% if form.from_address.value == account.addresses.0 %}selected{% endif %}>{% if not account.name %}{{ account.alternative_name }}{% else %}{{ account.name }}{% endif %} - {{ account.currency_symbol }}{{ account.balance }} - {{ account.addresses.0 }}</option>
                 {% endfor %}
                 {% endif %}
                 </select>
@@ -86,7 +86,7 @@
               <!--
                   <div class="form-group {% if form.from_address.errors %}has-error{% endif %}">
                     <label for="">&nbsp;</label>
-                    <input type="text" class="text-center form-control fixed-width-font" id="from_address" name="from_address" placeholder="type address" value="{{ form.from_address.value }}">
+                    <input type="text" class="text-center form-control fixed-width-font2" id="from_address" name="from_address" placeholder="type address" value="{{ form.from_address.value }}">
                     {{ form.from_address.errors }}
                   </div>
 			  -->
@@ -94,7 +94,7 @@
 			  
 			  <div class="col-md-2">
 			  <div class="row">&nbsp;</div>
-			  <div class="row text-center"><span class="large-text-1" id="from_address_currency">{{ currency_symbols|keyvalue:selected_provider_id }}</span> <span class="large-text-1" id="from_address_balance">0.00000000</span></div>
+			  <div class="row text-center"><span class="large-text-1" id="from_address_currency">{{ currency_symbols|keyvalue:selected_provider_id }}</span><span class="large-text-1" id="from_address_balance">0.00000000</span></div>
 			  </div>
 
             </div>
@@ -102,18 +102,18 @@
               <div class="col-md-4">
                   <div class="form-group {% if form.to_address.errors %}has-error{% endif %}">
                     <label for="to_address">To</label>
-                    <input type="text" class="text-center form-control fixed-width-font" id="to_address" name="to_address" placeholder="type address" value="{{ form.to_address.value }}">
+                    <input type="text" class="text-center form-control fixed-width-font2" id="to_address" name="to_address" placeholder="type address" value="{{ form.to_address.value }}">
                     {{ form.to_address.errors }}
                   </div>
               </div>
               <div class="col-md-6">
               <label for="">&nbsp;</label>
-                <select class="form-control grey-font fixed-width-font" id="to_account_menu" onchange="callAccountsOptionClick(this)">
+                <select class="form-control grey-font fixed-width-font2" id="to_account_menu" onchange="callAccountsOptionClick(this)">
                 <option onclick="javascript:updateTransferDialog('', '0.00000000', 'to_address');">or select an account</option>
                 {% if addressbook_addresses %}
                 	<optgroup class="black-font" label="from addressbook"></optgroup>
                 	{% for saved_address, saved_name in addressbook_addresses.items %}
-                	<option value="{{ saved_address }}" class="dark-font fixed-width-font" onclick="javascript:updateTransferDialog('{{ saved_address }}', '0.00000000', 'to_address');" >{{ saved_name }} - {{ saved_address }}</option>
+                	<option value="{{ saved_address }}" class="dark-font fixed-width-font2" onclick="javascript:updateTransferDialog('{{ saved_address }}', '0.00000000', 'to_address');" >{{ saved_name }} - {{ saved_address }}</option>
                 	{% endfor %}
                 	<optgroup label=""></optgroup>
                 {% endif %}
@@ -122,7 +122,7 @@
                 <optgroup class="black-font" label="local accounts"></optgroup>
                 {% for account in accounts|keyvalue:selected_provider_id %}
                     {% if account.name %}
-                      <option value="{{ account.addresses.0 }}" class="dark-font fixed-width-font" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'to_address');" >{{ account.name }} - {{ account.addresses.0 }}</option>
+                      <option value="{{ account.addresses.0 }}" class="dark-font fixed-width-font2" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'to_address');" >{{ account.name }} - {{ account.addresses.0 }}</option>
                     {% endif %}
                 {% endfor %}
                 {% endif %}
