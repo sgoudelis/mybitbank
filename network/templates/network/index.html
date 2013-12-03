@@ -46,8 +46,12 @@
 				<td>{{ peer.ip }}</td>
 				<td class="hidden-xs text-center">{{ peer.port }}</td>
 				<td>
+					{% if peer.lat != '' and peer.lon != '' %}
 					<img src="{% static 'dashboard/images/flags/' %}{{ peer.country_code|lower }}.png" /> 
 					<a href="#" onclick="javascript: return zoomTo({{ peer.lat }}, {{ peer.lon }});">{{ peer.country }} {% if peer.city|length > 0 %} ({{ peer.city }}) {% endif %}</a>
+					{% else %}
+					<i>Uknown location</i>
+					{% endif %}
 				</td>
 				<td>{{ peer.subver }}</td>
 				<td class="hidden-xs text-right">
@@ -95,7 +99,7 @@
    
 <script>
 
-var userLocation = new L.LatLng('{{ userinfo.lat }}', '{{ userinfo.lon }}');
+var userLocation = new L.LatLng(36,14);
 var map = L.map('map', {
       	center: userLocation,
     	zoom: 2,
@@ -110,18 +114,15 @@ L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
     attribution: 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade. Font Awesome by Dave Gandy',
 }).addTo(map);
 
-
-var marker = new L.Marker(userLocation, {
-	icon: L.AwesomeMarkers.icon({icon: 'home', prefix: 'fa fa', markerColor: 'purple'})
-});
-map.addLayer(marker);
-
-
 var items = [
 {% for peer in peers %}
 {
     lat: "{{ peer.lat }}",
-    lon: "{{ peer.lon }}"
+    lon: "{{ peer.lon }}",
+    country : "{{ peer.country }}",
+    country_code : "{{ peer.country_code }}",
+    ip : "{{ peer.ip }}",
+    port : "{{ peer.port }}",
 },
 {% endfor %}
 ];
@@ -134,27 +135,14 @@ function drawData() {
     //draw markers for all items
     for (item in items) {
         o = items[item];
-        var loc = new L.LatLng(o.lat, o.lon);
-        createPolyLine(loc, userLocation);
+        var loc = new L.LatLng(o.lat|0, o.lon|0);
+        createMarker(loc, o);
     }
 }
 
-//draw polyline
-function createPolyLine(loc1, loc2) {
-    
-    var latlongs = [loc1, loc2];
-    if (Math.abs(loc1.lng - loc2.lng) > 180) {
-        latlongs = [loc1.wrap(179, -179), loc2];
-    }
-    var polyline = new L.Polyline(latlongs, {
-        color: '#4FEE1D',
-        opacity: 1,
-        weight: 1,
-        clickable: false
-    }).addTo(map);
-
-    //distance
-    var s = '<strong>About</strong> ' + (loc1.distanceTo(loc2) / 1000).toFixed(0) + 'km away from you.</p>';
+function createMarker(loc1, peer) {
+    var img = (peer.lat == 0 && peer.lon == 0) ? '<i>Uknown</i>' : "<img src=\"{% static 'dashboard/images/flags/' %}" + peer.country_code.toLowerCase() +".png\" /> "; 
+    var s = img + "<strong>"+peer.country+"</strong><br/>"+peer.ip+":"+peer.port+"";
 
     var marker = L.marker(loc1, {
     	icon: L.AwesomeMarkers.icon({icon: 'map-marker', prefix: 'fa fa', markerColor: 'blue'})
@@ -162,7 +150,6 @@ function createPolyLine(loc1, loc2) {
     if (marker) {
         marker.bindPopup(s);
     }
-
 }
 
 function zoomTo(lat, lon) {
@@ -170,7 +157,6 @@ function zoomTo(lat, lon) {
 	map.setZoom(11);
 	return false;
 }
-
 
 </script>
 

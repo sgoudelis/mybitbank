@@ -57,23 +57,6 @@ def index(request, selected_provider_id=sorted(connector.config.keys())[0]):
     
     currency_codes = sorted(currency_codes)
     
-    ip = '127.0.0.1'
-    try :
-        '''
-        We need some cache here or another way to detect *coind bind address
-        '''
-        data = urllib2.urlopen('http://wtfismyip.com/json')
-        data = json.load(data)
-        ip = data['YourFuckingIPAddress']
-    except (urllib2.URLError, urllib2.HTTPError, TypeError) as e :
-        print e
-    
-    info =  g.city(ip)
-    userinfo = {}
-    userinfo['lat'] = info['latitude'] if info is not None  else 1
-    userinfo['lon'] = info['longitude'] if info is not None else 1
-    
-    print currency_names
     page_title = _("Network")
     context = {
                'globals': config.MainConfig['globals'], 
@@ -87,7 +70,6 @@ def index(request, selected_provider_id=sorted(connector.config.keys())[0]):
                'currency_names': currency_names,
                'currency_symbols': currency_symbols,
                'selected_provider_id': selected_provider_id,
-               'userinfo': userinfo,
                'peers': peers,
                'notsupported': notsupported
                }

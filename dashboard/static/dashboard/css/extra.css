@@ -349,3 +349,13 @@ ul.navbar-right li a {
 .faded {
 	opacity: 0.4;
 }
+
+.leaflet-popup-content-wrapper {
+	background: #202020 !important;
+	border: 1px solid #2E2E2E !important;
+}
+.leaflet-popup-content {
+	margin: 10px 19px !important;
+	line-height: 18px !important;
+	color: #EFEFEF !important;
+}
