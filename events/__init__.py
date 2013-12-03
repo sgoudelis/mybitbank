@@ -17,9 +17,12 @@ def addEvent(request, description='no description', level='info'):
         try:
             user_id = User.objects.get(username=request).id
         except:
-            return None
+            user_id = User.objects.get(id=1).id
     
-    if level in ['info', 'debug', 'warning', 'alert', 'error']:
-        event = Events.objects.create(user_id=user_id, description=description, level=level, entered=datetime.datetime.utcnow().replace(tzinfo=utc))
-        event.save()
+    try:
+        if level in ['info', 'debug', 'warning', 'alert', 'error']:
+            event = Events.objects.create(user_id=user_id, description=description, level=level, entered=datetime.datetime.utcnow().replace(tzinfo=utc))
+            event.save()
+    except:
+        return None
     
