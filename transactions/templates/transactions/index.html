@@ -76,7 +76,7 @@
                         <td class="hidden-xs text-center"><span style="color: {{ transaction.status_color }};" class="bigger-icon glyphicon {{ transaction.status_icon }}" title="{{ transaction.tooltip }}" data-toggle="tooltip"></span></td>
                         <td>{{ transaction.time_pretty }}</td>
                         <td class="text-center">{% if transaction.txid %}<a href="{% url 'transactions:details' transaction.provider_id transaction.txid %}"><span data-toggle="tooltip" title="View transaction details" class="bigger-icon glyphicon glyphicon-info-sign"></span></a>{% endif %}</td>
-                        <td class="text-right fixed-width-font"><strong>{{ transaction.amount }}</strong> {{ transaction.currency|upper }}</td>
+                        <td class="text-right fixed-width-font"><span class="amount {% if transaction.amount > 0 %}in{% else %}out{% endif %}">{{ transaction.amount }}</span> {{ transaction.currency|upper }}</td>
                     </tr>
                     {% endfor %}
                     {% else %}
