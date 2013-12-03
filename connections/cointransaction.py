@@ -17,7 +17,7 @@ class CoinTransaction(object):
         transaction[key] = value
         return setattr(self, '_transaction', transaction)
     
-    def get(self, key, default):
+    def get(self, key, default=False):
         if self._transaction.get(key, False):
             return self._transaction.get(key, False)
         else:

@@ -17,7 +17,7 @@ class CoinAccount(object):
         account[key] = value
         return setattr(self, '_account', account)
     
-    def get(self, key, default):
+    def get(self, key, default=False):
         if self._account.get(key, False):
             return self._account.get(key, False)
         else:
