@@ -43,7 +43,7 @@ def processLogin(request):
         # we have a POST request
         login_form = forms.LoginForm(request.POST)
         
-        if login_form.is_valid(): 
+        if login_form.is_valid():
             # all validation rules pass
             username = login_form.cleaned_data['username']
             password = login_form.cleaned_data['password']
@@ -52,20 +52,21 @@ def processLogin(request):
 
             # try to authenticate user
             user = authenticate(username=username, password=password)
+            client_ip = generic.getClientIp(request)
+            
+            try:
+                client_hostname_tuple = socket.gethostbyaddr(client_ip)
+            except:
+                client_hostname_tuple = ()
+                
+            if client_hostname_tuple:
+                client_hostname = client_hostname_tuple[0]
+            else:
+                client_hostname = 'n/a'
         
             if user is not None and user.is_active:
                 # authenticated, log user in
                 login(request, user)
-                client_ip = generic.getClientIp(request)
-                try:
-                    client_hostname_tuple = socket.gethostbyaddr(client_ip)
-                except:
-                    client_hostname_tuple = ()
-                    
-                if client_hostname_tuple:
-                    client_hostname = client_hostname_tuple[0]
-                else:
-                    client_hostname = 'n/a'
                 events.addEvent(request, 'Login occurred from %s (%s)' % (client_hostname, client_ip), 'info')
                 
                 if remember:
@@ -81,7 +82,7 @@ def processLogin(request):
                 # failed to authenticate password
                 auth_process = False
                 auth_message = "Username and password combination incorrect"
-    
+                events.addEvent(username, 'Login failed from %s (%s) username: %s' % (client_hostname, client_ip, username), 'alert')
         else:
             # form not valid so auth failed
             auth_process = False
