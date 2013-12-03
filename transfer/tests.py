@@ -260,7 +260,7 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        from_account_options = html_tree.xpath("//select[@id='from_account_menu']/option")
+        from_account_options = html_tree.xpath("//select[@id='from_address']/option")
         to_account_options = html_tree.xpath("//select[@id='to_account_menu']/option")
 
         self.assertEquals(len(from_account_options), 7)

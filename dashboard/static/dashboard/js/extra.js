@@ -5,12 +5,13 @@ function setInputValue(value, targetId) {
 
 function showHideAllAccounts(id) {
 	$('tr[name="'+id+'"]').toggle();
-	
 }
 
 function updateTransferDialog(address, balance, targetId) {
-	$('span#'+targetId+'_balance').html(balance);
-	$('input#'+targetId).val(address);
+	if (targetId) {
+		$('span#'+targetId+'_balance').html(balance);
+		$('input#'+targetId).val(address);
+	}
 }
 
 function callAccountsOptionClick(selectElement) {
@@ -25,7 +26,7 @@ function sendAddressAlias(address) {
 	
 	$.ajax({
 	      type: "POST",
-	      url: form.attr( 'action' ),
+	      url: form.attr('action'),
 	      data: form.serialize(),
 	      dataType: 'json',
 	      success: function( response ) {
