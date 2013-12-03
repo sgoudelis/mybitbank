@@ -101,7 +101,7 @@
 			        			<strong>Amount:</strong> 
 			        			</td>
 			        			<td>
-			        			{{ transaction.amount }} {{ transaction.currency|upper }}
+			        			<span class="amount {% if transaction.amount > 0 %}in{% else %}out{% endif %}">{{ transaction.amount }}</span> {{ transaction.currency|upper }}
 			        			</td>
 			        		</tr>
 			        		
