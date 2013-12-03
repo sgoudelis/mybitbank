@@ -67,7 +67,7 @@
             
             <input type="hidden" name="provider_id" value="{{ selected_provider_id }}"/>
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-10">
               <div class="form-group {% if form.from_address.errors %}has-error{% endif %}">
               <label for="from_address">From</label>
                 <select class="grey-font form-control fixed-width-font" id="from_address" name="from_address" onchange="callAccountsOptionClick(this)">
@@ -82,7 +82,7 @@
                 </div>
               </div>
 
-              <div class="col-md-4">
+              <div class="col-md-1">
               <!--
                   <div class="form-group {% if form.from_address.errors %}has-error{% endif %}">
                     <label for="">&nbsp;</label>
