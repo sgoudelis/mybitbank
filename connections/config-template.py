@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 config = [
     {
+        'id': 1,
         'rpcusername': "testuser",
         'rpcpassword': "testnet",
         'rpchost': "localhost",
@@ -10,6 +11,7 @@ config = [
         'currency': 'BTC',
     },
     {
+        'id': 2,
         'rpcusername': "testuser",
         'rpcpassword': "testnet",
         'rpchost': "localhost",
@@ -19,6 +21,7 @@ config = [
         'currency': 'LTC',
     },
     {
+        'id': 3,
         'rpcusername': "testuser",
         'rpcpassword': "testnet",
         'rpchost': "localhost",
@@ -28,6 +31,7 @@ config = [
         'currency': 'NMC',
     },
     {
+        'id': 4,
         'rpcusername': "testuser",
         'rpcpassword': "testnet",
         'rpchost': "localhost",
@@ -37,6 +41,7 @@ config = [
         'currency': 'PPC',
     },
     {
+        'id': 5,
         'rpcusername': "testuser",
         'rpcpassword': "testnet",
         'rpchost': "localhost",
