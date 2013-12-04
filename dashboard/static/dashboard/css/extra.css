@@ -115,6 +115,10 @@ html {
 .small-font {
 	font-size: 12px;
 }
+
+div.alert > strong > ul.errorlist {
+	margin-bottom: 0px;
+}
  
 ul.errorlist {
 	color: #B94A48;
