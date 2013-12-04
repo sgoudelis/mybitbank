@@ -137,10 +137,12 @@
             <div class="row">
               <div class="col-md-6">
               <label for="comment">Comment</label>
+              <br/>
+              <span class="grey-font smaller-font-size"></span>
               <div class="form-group {% if form.comment.errors %}has-error{% endif %}">
                 <div class="input-group">
                   <span class="input-group-addon"><span class="glyphicon glyphicon-comment"></span></span>
-                  <input type="text" class="form-control" name="comment" value="{{ form.comment.value }}">
+                  <input placeholder="store what the transaction is for" type="text" class="form-control" name="comment" value="{{ form.comment.value }}">
                 </div>
                 {{ form.comment.errors }}
               </div></div>
@@ -151,10 +153,12 @@
             <div class="row">
               <div class="col-md-6">
               <label for="comment_to">Comment To</label>
+              <br/>
+              <span class="grey-font smaller-font-size"></span>
               <div class="form-group {% if form.comment_to.errors %}has-error{% endif %}">
                 <div class="input-group">
                   <span class="input-group-addon"><span class="glyphicon glyphicon-comment"></span></span>
-                  <input type="text" class="form-control" name="comment_to" value="{{ form.comment_to.value }}">
+                  <input placeholder="name of the person or organization to which you're sending the transaction" type="text" class="form-control" name="comment_to" value="{{ form.comment_to.value }}">
                 </div>
                 {{ form.comment_to.errors }}
               </div></div>
