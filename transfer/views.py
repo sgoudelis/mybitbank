@@ -103,8 +103,8 @@ def send(request, selected_provider_id):
             sendfrom_exit = False
             
             # get account details
-            from_account = connector.getaccountdetailsbyaddress(from_address)
-            to_account = connector.getaccountdetailsbyaddress(to_address)
+            from_account = connector.getaccountdetailsbyaddress(from_address, selected_provider_id)
+            to_account = connector.getaccountdetailsbyaddress(to_address, selected_provider_id)
             if to_account:
                 # this address/account is hosted locally, do a move
                 move_exit = connector.moveamount(

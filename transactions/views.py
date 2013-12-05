@@ -38,7 +38,7 @@ def index(request, selected_provider_id=False, page=1):
     
     # remove moves if there is a user setting for it
     transactions = []
-    if hide_moves:
+    if bool(hide_moves):
         for transaction in transactions_list:
             if transaction['category'] != "move":
                 transactions.append(transaction)
@@ -152,7 +152,6 @@ def transactionDetails(request, txid, provider_id):
         
     if not len(transaction['details'][0]['account']):
         transaction['details'][0]['account'] = '(default account)'
-    #print transaction
     
     page_title = "Transaction details for %s" % txid
     context = {

@@ -412,15 +412,22 @@ class Connector(object):
         return balances
     
     @timeit
-    def getaccountdetailsbyaddress(self, address):
+    def getaccountdetailsbyaddress(self, address, filter_provider_id=False):
         '''
         Return account details by address
         '''
         
         accounts = self.listaccounts(gethidden=True, getarchived=True)
         
+        if filter_provider_id is not False:
+            provider_ids = [filter_provider_id]
+        else:
+            provider_ids = accounts.keys()
+        
+        provider_ids = map(int, provider_ids)
+        
         target_account = None
-        for provider_id in accounts.keys():
+        for provider_id in provider_ids:
             for account in accounts[provider_id]:
                 if address in account['addresses']:
                     target_account = account
@@ -483,7 +490,7 @@ class Connector(object):
             return reply
         else:
             # account not found
-            return {'message': 'source or destication account not found', 'code':-103}
+            return {'message': 'source or destination account not found', 'code':-103}
     
     @timeit          
     def sendfrom(self, from_account, to_address, amount, provider_id, minconf=1, comment="", comment_to=""):
