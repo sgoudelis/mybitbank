@@ -380,3 +380,10 @@ span.amount.out {
 .grey-tab a {
 	background-color: #f5f5f5 !important;
 }
+
+.bordered {
+	border-bottom: 1px solid #DDDDDD;
+	border-left: 1px solid #DDDDDD;
+	border-right: 1px solid #DDDDDD;
+	
+}

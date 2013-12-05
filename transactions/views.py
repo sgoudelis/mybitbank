@@ -111,6 +111,7 @@ def index(request, selected_provider_id=False, page=1):
                'show_pager': True, 
                'next_page': (page+1), 
                'prev_page': max(1, page-1), 
+               'levels': [10, 100, 1000],
                'current_page': page,
                'saved_addresses': saved_addresses,
                'sender_address_tooltip_text': sender_address_tooltip_text,
