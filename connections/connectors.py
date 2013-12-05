@@ -2,6 +2,7 @@ import datetime
 import generic
 import hashlib
 import events
+import time
 from coinaddress import CoinAddress
 from coinaccount import CoinAccount
 from cointransaction import CoinTransaction
@@ -10,6 +11,22 @@ from connections.cacher import Cacher
 from accounts.models import accountFilter
 from bitcoinrpc.authproxy import JSONRPCException
 from django.utils.timezone import utc
+
+measure_time = False
+
+def timeit(method):
+    if measure_time is not True:
+        return method
+    
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+
+        print '%r() (%r, %r) %2.2f sec' % (method.__name__, args, kw, te-ts)
+        return result
+
+    return timed
 
 class Connector(object):
     # how long to cache responses
@@ -33,6 +50,7 @@ class Connector(object):
     # caching data
     cache = None
     
+    @timeit
     def __init__(self):
         '''
         Constructor, load config 
@@ -61,7 +79,7 @@ class Connector(object):
                                                                               currency_config['rpcpassword'], 
                                                                               currency_config['rpchost'], 
                                                                               currency_config['rpcport']))
-    
+    @timeit
     def getNet(self, provider_id):
         '''
         Return network value, mainnet or testnet
@@ -77,7 +95,8 @@ class Connector(object):
         else:
             # default to mainnet
             return "mainnet"
-
+    
+    @timeit
     def removeCurrencyService(self, provider_id):
         '''
         Remove the ServiceProxy object from the list of service in case of a xxxcoind daemon not responding in time
@@ -96,6 +115,7 @@ class Connector(object):
         '''
         return "{:.8f}".format(x)
     
+    @timeit
     def getinfo(self, provider_id):
         '''
         Get xxxcoind info
@@ -122,6 +142,7 @@ class Connector(object):
             self.removeCurrencyService(provider_id)
         return coind_info
     
+    @timeit
     def getpeerinfo(self, provider_id):
         '''
         Get peer info from the connector (xxxcoind)
@@ -139,6 +160,7 @@ class Connector(object):
             self.removeCurrencyService(provider_id)
         return peers
     
+    @timeit
     def listaccounts(self, gethidden=False, getarchived=False):
         '''
         Get a list of accounts. This method also supports filtering, fetches address for each account etc.
@@ -219,6 +241,7 @@ class Connector(object):
                                                            'hidden': hidden_flag,
                                                            'alternative_name': alternative_name,
                                                            'currency': self.config[provider_id]['currency'],
+                                                           'provider_id': provider_id,
                                                            }))
                     
         except Exception as e:
@@ -230,6 +253,7 @@ class Connector(object):
 
         return accounts
     
+    @timeit
     def getParamHash(self, param=""):
         '''
         This function takes a string and calculates a sha224 hash out of it. 
@@ -240,6 +264,7 @@ class Connector(object):
         cache_hash = hashlib.sha224(param).hexdigest()
         return cache_hash
     
+    @timeit
     def getaddressesbyaccount(self, name, provider_id):
         '''
         Get the address of an account name
@@ -269,13 +294,14 @@ class Connector(object):
             
         return addresses_list
     
+    @timeit
     def listtransactionsbyaccount(self, account_name, provider_id, limit=100000, start=0):    
         '''
         Get a list of transactions by account name and provider_id
         '''
         
         # check for cached data, use that or get it again
-        cache_hash = self.getParamHash("account_name=%s&provider_id=%s" % (account_name, provider_id))
+        cache_hash = self.getParamHash("account_name=%s&provider_id=%s&limit=%s&start=%s" % (account_name, provider_id, limit, start))
         try:
             cache_object = self.cache['transactions'].get(cache_hash, None)
             if ((datetime.datetime.utcnow().replace(tzinfo=utc) - cache_object['when']).seconds) < self.caching_time:
@@ -290,7 +316,7 @@ class Connector(object):
             try:
                 transaction_list = self.services[provider_id].listtransactions(account_name, limit, start)
             except Exception as e:
-                self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listtransactions()' % (e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+                self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listalltransactions()' % (e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                 self.removeCurrencyService(provider_id)
             
         for entry in transaction_list:
@@ -318,7 +344,8 @@ class Connector(object):
 
         return transactions
     
-    def listtransactions(self, limit=100000, start=0):
+    @timeit
+    def listalltransactions(self, limit=100000, start=0):
         '''
         Get a list of transactions, default is 100000 transactions per account
         '''
@@ -333,6 +360,7 @@ class Connector(object):
 
         return transactions
     
+    @timeit
     def getnewaddress(self, provider_id, account_name):
         '''
         Create a new address
@@ -353,6 +381,7 @@ class Connector(object):
         
         return new_address
     
+    @timeit
     def getbalance(self):
         '''
         Get balance for each currency
@@ -382,6 +411,7 @@ class Connector(object):
         
         return balances
     
+    @timeit
     def getaccountdetailsbyaddress(self, address):
         '''
         Return account details by address
@@ -398,7 +428,8 @@ class Connector(object):
                     target_account['provider_id'] = provider_id
                     break
         return target_account
-    
+   
+    @timeit
     def getdefaultaccount(self, provider_id):
         '''
         Return the default (default account) account for a provider
@@ -407,7 +438,8 @@ class Connector(object):
         account_addresses = self.getaddressesbyaccount(u'', provider_id)
         account = self.getaccountdetailsbyaddress(account_addresses[0])
         return account
-
+    
+    @timeit
     def moveamount(self, from_account, to_account, provider_id, amount, minconf=1, comment=""):
         '''
         Move amount from local to local accounts
@@ -452,7 +484,8 @@ class Connector(object):
         else:
             # account not found
             return {'message': 'source or destication account not found', 'code':-103}
-              
+    
+    @timeit          
     def sendfrom(self, from_account, to_address, amount, provider_id, minconf=1, comment="", comment_to=""):
         if not from_account or not to_address or not provider_id:
             return {'message': 'Invalid input data from account or address', 'code':-101}
@@ -488,6 +521,7 @@ class Connector(object):
             # account not found
             return {'message': 'Source account not found', 'code': -106}
 
+    @timeit
     def gettransactiondetails(self, transaction, provider_id):
         '''
         Return transaction details, like sender address
@@ -521,9 +555,11 @@ class Connector(object):
             
         return {'sender_address': sender_address}
     
+    @timeit
     def decoderawtransaction(self, transaction, provider_id):
         return self.services[provider_id].decoderawtransaction(transaction)
     
+    @timeit
     def gettransaction(self, txid, provider_id):
         '''
         Return transaction
@@ -547,6 +583,7 @@ class Connector(object):
     
         return CoinTransaction(transaction_details)
 
+    @timeit
     def decodeScriptSig(self, rawtransaction, currency, net='testnet'):
         '''
         Decode input script signature, courtesy of:
@@ -579,6 +616,7 @@ class Connector(object):
         
         return encoded_address
     
+    @timeit
     def walletpassphrase(self, passphrase, provider_id):
         '''
         Unlock the wallet
@@ -608,7 +646,8 @@ class Connector(object):
             return unload_exit
         else:
             return True
-        
+    
+    @timeit    
     def walletlock(self, provider_id):
         '''
         Lock wallet

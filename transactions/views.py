@@ -1,4 +1,3 @@
-import math
 import config
 import generic
 import datetime
@@ -10,10 +9,16 @@ from addressbook.models import savedAddress
 current_section = 'transactions'
 
 @login_required
-def index(request, page=0):
+def index(request, selected_provider_id=False, page=1):
     '''
-    handler for the transactions
+    handler for the transactions list
     '''
+    
+    if selected_provider_id is False:
+        selected_provider_id = connector.config.keys()[0]
+    else:
+        selected_provider_id = int(selected_provider_id)
+        
     page = int(page)
     items_per_page = 10
     page_title = "Transactions"
@@ -27,7 +32,9 @@ def index(request, page=0):
         saved_addresses[saved_address.address] = saved_address.name
 
     # get transactions
-    transactions_list = generic.getTransactions(connector = connector, sort_by = 'time', reverse_order = True)
+    transactions_list = connector.listtransactionsbyaccount('*', selected_provider_id, items_per_page, (items_per_page*(page-1)))
+    # sort transactions
+    transactions_list = sorted(transactions_list, key=lambda k: k.get('timereceived',0), reverse=True)
     
     # remove moves if there is a user setting for it
     transactions = []
@@ -86,42 +93,29 @@ def index(request, page=0):
                 default_account = connector.getdefaultaccount(transaction['provider_id'])
                 transaction['destination_address'] = default_account['addresses'][0]
     
-    
-    # pagify
-    if page is 0:
-        # pager off
-        selected_transactions = transactions
-        max_page = 0
-        pages = []
-        show_pager = False
-        current_activesession = ''
-    else:
-        # pager on
-        page_id = page-1
-        selected_transactions = transactions[(page_id*items_per_page):((page_id*items_per_page)+items_per_page)]
-        max_page = int(math.ceil(len(transactions)/items_per_page))+1
-        pages = [i+1 for i in range(max_page)]
-        show_pager = True
-        current_activesession = 'Page %s' % page
-    
     sender_address_tooltip_text = "This address has been calculated using the Input Script Signature. You should verify before using it."
+    
+    providers = {}
+    for provider_id in connector.config:
+        providers[provider_id] = connector.config[provider_id]['name']
     
     context = {
                'globals': config.MainConfig['globals'],
                'system_errors': connector.errors,
                'system_alerts': connector.alerts,
                'request': request,
-               'breadcrumbs': generic.buildBreadcrumbs(current_section, '', current_activesession), 
+               'breadcrumbs': generic.buildBreadcrumbs(current_section, '', connector.config[selected_provider_id]['name']), 
                'page_title': page_title, 
                'page_sections': generic.getSiteSections(current_section), 
-               'transactions': selected_transactions, 
-               'show_pager': show_pager, 
-               'next_page': min((page+1), len(pages)), 
+               'transactions': transactions, 
+               'show_pager': True, 
+               'next_page': (page+1), 
                'prev_page': max(1, page-1), 
-               'pages': pages, 
                'current_page': page,
                'saved_addresses': saved_addresses,
                'sender_address_tooltip_text': sender_address_tooltip_text,
+               'providers': providers,
+               'selected_provider_id': selected_provider_id,
                }
     return render(request, 'transactions/index.html', context)
 

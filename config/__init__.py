@@ -15,10 +15,9 @@ MainConfig = {
                          {'name': 'details', 'path':"/accounts/details", 'title': _('Account details')},
                      ]
                     },
-                    {'name': 'transactions', 'path':"/transactions/1", 'title': _("Transactions"), 'subsections':
+                    {'name': 'transactions', 'path':"/transactions/", 'title': _("Transactions"), 'subsections':
                      [
-                         {'name': 'all', 'path':"/transactions/", 'title': _('All')},
-                         {'name': 'pages', 'path':"/transactions/1", 'title': _('Pages')},
+                         {'name': 'pages', 'path':"/transactions/", 'title': _('Pages')},
                      ]
                     },
                     {'name': 'transfer', 'path':"/transfer", 'title': _("Transfer"), 'subsections': 

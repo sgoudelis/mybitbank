@@ -93,7 +93,7 @@ def getTransactions(connector, sort_by = 'time', reverse_order = False):
     Return transactions with ordering and sorting options
     '''
     transactions_ordered = []
-    transactions = connector.listtransactions()
+    transactions = connector.listalltransactions()
     for provider_id in transactions.keys():
         for transaction in transactions[provider_id]:
             transaction['provider_id'] = provider_id

@@ -376,3 +376,7 @@ span.amount.out {
 	line-height: 18px !important;
 	color: #EFEFEF !important;
 }
+
+.grey-tab a {
+	background-color: #f5f5f5 !important;
+}

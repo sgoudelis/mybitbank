@@ -173,7 +173,7 @@ def send(request, selected_provider_id):
             if move_exit:
                 messages.success(request, 'Local move of %s %s completed from account "%s" to "%s"' % (amount, connector.config[provider_id]['currency'].upper(), from_account['name'], to_account['name']), extra_tags="success")
                 events.addEvent(request, 'Local move occurred from "%s" to "%s" in the amount of %s %s' % (from_account['name'], to_account['name'], amount, connector.config[provider_id]['currency'].upper()), 'info')
-                return HttpResponseRedirect(reverse('transactions:index', kwargs={'page': '1'})) # Redirect after POST
+                return HttpResponseRedirect(reverse('transactions:index', kwargs={'selected_provider_id': selected_provider_id, 'page': '1'})) # Redirect after POST
             elif sendfrom_exit:
                 messages.success(request, 'Transfer of %s %s initialized with transaction id %s' % (amount, connector.config[provider_id]['currency'].upper(), sendfrom_exit), extra_tags="success")
                 events.addEvent(request, 'Transfer initialized from "%s" to "%s" of %s %s' % (from_account['name'], to_address, amount, connector.config[provider_id]['currency'].upper()), 'info')

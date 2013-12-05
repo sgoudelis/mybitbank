@@ -24,10 +24,12 @@ def index(request):
     '''
     sections = generic.getSiteSections(current_section)
     accounts = generic.getAllAccounts(connector)
-    transactions = generic.getTransactions(connector = connector, reverse_order = True)
+    #transactions = generic.getTransactions(connector = connector, reverse_order = True)
+    transactions = []
     
     # find the first transaction for each account
     for account in accounts:
+        transactions = connector.listtransactionsbyaccount(account['name'], account['provider_id'], 1, 0)
         for transaction in transactions:
             if account['name'] == transaction['account']:
                 account['last_activity'] = generic.twitterizeDate(transaction['time'])

@@ -14,7 +14,7 @@ def index(request):
     currect_section = 'dashboard'
     
     balances = connector.getbalance()
-    transactions_by_currency = connector.listtransactions(limit=20, start=0)
+    transactions_by_currency = connector.listalltransactions(limit=20, start=0)
     transactions = []
     for provider_id in transactions_by_currency:
         for transaction in transactions_by_currency[provider_id]:

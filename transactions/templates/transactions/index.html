@@ -11,14 +11,15 @@
                   <div class="col-xs-6"><h3 class="panel-title">Transactions</h3></div>
                   <div class="col-xs-6 text-right">
                   <a href="/transactions" class="btn btn-primary btn-xs text-right">show/hide moves</a>
-                  {% if show_pager %}
-                    <a href="/transactions" class="btn btn-primary btn-xs text-right">all transactions</a>
-                  {% else %}
-                    <a href="/transactions/1" class="btn btn-primary btn-xs text-right">10 per page</a>
-                  {% endif %}
                   </div>
                 </div>
             </div>
+            
+            <ul class="nav nav-tabs">
+            {% for provider_id, provider_name in providers.items %}
+			  <li {% if selected_provider_id|stringformat:"s" == provider_id|stringformat:"s" %}class="active grey-tab"{% endif %}><a href="{% url 'transactions:index' provider_id 1 %}"><strong>{{ provider_name }}</strong></a></li>
+			{% endfor %}
+			</ul>
                 <table class="table table-hover table-striped">
                   <thead>
                     <tr>
@@ -89,20 +90,17 @@
 		  <div class="well well-sm row" style="margin: 20px;">
 		    <div class="col-md-1"><strong>Legend:</strong></div>
 		 	<div class="col-md-2"><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> local address alias</span></div>
-		 	<div class="col-md-2"><span class="addressbook-label address-label label-default">$ address book entry</span></div>
-		 	<div class="col-md-4"><span class="sender-address address-label label-default">$ resolved address from ScriptSig <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="{{ sender_address_tooltip_text }}"></span></span></div>
-		 	<div class="col-md-2"><a href="#" class="btn btn-default btn-xs">$ <strong>account name</strong></a></div>
+		 	<div class="col-md-2"><span class="addressbook-label address-label label-default">address book entry</span></div>
+		 	<div class="col-md-4"><span class="sender-address address-label label-default">resolved address from ScriptSig <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="{{ sender_address_tooltip_text }}"></span></span></div>
+		 	<div class="col-md-2"><a href="#" class="btn btn-default btn-xs"><strong>account name</strong></a></div>
 		  </div>
                 
                 {% if show_pager %}
                 <div class="panel-footer">
                 <div class="text-center">
                 <ul class="pagination no-margin">
-                  <li {% if current_page == prev_page %}class="disabled"{% endif %}><a href="/transactions/{{ prev_page }}">&laquo;</a></li>
-                  {% for i in pages%}
-                  <li {% if current_page == i %}class="active"{% endif %}><a href="/transactions/{{ i }}">{{ i }}</a></li>
-                  {% endfor %}
-                  <li {% if current_page == next_page %}class="disabled"{% endif %}><a href="/transactions/{{ next_page }}">&raquo;</a></li>
+                  <li {% if current_page == prev_page %}class="disabled"{% endif %}><a href="{% url 'transactions:index' selected_provider_id prev_page %}">&laquo;</a></li>
+                  <li {% if current_page == next_page %}class="disabled"{% endif %}><a href="{% url 'transactions:index' selected_provider_id next_page %}">&raquo;</a></li>
                 </ul>
                 </div>
                 {% endif %}
