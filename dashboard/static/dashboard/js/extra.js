@@ -187,13 +187,17 @@ function convertSpecificCurrencies(from, to) {
 		if(to) {
 			var cryptoAmount = $(element).attr('amount');
 			var converted = to.rate*cryptoAmount;
-			
-			if(parseFloat($(element).html()) <= converted) {
+			var old_rate = $(element).attr('rate');
+			//console.info(parseFloat(old_rate)+' <= '+to.rate+' '+(parseFloat(old_rate) <= to.rate));
+			if(parseFloat(old_rate) <= to.rate) {
 				$(element).addClass('green-font');
+				$(element).removeClass('red-font');
 			} else {
 				$(element).addClass('red-font');
+				$(element).removeClass('green-font');
 			}
 			$(element).html(converted.formatMoney(2));
+			$(element).attr('rate', to.rate);
 			$('span.currency-code.'+from).html(to.code);
 		}
 	});
