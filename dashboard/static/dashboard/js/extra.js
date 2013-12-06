@@ -149,6 +149,20 @@ function convertAmounts(to, from) {
 					    }
 					});
 				  break;
+				case 'nvc':
+					$.ajax({
+					    type: "POST",
+					    url: ratesProxyUrl,
+					    data: ratesUrl['nvc_'+to.toLowerCase()],
+					    success: function(json) {
+							curr = {'code': "USD", 'name': "US Dollar", 'rate': json['last_trade']}
+							convertSpecificCurrencies('nvc', curr);
+					    },
+					    error: function (xhr, textStatus, errorThrown) {
+					        console.info("Could not retrieve currency rates for NVC");
+					    }
+					});
+				  break;
 			}
 		}
 	}
