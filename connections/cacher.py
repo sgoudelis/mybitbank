@@ -7,7 +7,7 @@ class Cacher(object):
     Caching object for data
     '''
     _cache = {}
-    _caching_time = 30
+    _caching_time = 10
     _debug = False
     
     def __init__(self, initial_cache_dir):

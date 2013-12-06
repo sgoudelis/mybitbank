@@ -187,6 +187,12 @@ function convertSpecificCurrencies(from, to) {
 		if(to) {
 			var cryptoAmount = $(element).attr('amount');
 			var converted = to.rate*cryptoAmount;
+			
+			if(parseFloat($(element).html()) <= converted) {
+				$(element).addClass('green-font');
+			} else {
+				$(element).addClass('red-font');
+			}
 			$(element).html(converted.formatMoney(2));
 			$('span.currency-code.'+from).html(to.code);
 		}
