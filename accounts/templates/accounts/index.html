@@ -33,7 +33,7 @@
                         <td class="hidden-xs">{{ account.last_activity }}</td>
                         <td class="text-right" style="font-family: courier;">
                         <strong><span>{{ account.balance }}</span></strong> <span class="currency {{ account.currency|lower }}">{{ account.currency|upper }}</span> /
-                        <strong><span class="amount {{ account.currency }}" amount="{{ account.balance }}">0.00</span></strong> <span class="currency-code {{ account.currency|lower }}">USD</span>
+                        <strong><span class="amount {{ account.currency|lower }}" amount="{{ account.balance }}">0.00</span></strong> <span class="currency-code {{ account.currency|lower }}">USD</span>
                         </td>
                     </tr>
                     {% endfor %}
