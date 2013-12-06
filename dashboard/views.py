@@ -1,9 +1,12 @@
-from connections import connector
 import config
 import generic
 import calendar
+import urllib
+from connections import connector
 from events.models import Events
+from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
 @login_required
@@ -76,3 +79,17 @@ def index(request):
                'events': list_of_events
                }
     return render(request, 'dashboard/index.html', context)
+
+@login_required
+@csrf_exempt
+def proxy(request):
+    '''
+    Proxy script view for rates ticker APIs
+    '''
+    
+    if request.is_ajax():
+        if request.method == 'POST':
+            url = request.raw_post_data
+            f = urllib.urlopen(url)
+            output = f.read()
+            return HttpResponse(output, content_type="application/json")

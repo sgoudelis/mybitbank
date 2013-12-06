@@ -9,7 +9,10 @@
             <div class="panel-heading panel-dark-header">
                 <div class="row">
                   <div class="col-xs-6"><h3 class="panel-title">{% trans "Accounts" %}</h3></div>
-                  <div class="col-xs-6 text-right"><button type="button" onclick="showHideAllAccounts('hidden_account')" class="btn btn-primary btn-xs text-right">show/hide all accounts</button></div>
+                  <div class="col-xs-6 text-right">
+                  <button type="button" onclick="showHideAllAccounts('hidden_account')" class="btn btn-primary btn-xs text-right">show/hide all accounts</button>
+                  <button type="button" onclick="convertAmounts('USD')" class="btn btn-success btn-xs text-right">update USD rates</button>
+                  </div>
                 </div>
             </div>
 
@@ -28,12 +31,15 @@
                         <td><a href="/accounts/details/{{ account.addresses.0 }}" class="btn btn-default btn-xs">{{ account.currency_symbol }} <strong>{% if account.name == "" %}{{account.alternative_name}}{% else %}{{ account.name }}{% endif %}</a></strong></td>
                         <td class="hidden-xs" style="font-family: courier;"><span class="address-label label-default">{{ account.currency_symbol }} {% if account.addresses.0 %}{{ account.addresses.0 }}{% else %}no address{%endif%}</span>{% if account.addresses.1 %} (+{{ account.address_count }}){% endif %}</td>
                         <td class="hidden-xs">{{ account.last_activity }}</td>
-                        <td class="text-right" style="font-family: courier;"><strong>{{ account.balance }}</strong> {{ account.currency|upper }}</td>
+                        <td class="text-right" style="font-family: courier;">
+                        <strong><span>{{ account.balance }}</span></strong> <span class="currency {{ account.currency }}">{{ account.currency|upper }}</span> /
+                        <strong><span class="amount {{ account.currency }}" amount="{{ account.balance }}">0.00</span></strong> <span class="currency-code {{ account.currency }}">USD</span>
+                        </td>
                     </tr>
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan=4><center><em>No data</em></center></td>
+                        <td colspan=4 class="text-center"><em>No data</em></td>
                     </tr>
                     {% endif %}
                 </table>
@@ -47,4 +53,9 @@
         </div>
       </div>
     </div>
+      <script type="text/javascript">
+  $(document).ready(function() {
+	  convertAmounts('USD');
+  });
+  </script>
 {% endblock %}

@@ -1,3 +1,15 @@
+// source http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
+Number.prototype.formatMoney = function(c, d, t){
+var n = this, 
+    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+    d = d == undefined ? "." : d, 
+    t = t == undefined ? "," : t, 
+    s = n < 0 ? "-" : "", 
+    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+    j = (j = i.length) > 3 ? j % 3 : 0;
+   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+ };
+
 function setInputValue(value, targetId) {
 	//document.getElementById(targetId).setAttribute("value", value);
 	$('#'+targetId).val(value);
@@ -42,7 +54,7 @@ function sendAddressAlias(address) {
 	    });
 }
 
-function editAlias (address) {
+function editAlias(address) {
 	var alias = $('div#link_'+address+'>span>a').html();
 	$('input#new_alias_'+address).val(alias);
 	$('div#edit_'+address).toggle();
@@ -50,10 +62,106 @@ function editAlias (address) {
 	return false;
 }
 
-function setAlias (address, alias) {
+function setAlias(address, alias) {
 	sendAddressAlias(address);
 }
 
 function updateQRImage(address) {
 	$('img#qrthumb').attr('src', 'http://chart.apis.google.com/chart?chld=L|1&choe=ISO-8859-1&chs=300x300&cht=qr&chl='+address);
 }
+
+function convertAmounts(to, from) {
+	// example format:  { code="USD", name="US Dollar", rate=1000.9482 }
+	if (ratesUrl && ratesProxyUrl) {
+		// get currency code keys
+		if(from) {
+			codes = [from]
+		} else {
+			//codes = Object.keys(ratesUrl);
+			var codes = []; 
+			
+			$('span.currency').each(function(i, e) {
+				codes.push($(e).html().toLowerCase());
+			});
+			
+			var group = {};
+			codes.map( function (a) { if (a in group) group[a] ++; else group[a] = 1; } );
+			codes = Object.keys(group);
+		}
+		
+		for(i in codes) {
+			switch(codes[i])
+			{
+				// bitstamp
+				case 'btc':
+					$.ajax({
+					    type: "POST",
+					    url: ratesProxyUrl,
+					    data: ratesUrl['btc_'+to.toLowerCase()],
+					    success: function(json) {
+							curr = {'code': "USD", 'name': "US Dollar", 'rate': json['last']}
+							convertSpecificCurrencies('btc', curr);
+					    },
+					    error: function (xhr, textStatus, errorThrown) {
+					        console.info("Could not retrieve currency rates fot BTC");
+					    }
+					});
+					break;
+				case 'ltc':
+					$.ajax({
+					    type: "POST",
+					    url: ratesProxyUrl,
+					    data: ratesUrl['ltc_'+to.toLowerCase()],
+					    success: function(json) {
+							curr = {'code': "USD", 'name': "US Dollar", 'rate': json['ticker']['last']}
+							convertSpecificCurrencies('ltc', curr);
+					    },
+					    error: function (xhr, textStatus, errorThrown) {
+					        console.info("Could not retrieve currency rates for LTC");
+					    }
+					});
+					break;
+				case 'ftc':
+					$.ajax({
+					    type: "POST",
+					    url: ratesProxyUrl,
+					    data: ratesUrl['ftc_'+to.toLowerCase()],
+					    success: function(json) {
+							curr = {'code': "USD", 'name': "US Dollar", 'rate': json['usd']}
+							convertSpecificCurrencies('ftc', curr);
+					    },
+					    error: function (xhr, textStatus, errorThrown) {
+					        console.info("Could not retrieve currency rates for FTC");
+					    }
+					});
+				  break;
+				case 'nmc':
+					$.ajax({
+					    type: "POST",
+					    url: ratesProxyUrl,
+					    data: ratesUrl['nmc_'+to.toLowerCase()],
+					    success: function(json) {
+							curr = {'code': "USD", 'name': "US Dollar", 'rate': json['last_trade']}
+							convertSpecificCurrencies('nmc', curr);
+					    },
+					    error: function (xhr, textStatus, errorThrown) {
+					        console.info("Could not retrieve currency rates for NMC");
+					    }
+					});
+				  break;
+			}
+		}
+	}
+}
+
+function convertSpecificCurrencies(from, to) {
+	var amounts = $('span.amount.'+from).each(function(index, element){
+		if(to) {
+			var cryptoAmount = $(element).attr('amount');
+			var converted = to.rate*cryptoAmount;
+			$(element).html(converted.formatMoney(2));
+			$('span.currency-code.'+from).html(to.code);
+		}
+	});
+}
+
