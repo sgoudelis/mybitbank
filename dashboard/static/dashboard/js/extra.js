@@ -163,6 +163,20 @@ function convertAmounts(to, from) {
 					    }
 					});
 				  break;
+				case 'ppc':
+					$.ajax({
+					    type: "POST",
+					    url: ratesProxyUrl,
+					    data: ratesUrl['ppc_'+to.toLowerCase()],
+					    success: function(json) {
+							curr = {'code': "USD", 'name': "US Dollar", 'rate': json['last_trade']}
+							convertSpecificCurrencies('ppc', curr);
+					    },
+					    error: function (xhr, textStatus, errorThrown) {
+					        console.info("Could not retrieve currency rates for PPC");
+					    }
+					});
+				  break;
 			}
 		}
 	}
