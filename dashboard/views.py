@@ -90,8 +90,15 @@ def proxy(request):
     if request.is_ajax():
         if request.method == 'POST':
             url = request.body
-            opener = urllib2.build_opener()
-            opener.addheaders = [('User-agent', "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:25.0) Gecko/20100101 Firefox/25.0")]
-            response = opener.open(url)
-            
-            return HttpResponse(response, content_type="application/json")
+            connector.cache.setDebug(True)
+            cache_hash = connector.getParamHash(url)
+            cache_object = connector.cache.fetch('rates', cache_hash)
+            if cache_object:
+                return HttpResponse(cache_object, content_type="application/json")
+            else:
+                opener = urllib2.build_opener()
+                opener.addheaders = [('User-agent', "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:25.0) Gecko/20100101 Firefox/25.0")]
+                response = opener.open(url)
+                rates_json = response.read()
+                connector.cache.store('rates', cache_hash, rates_json)
+                return HttpResponse(rates_json, content_type="application/json")

@@ -32,7 +32,10 @@ class Cacher(object):
         if not section or not hashkey or not value:
             return False
         
-        self._cache[section] = { hashkey: {'data': copy.deepcopy(value), 'when': datetime.datetime.utcnow().replace(tzinfo=utc) } }
+        if not self._cache.get(section, False):
+            self._cache[section] = {}
+            
+        self._cache[section][hashkey] = {'data': copy.deepcopy(value), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)}
         return True
         
     def fetch(self, section, hashkey):

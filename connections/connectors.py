@@ -49,20 +49,19 @@ class Connector(object):
                }
     
     # caching data
-    cache = None
-    
-    @timeit
-    def __init__(self):
-        '''
-        Constructor, load config 
-        '''
-        self.cache = Cacher({
+    cache = Cacher({
              'accounts': {},
              'transactions': {},
              'balances': {},
              'addressesbyaccount': {},
              'info': {},
              })
+    
+    @timeit
+    def __init__(self):
+        '''
+        Constructor, load config 
+        '''
         self.cache.setDebug(False)
         try:
             import config
