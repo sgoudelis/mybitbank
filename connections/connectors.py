@@ -281,7 +281,12 @@ class Connector(object):
             pass
         
         if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
-            addresses = self.services[provider_id].getaddressesbyaccount(name)
+            try:
+                addresses = self.services[provider_id].getaddressesbyaccount(name)
+            except Exception, e:
+                self.errors.append({'message': 'Error occurred while compiling a list of addresses (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+                self.removeCurrencyService(provider_id)
+            
             addresses_list = []
             for address in addresses:
                 coinaddr = CoinAddress(address)
