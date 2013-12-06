@@ -91,7 +91,7 @@ def proxy(request):
         if request.method == 'POST':
             url = request.body
             opener = urllib2.build_opener()
-            opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+            opener.addheaders = [('User-agent', "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:25.0) Gecko/20100101 Firefox/25.0")]
             response = opener.open(url)
             
             return HttpResponse(response, content_type="application/json")
