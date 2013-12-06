@@ -32,8 +32,8 @@
                         <td class="hidden-xs" style="font-family: courier;"><span class="address-label label-default">{{ account.currency_symbol }} {% if account.addresses.0 %}{{ account.addresses.0 }}{% else %}no address{%endif%}</span>{% if account.addresses.1 %} (+{{ account.address_count }}){% endif %}</td>
                         <td class="hidden-xs">{{ account.last_activity }}</td>
                         <td class="text-right" style="font-family: courier;">
-                        <strong><span>{{ account.balance }}</span></strong> <span class="currency {{ account.currency }}">{{ account.currency|upper }}</span> /
-                        <strong><span class="amount {{ account.currency }}" amount="{{ account.balance }}">0.00</span></strong> <span class="currency-code {{ account.currency }}">USD</span>
+                        <strong><span>{{ account.balance }}</span></strong> <span class="currency {{ account.currency|lower }}">{{ account.currency|upper }}</span> /
+                        <strong><span class="amount {{ account.currency }}" amount="{{ account.balance }}">0.00</span></strong> <span class="currency-code {{ account.currency|lower }}">USD</span>
                         </td>
                     </tr>
                     {% endfor %}
