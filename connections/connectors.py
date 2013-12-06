@@ -500,7 +500,8 @@ class Connector(object):
     
     @timeit          
     def sendfrom(self, from_account, to_address, amount, provider_id, minconf=1, comment="", comment_to=""):
-        if not from_account or not to_address or not provider_id:
+        print "%s %s %s" % (from_account, to_address, provider_id)
+        if not to_address or not provider_id:
             return {'message': 'Invalid input data from account or address', 'code':-101}
 
         if provider_id not in self.services.keys():
