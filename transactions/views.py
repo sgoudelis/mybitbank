@@ -34,7 +34,7 @@ def index(request, selected_provider_id=False, page=1):
     # get transactions
     transactions_list = connector.listtransactionsbyaccount('*', selected_provider_id, items_per_page, (items_per_page*(page-1)))
     # sort transactions
-    transactions_list = sorted(transactions_list, key=lambda k: k.get('timereceived',0), reverse=True)
+    transactions_list = sorted(transactions_list, key=lambda k: k.get('time',0), reverse=True)
     
     # remove moves if there is a user setting for it
     transactions = []
