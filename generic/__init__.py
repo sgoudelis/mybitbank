@@ -136,13 +136,6 @@ def getCurrencySymbol(for_currency='*'):
         for_currency = for_currency.lower()
         return currencies[for_currency]
 
-def getPeerInfo(connector, provider_id=0):
-    '''
-    Return peers info
-    '''
-    
-    return connector.getpeerinfo(provider_id)
-
 def buildBreadcrumbs(current_section='dashboard', currect_subsection='', current_activesection=''):
     # this is kind of stupid but it is 12 AM and I am sleepy
     breadcrumbs = []

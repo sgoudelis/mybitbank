@@ -6,7 +6,7 @@ import time
 from coinaddress import CoinAddress
 from coinaccount import CoinAccount
 from cointransaction import CoinTransaction
-from bitcoinrpc.authproxy import AuthServiceProxy
+#from bitcoinrpc.authproxy import AuthServiceProxy
 from jsonrpc import ServiceProxy
 from connections.cacher import Cacher 
 from accounts.models import accountFilter
@@ -63,6 +63,7 @@ class Connector(object):
              'addressesbyaccount': {},
              'info': {},
              })
+        self.cache.setDebug(False)
         try:
             import config
             currency_configs = config.config
@@ -136,27 +137,33 @@ class Connector(object):
         
         # check for cached data, use that or get it again
         cache_hash = self.getParamHash("provider_id=%s" % provider_id)
-        try:
-            cache_object = self.cache['info'].get(cache_hash, None)
-            if ((datetime.datetime.utcnow().replace(tzinfo=utc) - cache_object['when']).seconds) < self.caching_time:
-                cached_info = self.cache['info'][cache_hash]['data']
-                return cached_info
-        except:
-            pass
+        cached_peerinfo = self.cache.fetch('info', cache_hash)
+        if cached_peerinfo:
+            return cached_peerinfo
         
-        coind_info = {}
+        peerinfo = {}
         try:        
-            coind_info = self.services[provider_id].getinfo()
+            peerinfo = self.services[provider_id].getinfo()
         except (JSONRPCException, Exception), e:
             self.errors.append({'message': 'Error occurred while getting info from currency provider (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
             self.removeCurrencyService(provider_id)
-        return coind_info
+        
+        self.cache.store('info', cache_hash, peerinfo)
+        
+        return peerinfo
     
     @timeit
     def getpeerinfo(self, provider_id):
         '''
         Get peer info from the connector (xxxcoind)
         '''
+        
+        # check for cached data, use that or get it again
+        cache_hash = self.getParamHash("provider_id=%s" % provider_id)
+        cached_peerinfo = self.cache.fetch('peerinfo', cache_hash)
+        if cached_peerinfo:
+            return cached_peerinfo
+        
         peers = []
         try:
             if self.config[provider_id]['enabled'] is True:
@@ -168,6 +175,10 @@ class Connector(object):
             # in case of an error, store the error, disabled the service and move on
             self.errors.append({'message': 'Error occurred while getting peers info of accounts (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
             self.removeCurrencyService(provider_id)
+            
+        # cache peer info
+        self.cache.store('peerinfo', cache_hash, peers)
+        
         return peers
     
     @timeit
@@ -178,13 +189,9 @@ class Connector(object):
         
         # check for cached data, use that or get it again
         cache_hash = self.getParamHash("gethidden=%s&getarchived=%s" % (gethidden, getarchived))
-        try:
-            cache_object = self.cache['accounts'].get(cache_hash, None)
-            if ((datetime.datetime.utcnow().replace(tzinfo=utc) - cache_object['when']).seconds) < self.caching_time:
-                cached_accounts = self.cache['accounts'][cache_hash]['data']
-                return cached_accounts
-        except:
-            pass
+        cached_object = self.cache.fetch('accounts', cache_hash)
+        if cached_object:
+            return cached_object
         
         # get data from the connector (coind)
         fresh_accounts = {}
@@ -259,8 +266,7 @@ class Connector(object):
             self.removeCurrencyService(provider_id)
         
         # cache the result
-        self.cache['accounts'][cache_hash] = {'data': accounts, 'when': datetime.datetime.utcnow().replace(tzinfo=utc)}
-
+        self.cache.store('accounts', cache_hash, accounts)
         return accounts
     
     @timeit
@@ -282,13 +288,9 @@ class Connector(object):
         
         # check for cached data, use that or get it again
         cache_hash = self.getParamHash("name=%s&provider_id=%s" % (name, provider_id))
-        try:
-            cache_object = self.cache['addressesbyaccount'].get(cache_hash, None)
-            if ((datetime.datetime.utcnow().replace(tzinfo=utc) - cache_object['when']).seconds) < self.caching_time:
-                cached_addresses_by_account = self.cache['transactions'][cache_hash]['data']
-                return cached_addresses_by_account
-        except:
-            pass
+        cached_object = self.cache.fetch('addressesbyaccount', cache_hash)
+        if cached_object:
+            return cached_object
         
         if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
             try:
@@ -305,8 +307,7 @@ class Connector(object):
             addresses_list = []
             
         # cache the result
-        self.cache['addressesbyaccount'][cache_hash] = {'data': addresses_list, 'when': datetime.datetime.utcnow().replace(tzinfo=utc)}
-            
+        self.cache.store('addressesbyaccount', cache_hash, addresses_list)
         return addresses_list
     
     @timeit
@@ -315,15 +316,10 @@ class Connector(object):
         Get a list of transactions by account name and provider_id
         '''
         
-        # check for cached data, use that or get it again
         cache_hash = self.getParamHash("account_name=%s&provider_id=%s&limit=%s&start=%s" % (account_name, provider_id, limit, start))
-        try:
-            cache_object = self.cache['transactions'].get(cache_hash, None)
-            if ((datetime.datetime.utcnow().replace(tzinfo=utc) - cache_object['when']).seconds) < self.caching_time:
-                cached_transactions = self.cache['transactions'][cache_hash]['data']
-                return cached_transactions
-        except:
-            pass
+        cached_object = self.cache.fetch('transactions', cache_hash)
+        if cached_object:
+            return cached_object
         
         transactions = []
         transaction_list = []
@@ -355,8 +351,7 @@ class Connector(object):
             transactions.append(CoinTransaction(entry))
             
         # cache the result
-        self.cache['transactions'][cache_hash] = {'data': transactions, 'when': datetime.datetime.utcnow().replace(tzinfo=utc)}
-
+        self.cache.store('transactions', cache_hash, transactions)
         return transactions
     
     @timeit
@@ -404,13 +399,9 @@ class Connector(object):
         
         # check for cached data, use that or get it again
         cache_hash = self.getParamHash("" % ())
-        try:
-            cache_object = self.cache['balances'].get(cache_hash, None)
-            if ((datetime.datetime.utcnow().replace(tzinfo=utc) - cache_object['when']).seconds) < self.caching_time:
-                cached_balances = self.cache['balances'][cache_hash]['data']
-                return cached_balances
-        except:
-            pass
+        cached_object = self.cache.fetch('balances', cache_hash)
+        if cached_object:
+            return cached_object
         
         balances = {}
         for provider_id in self.config.keys():
@@ -422,7 +413,8 @@ class Connector(object):
                     self.errors.append({'message': 'Error occurred while getting balances (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                     self.removeCurrencyService(provider_id)
         
-        self.cache['balances'][cache_hash] = {'data': balances, 'when': datetime.datetime.utcnow().replace(tzinfo=utc)}
+        # store data to cache
+        self.cache.store('balances', cache_hash, balances)
         
         return balances
     
