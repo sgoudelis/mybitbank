@@ -1,7 +1,7 @@
 import config
 import generic
 import calendar
-import urllib
+import urllib2
 from connections import connector
 from events.models import Events
 from django.http import HttpResponse
@@ -90,6 +90,8 @@ def proxy(request):
     if request.is_ajax():
         if request.method == 'POST':
             url = request.raw_post_data
-            f = urllib.urlopen(url)
-            output = f.read()
-            return HttpResponse(output, content_type="application/json")
+            opener = urllib2.build_opener()
+            opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+            response = opener.open(url)
+            
+            return HttpResponse(response, content_type="application/json")
