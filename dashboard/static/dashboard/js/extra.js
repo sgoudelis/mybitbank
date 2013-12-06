@@ -189,7 +189,11 @@ function convertSpecificCurrencies(from, to) {
 			var converted = to.rate*cryptoAmount;
 			var old_rate = $(element).attr('rate');
 			//console.info(parseFloat(old_rate)+' <= '+to.rate+' '+(parseFloat(old_rate) <= to.rate));
-			if(parseFloat(old_rate) <= to.rate) {
+			
+			if(isNaN(parseFloat(old_rate))) {
+				$(element).removeClass('green-font');
+				$(element).removeClass('red-font');
+			} else if(parseFloat(old_rate) <= to.rate) {
 				$(element).addClass('green-font');
 				$(element).removeClass('red-font');
 			} else {
