@@ -50,7 +50,7 @@
 					<img src="{% static 'dashboard/images/flags/' %}{{ peer.country_code|lower }}.png" /> 
 					<a href="#" onclick="javascript: return zoomTo({{ peer.lat }}, {{ peer.lon }});">{{ peer.country }} {% if peer.city|length > 0 %} ({{ peer.city }}) {% endif %}</a>
 					{% else %}
-					<i>Uknown location</i>
+					<i>Unknown location</i>
 					{% endif %}
 				</td>
 				<td>{{ peer.subver }}</td>
