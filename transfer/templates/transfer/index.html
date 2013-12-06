@@ -22,7 +22,7 @@
 			  <li {% if selected_provider_id == provider_id %}class="active"{% endif %}><a href="{% url 'transfer:index' %}{{ provider_id }}"><strong>{{ currency_names|keyvalue:provider_id }}</strong></a></li>
 			{% endfor %}
 			</ul>
-            <div class="row">&nbsp;</div>
+            <div class="row"><label>&nbsp;</label></div>
             
             {% if form.non_field_errors or form.provider_id.errors %}
             <div class="alert alert-dismissable alert-danger">
@@ -81,19 +81,19 @@
                 {{ form.from_address.errors }}
                 </div>
               </div>
-
+			  <!--
               <div class="col-md-1">
-              <!--
+              
                   <div class="form-group {% if form.from_address.errors %}has-error{% endif %}">
                     <label for="">&nbsp;</label>
                     <input type="text" class="text-center form-control fixed-width-font2" id="from_address" name="from_address" placeholder="type address" value="{{ form.from_address.value }}">
                     {{ form.from_address.errors }}
                   </div>
-			  -->
-              </div>
 			  
+              </div>
+			  -->
 			  <div class="col-md-2">
-			  <div class="row">&nbsp;</div>
+			  <div class="row"><label>&nbsp;</label></div>
 			  <div class="row text-center"><span class="large-text-1" id="from_address_currency">{{ currency_symbols|keyvalue:selected_provider_id }}</span><span class="large-text-1" id="from_address_balance">0.00000000</span></div>
 			  </div>
 
@@ -129,8 +129,8 @@
                 </select>
               </div>
              <div class="col-md-2">
-			  <div class="row">&nbsp;</div>
-			  <div class="row text-center"><span class="large-text-1" id="to_address_currency">{{ currency_symbols|keyvalue:selected_provider_id }}</span> <span class="large-text-1" id="to_address_balance">0.00000000</span></div>
+			  <div class="row"><label>&nbsp;</label></div>
+			  <div class="row text-center"><span class="large-text-1" id="to_address_currency">{{ currency_symbols|keyvalue:selected_provider_id }}</span><span class="large-text-1" id="to_address_balance">0.00000000</span></div>
 			  </div>
             </div>
             
