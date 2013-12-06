@@ -500,9 +500,11 @@ class Connector(object):
     
     @timeit          
     def sendfrom(self, from_account, to_address, amount, provider_id, minconf=1, comment="", comment_to=""):
-        print "%s %s %s" % (from_account, to_address, provider_id)
+        if type(from_account) not in [str, unicode]:
+            return {'message': 'Invalid input from account', 'code':-156}
+        
         if not to_address or not provider_id:
-            return {'message': 'Invalid input data from account or address', 'code':-101}
+            return {'message': 'Invalid input to account or address', 'code':-101}
 
         if provider_id not in self.services.keys():
             return {'message': 'Non-existing currency provider id %s' % provider_id, 'code': -100}
