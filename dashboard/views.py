@@ -89,7 +89,7 @@ def proxy(request):
     
     if request.is_ajax():
         if request.method == 'POST':
-            url = request.raw_post_data
+            url = request.body
             opener = urllib2.build_opener()
             opener.addheaders = [('User-agent', 'Mozilla/5.0')]
             response = opener.open(url)
