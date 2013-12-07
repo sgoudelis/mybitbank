@@ -92,7 +92,11 @@ def index(request, selected_provider_id=False, page=1):
                 transaction['account'] = "(default account)"
                 default_account = connector.getdefaultaccount(transaction['provider_id'])
                 transaction['destination_address'] = default_account['addresses'][0]
-    
+            if not len(transaction['otheraccount']):
+                transaction['otheraccount'] = "(default account)"
+                default_account = connector.getdefaultaccount(transaction['provider_id'])
+                transaction['source_addresses'] = default_account['addresses']
+            
     sender_address_tooltip_text = "This address has been calculated using the Input Script Signature. You should verify before using it."
     
     providers = {}

@@ -20,14 +20,14 @@ current_section = 'accounts'
 @login_required
 def index(request):
     '''
-    Handler for the accounts
+    Handler for the accounts view
     '''
     sections = generic.getSiteSections(current_section)
     accounts = generic.getAllAccounts(connector)
     #transactions = generic.getTransactions(connector = connector, reverse_order = True)
     transactions = []
     
-    # find the first transaction for each account
+    # find the last transaction for each account
     for account in accounts:
         transactions = connector.listtransactionsbyaccount(account['name'], account['provider_id'], 1, 0)
         for transaction in transactions:

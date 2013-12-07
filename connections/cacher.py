@@ -42,7 +42,8 @@ class Cacher(object):
         try:
             cache_object = self._cache[section].get(hashkey, None)
         except:
-            print "Cache MISS for %s %s (with error)" % (section, hashkey)
+            if self._debug:
+                print "Cache MISS for %s %s (with error)" % (section, hashkey)
             return False
         
         if cache_object and ((datetime.datetime.utcnow().replace(tzinfo=utc) - cache_object['when']).seconds) < self._caching_time:
