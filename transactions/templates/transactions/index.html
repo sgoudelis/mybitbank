@@ -25,13 +25,13 @@
                 <table class="table table-hover table-striped bordered">
                   <thead>
                     <tr>
-                        <th class="hidden-xs" style="background-color:#f5f5f5;">To</th>
-                        <th class="hidden-xs" style="background-color:#f5f5f5;">From</th>
-                        <th style="background-color:#f5f5f5;">Type</th>
-                        <th class="hidden-xs text-center" style="background-color:#f5f5f5;">Conf.</th>
-                        <th style="background-color:#f5f5f5;">When</th>
+                        <th width="250" class="hidden-xs" style="background-color:#f5f5f5;">To</th>
+                        <th width="350" class="hidden-xs" style="background-color:#f5f5f5;">From</th>
+                        <th width="85" style="background-color:#f5f5f5;">Type</th>
+                        <th width="40" class="hidden-xs text-center" style="background-color:#f5f5f5;">Conf.</th>
+                        <th width="110" style="background-color:#f5f5f5;" class="text-center">When</th>
                         <th width="40" class="text-center" style="background-color:#f5f5f5;">Info</th>
-                        <th style="background-color:#f5f5f5;" class="text-right">Amount</th>
+                        <th width="160" style="background-color:#f5f5f5;" class="text-right">Amount</th>
                     </tr>
                    </thead>
                     {% if transactions %}
@@ -77,7 +77,7 @@
                         <div class="visible-xs"><span class="glyphicon {{ transaction.icon }}"></span></div>
                         </td>
                         <td class="hidden-xs text-center"><span style="color: {{ transaction.status_color }};" class="bigger-icon glyphicon {{ transaction.status_icon }}" title="{{ transaction.tooltip }}" data-toggle="tooltip"></span></td>
-                        <td>{{ transaction.time_pretty }}</td>
+                        <td class="text-center">{{ transaction.time_pretty }}</td>
                         <td class="text-center">{% if transaction.txid %}<a href="{% url 'transactions:details' transaction.provider_id transaction.txid %}"><span data-toggle="tooltip" title="View transaction details" class="bigger-icon glyphicon glyphicon-info-sign"></span></a>{% endif %}</td>
                         <td class="text-right fixed-width-font"><span class="amount {% if transaction.amount > 0 %}in{% else %}out{% endif %}">{{ transaction.amount }}</span> {{ transaction.currency|upper }}</td>
                     </tr>
