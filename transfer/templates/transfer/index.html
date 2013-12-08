@@ -121,9 +121,7 @@
                 {% if accounts|keyvalue:selected_provider_id %}
                 <optgroup class="black-font" label="local accounts"></optgroup>
                 {% for account in accounts|keyvalue:selected_provider_id %}
-                    {% if account.name %}
-                      <option value="{{ account.addresses.0 }}" class="dark-font fixed-width-font2" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'to_address');" >{{ account.name }} - {{ account.addresses.0 }}</option>
-                    {% endif %}
+                      <option value="{{ account.addresses.0 }}" class="dark-font fixed-width-font2" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'to_address');" >{% if not account.name %}{{ account.alternative_name }}{% else %}{{ account.name }}{% endif %} - {{ account.addresses.0 }}</option>
                 {% endfor %}
                 {% endif %}
                 </select>
