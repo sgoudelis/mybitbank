@@ -142,7 +142,7 @@ def details(request, account_address="pipes", page=1):
     
     if account:
         # get transaction details
-        transactions = generic.getTransactionsByAccount(connector, account['name'], account['provider_id'], reverse_order=True, count=transactions_per_page, start=(transactions_per_page*page))
+        transactions = generic.getTransactionsByAccount(connector, account['name'], account['provider_id'], reverse_order=True, count=transactions_per_page, start=(transactions_per_page*(page-1)))
         for transaction in transactions:
             transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
             if not transaction.get('details', {}).get('sender_address', False):
