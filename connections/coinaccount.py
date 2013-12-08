@@ -10,8 +10,6 @@ class CoinAccount(object):
             self._account = accountDetails
             
     def __getitem__(self, key):
-        if key == "name" and self.isDefault():
-            key = "alternative_name"
         account = getattr(self, '_account')
         return account[key]
      
