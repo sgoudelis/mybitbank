@@ -150,12 +150,12 @@ def details(request, account_address="pipes", page=1):
             
             # addressbook names and address resolution
             if transaction['category'] == 'move':
-                transaction['otheraccount_address'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['currency'])
+                transaction['otheraccount_address'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['provider_id'])
             elif transaction['category'] == 'receive':
                 transaction['source_address'] = transaction.get('details', {}).get('sender_address', '(no sender address)')
                 transaction['addressbook_name'] = saved_addresses.get(transaction['source_address'], False)
             elif transaction['category'] == 'send':
-                transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['currency'])
+                transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['provider_id'])
                 transaction['addressbook_name'] = saved_addresses.get(transaction['address'], False)
                 
             # use icons and colors to represent confirmations
