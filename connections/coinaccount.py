@@ -34,3 +34,4 @@ class CoinAccount(object):
     def isHidden(self):
         return self._hidden or self._account['hidden'] or self.isDefault()
     
+    
