@@ -7,7 +7,7 @@ class Cacher(object):
     Caching object for data
     '''
     _cache = {}
-    _caching_time = 10
+    _caching_time = 10 # seconds
     _debug = False
     
     def __init__(self, initial_cache_dir):
@@ -28,14 +28,14 @@ class Cacher(object):
         else:
             return default
         
-    def store(self, section, hashkey, value):
+    def store(self, section, hashkey, value, howlong=_caching_time):
         if not section or not hashkey or not value:
             return False
         
         if not self._cache.get(section, False):
             self._cache[section] = {}
             
-        self._cache[section][hashkey] = {'data': copy.deepcopy(value), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)}
+        self._cache[section][hashkey] = {'data': copy.deepcopy(value), 'when': (datetime.datetime.utcnow().replace(tzinfo=utc) + datetime.timedelta(seconds=howlong))}
         return True
         
     def fetch(self, section, hashkey):
@@ -46,7 +46,7 @@ class Cacher(object):
                 print "Cache MISS for %s %s (with error)" % (section, hashkey)
             return False
         
-        if cache_object and ((datetime.datetime.utcnow().replace(tzinfo=utc) - cache_object['when']).seconds) < self._caching_time:
+        if cache_object and cache_object.get('when', False) >= datetime.datetime.utcnow().replace(tzinfo=utc):
             cached_data = self._cache[section][hashkey]['data']
             if self._debug:
                 print "Cache HIT for %s %s" % (section, hashkey)

@@ -62,7 +62,7 @@ class Connector(object):
         '''
         Constructor, load config 
         '''
-        self.cache.setDebug(False)
+        self.cache.setDebug(True)
         try:
             import config
             currency_configs = config.config
