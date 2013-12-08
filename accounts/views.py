@@ -119,11 +119,13 @@ def create(request):
     return render(request, 'accounts/add.html', context)
     
 @login_required        
-def details(request, account_address="pipes"):
+def details(request, account_address="pipes", page=1):
     '''
     Handler for the account details
     '''
-
+    transactions_per_page = 10
+    page = int(page)
+    
     # add a list of pages in the view
     sections = generic.getSiteSections(current_section)
     
@@ -140,7 +142,7 @@ def details(request, account_address="pipes"):
     
     if account:
         # get transaction details
-        transactions = generic.getTransactionsByAccount(connector, account['name'], account['provider_id'], reverse_order=True)
+        transactions = generic.getTransactionsByAccount(connector, account['name'], account['provider_id'], reverse_order=True, count=transactions_per_page, start=(transactions_per_page*page))
         for transaction in transactions:
             transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
             if not transaction.get('details', {}).get('sender_address', False):
@@ -181,12 +183,18 @@ def details(request, account_address="pipes"):
                'system_errors': connector.errors,
                'breadcrumbs': generic.buildBreadcrumbs(current_section, '', account['name'] or account['alternative_name']), 
                'page_title': page_title, 
+               'current_page': page,
+               'next_page': (page+1), 
+               'prev_page': max(1, page-1), 
+               'levels': [(max(1, (page-10)), max(1, (page-100)), max(1, (page-1000))), ((page+10), (page+100), (page+1000))],
                'page_sections': sections, 
                'account': account,
                'transactions': transactions,
                'currency_name': currency_name,
                'currency_symbol': currency_symbol,
+               'account_address': account_address,
                'sender_address_tooltip_text': sender_address_tooltip_text,
+               'transactions_per_page': transactions_per_page,
                }
     
     return render(request, 'accounts/details.html', context)

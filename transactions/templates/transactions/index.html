@@ -95,10 +95,14 @@
                 <div class="text-center">
                 <ul class="pagination no-margin">
                   <li {% if current_page == prev_page %}class="disabled"{% endif %}><a href="{% url 'transactions:index' selected_provider_id prev_page %}">&laquo;</a></li>
-                  <li><a href="{% url 'transactions:index' selected_provider_id levels.0 %}">Next 10</a></li>
-                  <li><a href="{% url 'transactions:index' selected_provider_id levels.1 %}">Next 100</a></li>
-                  <li><a href="{% url 'transactions:index' selected_provider_id levels.2 %}">Next 100</a></li>
-                  <li {% if current_page == next_page %}class="disabled"{% endif %}><a href="{% url 'transactions:index' selected_provider_id next_page %}">&raquo;</a></li>
+                  <li><a href="{% url 'transactions:index' selected_provider_id levels.0.2 %}">-1000</a></li>
+		          <li><a href="{% url 'transactions:index' selected_provider_id levels.0.1 %}">-100</a></li>
+		          <li><a href="{% url 'transactions:index' selected_provider_id levels.0.0 %}">-10</a></li>
+                  <li><a href="{% url 'transactions:index' selected_provider_id 1 %}">First page</a></li>
+                  <li><a href="{% url 'transactions:index' selected_provider_id levels.1.0 %}">+10</a></li>
+                  <li><a href="{% url 'transactions:index' selected_provider_id levels.1.1 %}">+100</a></li>
+                  <li><a href="{% url 'transactions:index' selected_provider_id levels.1.2 %}">+1000</a></li>
+                  <li {% if transactions|length < transactions_per_page %}class="disabled"{% endif %}><a href="{% url 'transactions:index' selected_provider_id next_page %}">&raquo;</a></li>
                 </ul>
                 </div>
             	</div>

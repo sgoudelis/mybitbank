@@ -94,14 +94,14 @@
      <table class="smaller-font-size table table-hover table-striped table-condensed">
       <thead>
         <tr class="top-solid-border">
-            <th width="30" style="background-color:#f5f5f5;"></th>
-            <th class="hidden-xs" width="200" style="background-color:#f5f5f5;">To</th>
-            <th class="hidden-xs" width="30" style="background-color:#f5f5f5;">From</th>
-            <th width="200" style="background-color:#f5f5f5;">Comment</th>
+            <th width="27" style="background-color:#f5f5f5;"></th>
+            <th class="hidden-xs" width="267" style="background-color:#f5f5f5;">To</th>
+            <th class="hidden-xs" width="267" style="background-color:#f5f5f5;">From</th>
+            <th width="160" style="background-color:#f5f5f5;">Comment</th>
             <th width="40" class="hidden-xs text-center" style="background-color:#f5f5f5;">Conf.</th>
-            <th width="40" class="text-center">Info</th>
-            <th width="100" style="background-color:#f5f5f5;">When</th>
-            <th width="150"style="background-color:#f5f5f5;" class="text-right">Amount</th>
+            <th width="35" class="text-center">Info</th>
+            <th width="80" style="background-color:#f5f5f5;">When</th>
+            <th width="110"style="background-color:#f5f5f5;" class="text-right">Amount</th>
         </tr>
        </thead>
         {% if transactions %}
@@ -173,6 +173,21 @@
         </tr>
         {% endif %}
     </table>
+    
+    
+         <div class="text-center panel-body">
+         <ul class="pagination no-margin">
+           <li {% if current_page == prev_page %}class="disabled"{% endif %}><a href="{% url 'accounts:details' account_address prev_page %}">&laquo;</a></li>
+           <li><a href="{% url 'accounts:details' account_address levels.0.2 %}">-1000</a></li>
+           <li><a href="{% url 'accounts:details' account_address levels.0.1 %}">-100</a></li>
+           <li><a href="{% url 'accounts:details' account_address levels.0.0 %}">-10</a></li>
+           <li><a href="{% url 'accounts:details' account_address 1 %}">First page</a></li>
+           <li><a href="{% url 'accounts:details' account_address levels.1.0 %}">+10</a></li>
+           <li><a href="{% url 'accounts:details' account_address levels.1.1 %}">+100</a></li>
+           <li><a href="{% url 'accounts:details' account_address levels.1.2 %}">+1000</a></li>
+           <li {% if transactions|length < transactions_per_page %}class="disabled"{% endif %}><a href="{% url 'accounts:details' account_address next_page %}">&raquo;</a></li>
+         </ul>
+         </div>
     
 	 <div class="well well-sm row" style="margin: 20px;">
 	 	<div class="col-md-1"><strong>Legend:</strong></div>

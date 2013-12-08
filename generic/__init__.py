@@ -102,11 +102,11 @@ def getTransactions(connector, sort_by = 'time', reverse_order = False):
     transactions_ordered = sorted(transactions_ordered, key=lambda k: k.get(sort_by,0), reverse=reverse_order)
     return transactions_ordered
 
-def getTransactionsByAccount(connector, account_name, provider_id, sort_by = 'time', reverse_order = False):
+def getTransactionsByAccount(connector, account_name, provider_id, sort_by = 'time', reverse_order = False, count=10, start=0):
     '''
     Return transactions by account name and currency
     '''
-    transactions = connector.listtransactionsbyaccount(account_name, provider_id)
+    transactions = connector.listtransactionsbyaccount(account_name, provider_id, count, start)
     transactions_ordered = sorted(transactions, key=lambda k: k.get(sort_by,0), reverse=reverse_order)
     return transactions_ordered
 
