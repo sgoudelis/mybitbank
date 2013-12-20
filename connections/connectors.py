@@ -46,6 +46,7 @@ class Connector(object):
                 'ppc': {'mainnet': '\x37', 'testnet': '\x6f'},
                 'nmc': {'mainnet': '\x34', 'testnet': '\x6f'},
                 'nvc': {'mainnet': '\x08', 'testnet': '\x6f'},
+                'doge': {'mainnet': '\x33', 'testnet': '\x6f'},
                }
     
     # caching data
@@ -62,10 +63,10 @@ class Connector(object):
         '''
         Constructor, load config 
         '''
-        self.cache.setDebug(True)
+        self.cache.setDebug(False)
         try:
-            import config
-            currency_configs = config.config
+            import walletconfig
+            currency_configs = walletconfig.config
         except (AttributeError, ImportError) as e:
             self.errors.append({'message': 'Error occurred while compiling list of accounts (%s)' % (e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
 
@@ -181,20 +182,26 @@ class Connector(object):
         return peers
     
     @timeit
-    def listaccounts(self, gethidden=False, getarchived=False):
+    def listaccounts(self, gethidden=False, getarchived=False, selected_provider_id=-1):
         '''
         Get a list of accounts. This method also supports filtering, fetches address for each account etc.
         '''
         
         # check for cached data, use that or get it again
-        cache_hash = self.getParamHash("gethidden=%s&getarchived=%s" % (gethidden, getarchived))
+        cache_hash = self.getParamHash("gethidden=%s&getarchived=%s&selected_provider_id=%s" % (gethidden, getarchived, selected_provider_id))
         cached_object = self.cache.fetch('accounts', cache_hash)
         if cached_object:
             return cached_object
         
         # get data from the connector (coind)
         fresh_accounts = {}
-        for provider_id in self.config.keys():
+        
+        if selected_provider_id > 0:
+            provider_ids = [int(selected_provider_id)]
+        else:
+            provider_ids = self.config.keys()
+        
+        for provider_id in provider_ids:
             if self.config[provider_id]['enabled'] is True:
                 try:
                     fresh_accounts[provider_id] = self.services[provider_id].listaccounts()
@@ -223,9 +230,9 @@ class Connector(object):
                 if self.config[provider_id]['enabled'] is True:
                     accounts[provider_id] = []
                     if fresh_accounts.get(provider_id, False):
-                        accounts_for_currency = fresh_accounts[provider_id]
+                        account_from_provider = fresh_accounts[provider_id]
             
-                        for account_name, account_balance in accounts_for_currency.items():
+                        for account_name, account_balance in account_from_provider.items():
                             try:
                                 account_addresses = self.getaddressesbyaccount(account_name, provider_id)
                             except Exception, e:
@@ -242,23 +249,14 @@ class Connector(object):
                                 if hidden_address in account_addresses:
                                     hidden_flag = True
                             
-                            # catch default address without name
-                            if account_name == "":
-                                alternative_name = '(default account)'
-                            else:
-                                alternative_name = account_name
-                            
-                            # if there any address left then add it to the list
-                            if account_addresses:
-                                accounts[provider_id].append(CoinAccount({
-                                                           'name': account_name, 
-                                                           'balance': self.longNumber(account_balance), 
-                                                           'addresses': account_addresses, 
-                                                           'hidden': hidden_flag,
-                                                           'alternative_name': alternative_name,
-                                                           'currency': self.config[provider_id]['currency'],
-                                                           'provider_id': provider_id,
-                                                           }))
+                            accounts[provider_id].append(CoinAccount({
+                                                       'name': account_name, 
+                                                       'balance': self.longNumber(account_balance), 
+                                                       'addresses': account_addresses, 
+                                                       'hidden': hidden_flag,
+                                                       'currency': self.config[provider_id]['currency'],
+                                                       'provider_id': provider_id,
+                                                       }))
                     
         except Exception as e:
             self.errors.append({'message': 'Error occurred while compiling list of accounts (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
@@ -267,6 +265,15 @@ class Connector(object):
         # cache the result
         self.cache.store('accounts', cache_hash, accounts)
         return accounts
+    
+    def getAccountByIdentifier(self, provider_id, identifier):
+        '''
+        Get account by identifier
+        '''
+        list_of_accounts = self.listaccounts(gethidden=True, getarchived=True, selected_provider_id=provider_id)
+        for account in list_of_accounts[provider_id]:
+            if account.getIdentifier() == identifier:
+                return account
     
     @timeit
     def getParamHash(self, param=""):
@@ -280,17 +287,25 @@ class Connector(object):
         return cache_hash
     
     @timeit
-    def getaddressesbyaccount(self, name, provider_id):
+    def getaddressesbyaccount(self, account, provider_id):
         '''
         Get the address of an account name
         '''
         
+        if type(account) in [str, unicode]:
+            name = account
+        elif isinstance(account, CoinAccount):
+            name = account['name']
+        else:
+            return []
+            
         # check for cached data, use that or get it again
         cache_hash = self.getParamHash("name=%s&provider_id=%s" % (name, provider_id))
         cached_object = self.cache.fetch('addressesbyaccount', cache_hash)
         if cached_object:
             return cached_object
         
+        addresses = []
         if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
             try:
                 addresses = self.services[provider_id].getaddressesbyaccount(name)
@@ -332,7 +347,7 @@ class Connector(object):
         for entry in transaction_list:
             if entry.get('address', False):
                 entry['address'] = CoinAddress(entry['address'])
-            
+                
             entry['provider_id'] = provider_id
             entry['timereceived_pretty'] = generic.twitterizeDate(entry.get('timereceived', 'never'))
             entry['time_pretty'] = generic.twitterizeDate(entry.get('time', 'never'))
@@ -347,7 +362,14 @@ class Connector(object):
                     entry['details'] = transaction_details
                 else:
                     self.errors.append({'message': transaction_details, 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
-            transactions.append(CoinTransaction(entry))
+            
+            if entry['category'] == 'receive':
+                entry['source_address'] = CoinAddress(entry.get('details', {}).get('sender_address', False))
+            elif entry['category'] == 'send':
+                entry['source_addresses'] = self.getaddressesbyaccount(entry['account'], entry['provider_id'])
+            
+            coin_transaction = CoinTransaction(entry)
+            transactions.append(coin_transaction)
             
         # cache the result
         self.cache.store('transactions', cache_hash, transactions)
@@ -391,22 +413,28 @@ class Connector(object):
         return new_address
     
     @timeit
-    def getbalance(self):
+    def getbalance(self, selected_provider_id=0, account_name="*"):
         '''
-        Get balance for each currency
+        Get balance for each provider
         '''
         
         # check for cached data, use that or get it again
-        cache_hash = self.getParamHash("" % ())
+        cache_hash = self.getParamHash("selected_provider_id=%s&account_name=%s" % (selected_provider_id, account_name))
         cached_object = self.cache.fetch('balances', cache_hash)
         if cached_object:
             return cached_object
         
         balances = {}
-        for provider_id in self.config.keys():
+        
+        if selected_provider_id>0:
+            provider_ids = [selected_provider_id]
+        else:
+            provider_ids = self.config.keys()
+        
+        for provider_id in provider_ids:
             if self.config[provider_id]['enabled'] is True:
                 try:
-                    balances[provider_id] = generic.longNumber(self.services[provider_id].getbalance())
+                    balances[provider_id] = generic.longNumber(self.services[provider_id].getbalance(account_name))
                 except Exception as e:
                     # in case of an Exception continue on to the next currency service (xxxcoind)
                     self.errors.append({'message': 'Error occurred while getting balances (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
@@ -458,9 +486,6 @@ class Connector(object):
         Move amount from local to local accounts
         Note: from_account my be an empty string 
         '''
-        if not to_account or not provider_id:
-            return {'message': 'Invalid input data from/to account name', 'code':-101}
-        
         if provider_id not in self.services.keys():
             return {'message': 'Non-existing currency provider id %s' % provider_id, 'code':-100}
         
@@ -642,7 +667,7 @@ class Connector(object):
             return {'message': 'Incorrect data type for passphrase', 'code': -110}
         
         if len(passphrase) < 1:
-            return {'message': 'Incorrect data type for passphrase', 'code': -111}
+            return {'message': 'No passphrase given', 'code': -111}
         
         if provider_id not in self.services.keys():
             return {'message': 'Invalid non-existing or disabled currency', 'code': -112}

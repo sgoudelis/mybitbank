@@ -48,7 +48,7 @@ def index(request, selected_provider_id=False, page=1):
     for transaction in transactions:
         if transaction['category'] == "move" and hide_moves:
             continue
-        
+        '''
         transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
         
         if transaction.get('category', False) in ['receive','send']:
@@ -65,8 +65,7 @@ def index(request, selected_provider_id=False, page=1):
             transaction['source_address'] = transaction.get('details', {}).get('sender_address', '(no sender address)')
             transaction['addressbook_name'] = saved_addresses.get(transaction['source_address'], False)
             transaction['icon'] = 'glyphicon-circle-arrow-down'
-            if not len(transaction['account']):
-                transaction['account'] = "(default account)"
+            if not transaction['account']:
                 default_account = connector.getdefaultaccount(transaction['provider_id'])
                 transaction['destination_address'] = default_account['addresses'][0]
             else:
@@ -77,8 +76,7 @@ def index(request, selected_provider_id=False, page=1):
             transaction['destination_address'] = transaction['address']
             transaction['icon'] = 'glyphicon-circle-arrow-up'
             transaction['addressbook_name'] = saved_addresses.get(transaction['address'], False)
-            if not len(transaction['account']):
-                transaction['account'] = "(default account)"
+            if not transaction['account']:
                 default_account = connector.getdefaultaccount(transaction['provider_id'])
                 transaction['destination_address'] = default_account['addresses'][0]
             else:
@@ -88,15 +86,15 @@ def index(request, selected_provider_id=False, page=1):
             transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['provider_id'])
             transaction['destination_addresses'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['provider_id'])
             transaction['icon'] = 'glyphicon-circle-arrow-right'
-            if not len(transaction['account']):
-                transaction['account'] = "(default account)"
+            if not transaction['account']:
                 default_account = connector.getdefaultaccount(transaction['provider_id'])
                 transaction['destination_address'] = default_account['addresses'][0]
-            if not len(transaction['otheraccount']):
-                transaction['otheraccount'] = "(default account)"
+            if not transaction['otheraccount']:
                 default_account = connector.getdefaultaccount(transaction['provider_id'])
                 transaction['source_addresses'] = default_account['addresses']
             
+            
+    '''
     sender_address_tooltip_text = "This address has been calculated using the Input Script Signature. You should verify before using it."
     
     providers = {}
@@ -155,9 +153,6 @@ def transactionDetails(request, txid, provider_id):
         account_addresses = connector.getaddressesbyaccount(transaction['details'][0]['account'], provider_id)
         account = connector.getaccountdetailsbyaddress(account_addresses[0])
         
-    if not len(transaction['details'][0]['account']):
-        transaction['details'][0]['account'] = '(default account)'
-    
     page_title = "Transaction details for %s" % txid
     context = {
            'globals': config.MainConfig['globals'],

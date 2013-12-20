@@ -3,6 +3,10 @@ from django import forms
 from django.forms import CharField, IntegerField
 from connections import connector
 
+class CoinAccount(CharField):
+    def validate(self, value):
+        super(CharField, self).validate(value)
+
 class CoinAddress(CharField):
     def validate(self, value):
         super(CharField, self).validate(value)
@@ -47,8 +51,9 @@ class CoinProviderId(IntegerField):
 class SendCurrencyForm(forms.Form):
     initial_provider_id = connector.config.keys()[0]
     
-    from_address = CoinAddress(initial="")
+    from_account = CoinAccount(initial="")
     to_address = CoinAddress(initial="")
+    to_account =  CoinAccount(initial="")
     comment = forms.CharField(initial="", required=False)
     comment_to = forms.CharField(initial="", required=False)
     amount = CoinAmount(initial=0, required=True)
@@ -57,10 +62,10 @@ class SendCurrencyForm(forms.Form):
     
     def clean(self):
         cleaned_data = super(SendCurrencyForm, self).clean()
-        from_address = cleaned_data.get('from_address', "")
-        to_address = cleaned_data.get('to_address', "")
+        #from_address = cleaned_data.get('from_address', "")
+        #to_address = cleaned_data.get('to_address', "")
         
-        if from_address == to_address and (from_address and to_address):
-            raise forms.ValidationError("You cannot move from and to the same account/address")
+        #if from_address == to_address and (from_address and to_address):
+        #    raise forms.ValidationError("You cannot move from and to the same account/address")
         
         return cleaned_data

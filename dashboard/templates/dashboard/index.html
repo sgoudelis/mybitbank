@@ -90,16 +90,10 @@
 		</div>
 		-->
 	</div>
-
-
 </div>
 </div>
-
-
 
 <div class="row">
-
-
 	<div class="col-lg-6">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
@@ -107,10 +101,21 @@
 					<i class="icon-time"></i> Balances
 				</h3>
 			</div>
-			
-			{% for provider_id, balance in balances.items %}
-			  <a class="list-group-item" href="#"> <span class="badge badge-large"> {{ currency_symbols|keyvalue:provider_id }} {{ balance }}</span> <i class="icon-arrow"></i> <strong>{{ currency_names|keyvalue:provider_id }}</strong> </a>
+			<table class="table table-hover table-striped">
+			{% for wallet in wallets %}
+			  <tr>
+			    <td>
+			    	{{ wallet.name }}
+			    </td>
+				<td align="right" class="fixed-width-font">
+				<span class="balance">
+				  <strong><span >{{ wallet.balance }}</span></strong> <span class="currency {{ wallet.currency_code }}">{{ wallet.currency_code|upper }}</span> /
+	              <strong><span class="amount {{ wallet.currency_code }}" currency="{{ wallet.currency_code }}" amount="{{ wallet.balance }}">0.00</span></strong> <span class="currency-code {{ wallet.currency_code }}">USD</span>
+				</span>
+				</td>
+			  </tr>
 			{% endfor %}
+			</table>
 			
 			<div class="panel-body">
 		    	<div class="text-right">
@@ -138,26 +143,25 @@
 				</thead>
 				<tbody>
 				{% for transaction in transactions %}
-				{% if transaction.category != 'move' %}
-					{% if transaction.confirmations < 6 %}
+				
+					{% if transaction.confirmations < 6 and transaction.category != 'move' %}
 					<tr style="opacity: 0.4;">
 					{% else %}
 					<tr>
 					{% endif %}
 						<td>
 						{% if transaction.category == 'receive'%}
-						<a href="/accounts/details/{{ transaction.address }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account }}</strong></a>
+						<a href="{% url 'accounts:details' transaction.account.provider_id transaction.account.identifier %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
 						{% elif transaction.category == 'send'%}
-						<a href="/accounts/details/{{ transaction.source_addresses.0 }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account }}</strong></a>
-						{% elif transaction.category == 'receive'%}
-						<a href="/accounts/details/{{ transaction.address }}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account }}</strong></a>
+						<a href="{% url 'accounts:details' transaction.account.provider_id transaction.account.identifier %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
+						{% elif transaction.category == 'move'%}
+						<a href="{% url 'accounts:details' transaction.otheraccount.provider_id transaction.otheraccount.identifier %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.otheraccount|getaccountname }}</strong></a>
 						{% endif %}
 						</td>
 						<td><span class="glyphicon {{ transaction.icon }}"></span></td>
 						<td>{{ transaction.time_pretty }}</td>
 						<td class="text-right fixed-width-font"><strong>{{ transaction.amount }} {{ transaction.currency|upper }}</strong></td>
 					</tr>
-				{% endif %}
 				{% endfor %}
 				</tbody>
 			</table>
@@ -169,5 +173,10 @@
 		</div>
 	</div>
 </div>
-
+<script type="text/javascript">
+$(document).ready(function() {
+	convertAmounts('USD');
+	setInterval(function(){convertAmounts('USD');}, 20000);
+});
+</script>
 {% endblock %}

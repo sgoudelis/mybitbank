@@ -1,4 +1,5 @@
 {% extends "dashboard/base.html" %}
+{% load dashboard_extras %}
 {% load i18n %}
 {% block page_title %}{{ page_title }}{% endblock %}
 
@@ -26,10 +27,16 @@
                     </thead>
                     {% if accounts %}
                     {% for account in accounts %}
-                    
                     <tr {% if account.isHidden %}class="no-display" name="hidden_account"{% endif %}>
-                        <td><a href="/accounts/details/{{ account.addresses.0 }}" class="btn btn-default btn-xs">{{ account.currency_symbol }} <strong>{% if account.name == "" %}{{account.alternative_name}}{% else %}{{ account.name }}{% endif %}</a></strong></td>
-                        <td class="hidden-xs" style="font-family: courier;"><span class="address-label label-default">{{ account.currency_symbol }} {% if account.addresses.0 %}{{ account.addresses.0 }}{% else %}no address{%endif%}</span>{% if account.addresses.1 %} (+{{ account.address_count }}){% endif %}</td>
+                        <td>
+                        	<a href="/accounts/details/{{ account.provider_id }}/{{ account.identifier }}" class="btn btn-default btn-xs">{{ account.currency_symbol }} <strong>{{ account|getaccountname }}</a></strong>
+                        </td>
+                        <td class="hidden-xs">
+                        {% if account.addresses %}
+                        <span class="address-label label-default">{{ account.currency_symbol }} {{ account.addresses.0 }}</span>{% if account.addresses.0 %} <span class="fixed-width-font">({{ account.addresses|length }})</span>{% endif %}</td>
+                        {% else %}
+                        no addresses
+                        {% endif %}
                         <td class="hidden-xs">{{ account.last_activity }}</td>
                         <td class="text-right" style="font-family: courier;">
                         <strong><span>{{ account.balance }}</span></strong> <span class="currency {{ account.currency|lower }}">{{ account.currency|upper }}</span> /

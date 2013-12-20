@@ -24,20 +24,7 @@ def index(request):
     '''
     sections = generic.getSiteSections(current_section)
     accounts = generic.getAllAccounts(connector)
-    #transactions = generic.getTransactions(connector = connector, reverse_order = True)
-    transactions = []
-    
-    # find the last transaction for each account
-    for account in accounts:
-        transactions = connector.listtransactionsbyaccount(account['name'], account['provider_id'], 1, 0)
-        for transaction in transactions:
-            if account['name'] == transaction['account']:
-                account['last_activity'] = generic.twitterizeDate(transaction['time'])
-                account['address_count'] = len(account['addresses']) - 1
-                break
-        else:
-            account['last_activity'] = "never"
-    
+        
     page_title = _("Accounts")
     context = {
                'globals': config.MainConfig['globals'], 
@@ -119,18 +106,19 @@ def create(request):
     return render(request, 'accounts/add.html', context)
     
 @login_required        
-def details(request, account_address="pipes", page=1):
+def details(request, selected_provider_id, account_identifier="pipes", page=1):
     '''
     Handler for the account details
     '''
     transactions_per_page = 10
+    selected_provider_id = int(selected_provider_id)
     page = int(page)
     
     # add a list of pages in the view
     sections = generic.getSiteSections(current_section)
     
     # get account details
-    account = connector.getaccountdetailsbyaddress(account_address)
+    account = connector.getAccountByIdentifier(selected_provider_id, account_identifier)
     currency_symbol = generic.getCurrencySymbol(account['currency'])
     currency_name = connector.config[account['provider_id']]['name']
     
@@ -140,9 +128,14 @@ def details(request, account_address="pipes", page=1):
     for saved_address in addressBookAddresses:
         saved_addresses[saved_address.address] = saved_address.name
     
+    transactions = []
     if account:
         # get transaction details
-        transactions = generic.getTransactionsByAccount(connector, account['name'], account['provider_id'], reverse_order=True, count=transactions_per_page, start=(transactions_per_page*(page-1)))
+        #transactions = generic.getTransactionsByAccount(connector, account['name'], account['provider_id'], reverse_order=True, count=transactions_per_page, start=(transactions_per_page*(page-1)))
+        
+        transactions = account.getTransactions(reverse_order=True, count=transactions_per_page, start=(transactions_per_page*(page-1)))
+        
+        '''
         for transaction in transactions:
             transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
             if not transaction.get('details', {}).get('sender_address', False):
@@ -172,8 +165,9 @@ def details(request, account_address="pipes", page=1):
         account = {}
         account['name'] = _('no such account')
         transactions = []
-    
-    page_title = _("Account details for %s") % (account['name'] or account['alternative_name'])
+    '''
+        
+    page_title = _('Account details for "%s"') % (account['name'])
     sender_address_tooltip_text = "This address has been calculated using the Input Script Signature. You should verify before using it."
     
     context = {
@@ -181,7 +175,7 @@ def details(request, account_address="pipes", page=1):
                'request': request,
                'system_alerts': connector.alerts,
                'system_errors': connector.errors,
-               'breadcrumbs': generic.buildBreadcrumbs(current_section, '', account['name'] or account['alternative_name']), 
+               'breadcrumbs': generic.buildBreadcrumbs(current_section, '', account['name']), 
                'page_title': page_title, 
                'current_page': page,
                'next_page': (page+1), 
@@ -192,7 +186,6 @@ def details(request, account_address="pipes", page=1):
                'transactions': transactions,
                'currency_name': currency_name,
                'currency_symbol': currency_symbol,
-               'account_address': account_address,
                'sender_address_tooltip_text': sender_address_tooltip_text,
                'transactions_per_page': transactions_per_page,
                }
@@ -232,16 +225,16 @@ def setAddressAlias(request):
     return HttpResponse(json, mimetype="application/x-javascript")
 
 @login_required
-def createNewAddress(request, old_address):
+def createNewAddress(request, provider_id, account_identifier):
     '''
     Create a new address for the account of old_address
     '''
     if request.method == 'POST': 
-        account_details = connector.getaccountdetailsbyaddress(old_address)
+        account_details = connector.getAccountByIdentifier(provider_id, account_identifier)
         if account_details:
             new_address = connector.getnewaddress(account_details['provider_id'], account_details['name'])
             messages.success(request, 'New address %s created' % new_address, extra_tags="success")
             events.addEvent(request, 'New address "%s" created for account "%s"' % (new_address, account_details['name']), 'info')
-        return HttpResponseRedirect(reverse('accounts:details', kwargs={'account_address': old_address}))
+        return HttpResponseRedirect(reverse('accounts:details', kwargs={'selected_provider_id': provider_id, 'account_identifier': account_identifier}))
     
     

@@ -44,11 +44,6 @@ def commonContext(request={}, selected_provider_id=1, form=None, errors=[], show
     # get a list of source accounts
     accounts = connector.listaccounts(gethidden=True, getarchived=True)
     
-    # adding currency symbol to accounts dictionary
-    for currency in accounts.keys():
-        for account in accounts[currency]:
-            account['currency_symbol'] = currency_symbols[currency]
-    
     # addressbook values
     saved_addresses = savedAddress.objects.filter(currency=currency_codes.get(selected_provider_id, None), status__gt=1)
     addressbook_addresses = {}
@@ -83,6 +78,7 @@ def send(request, selected_provider_id):
     handler for the transfers
     '''
     post_errors = []
+    selected_provider_id = int(selected_provider_id)
     
     if request.method == 'POST': 
         # we have a POST request
@@ -90,8 +86,9 @@ def send(request, selected_provider_id):
         
         if form.is_valid(): 
             # all validation rules pass
-            from_address = form.cleaned_data['from_address']
+            from_account_identifier = form.cleaned_data['from_account']
             to_address = form.cleaned_data['to_address']
+            to_account = form.cleaned_data['to_account']
             comment = form.cleaned_data['comment']
             comment_to = form.cleaned_data['comment_to']
             amount = form.cleaned_data['amount']
@@ -102,9 +99,23 @@ def send(request, selected_provider_id):
             move_exit = False
             sendfrom_exit = False
             
-            # get account details
-            from_account = connector.getaccountdetailsbyaddress(from_address, selected_provider_id)
+            # get from account details
+            list_of_accounts = connector.listaccounts(gethidden=True, getarchived=True, selected_provider_id=selected_provider_id)
+            from_account = None
+            for account in list_of_accounts.get(selected_provider_id, []):
+                if account['identifier'] == from_account_identifier:
+                    from_account = account
+                    break
+            else:
+                # account name not found, display error
+                post_errors.append({'message': "The source account was not found!"})
+                context = commonContext(request=request, selected_provider_id=provider_id, form=form, errors=post_errors)
+                return render(request, 'transfer/index.html', context)
+            
+            # get to account details if there is one
             to_account = connector.getaccountdetailsbyaddress(to_address, selected_provider_id)
+            
+            # if to_account is set then it is a local move, do a move()
             if to_account:
                 # this address/account is hosted locally, do a move
                 move_exit = connector.moveamount(
@@ -122,7 +133,7 @@ def send(request, selected_provider_id):
                     return render(request, 'transfer/index.html', context)
                 
             else:
-                
+                # otherwise do a sendfrom(), it is a regular transaction
                 if passphrase:
                     # a passphrase was given, unlock wallet first
                     unlock_exit = connector.walletpassphrase(passphrase, provider_id)

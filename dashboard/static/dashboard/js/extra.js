@@ -26,6 +26,13 @@ function updateTransferDialog(address, balance, targetId) {
 	}
 }
 
+function updateTransferDialog(address, balance, targetId) {
+	if (targetId) {
+		$('span#'+targetId+'_balance').html(balance);
+		$('input#'+targetId).val(address);
+	}
+}
+
 function callAccountsOptionClick(selectElement) {
 	optionElement = $(selectElement).find(":selected");
 	if (optionElement.length) {
@@ -88,7 +95,7 @@ function convertAmounts(to, from) {
 			codes.map( function (a) { if (a in group) group[a] ++; else group[a] = 1; } );
 			codes = Object.keys(group);
 		}
-		
+
 		for(i in codes) {
 			switch(codes[i])
 			{

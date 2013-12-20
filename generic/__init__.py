@@ -2,6 +2,7 @@
 import datetime
 import dateutil.relativedelta
 import connections
+from connections.coinwallet import CoinWallet 
 import config
 from django.utils.timezone import utc
 
@@ -76,6 +77,30 @@ def getAllAccounts(connector):
 
     return accounts
 
+def getAccountByName(connector, provider_id, name):
+    '''
+    Return CoinAccount() for name
+    '''
+    
+    accounts_by_provider_id = connector.listaccounts(gethidden=True, getarchived=True)
+    target_account = None
+    if provider_id in accounts_by_provider_id.keys():
+        for account in accounts_by_provider_id[provider_id]:
+            if account['name'] == name:
+                target_account = account
+    return target_account
+
+def getWallets(connector):
+    '''
+    Return a list of wallets
+    '''
+
+    wallets = []
+    for provider_id ,wallet_config in connector.config.items():
+        wallets.append(CoinWallet(wallet_config))
+        
+    return wallets
+
 def getAccountsWithNames(connector):
     '''
     Return accounts that have names only
@@ -88,20 +113,6 @@ def getAccountsWithNames(connector):
             
     return accounts_with_names
     
-def getTransactions(connector, sort_by = 'time', reverse_order = False):
-    '''
-    Return transactions with ordering and sorting options
-    '''
-    transactions_ordered = []
-    transactions = connector.listalltransactions()
-    for provider_id in transactions.keys():
-        for transaction in transactions[provider_id]:
-            transaction['provider_id'] = provider_id
-            transactions_ordered.append(transaction)
-    
-    transactions_ordered = sorted(transactions_ordered, key=lambda k: k.get(sort_by,0), reverse=reverse_order)
-    return transactions_ordered
-
 def getTransactionsByAccount(connector, account_name, provider_id, sort_by = 'time', reverse_order = False, count=10, start=0):
     '''
     Return transactions by account name and currency
