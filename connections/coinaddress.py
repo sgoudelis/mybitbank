@@ -31,7 +31,22 @@ class CoinAddress(object):
         Unicode representation of this CoinAddress
         '''
         return unicode(self._address)
+    
+    @property
+    def alias(self):
+        '''
+        Return the first alias only
+        '''
+        aliases = self.getAliases()
+        if aliases:
+            return aliases[0].alias
 
+    def getAliases(self):
+        '''
+        Return a list of aliases this address has
+        '''
+        return self._aliases
+    
     def setAlias(self, alias):
         '''
         Set the alias in the db

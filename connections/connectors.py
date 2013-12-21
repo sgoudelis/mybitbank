@@ -402,15 +402,13 @@ class Connector(object):
             return False
         
         if self.config[provider_id]['enabled'] is True:
-            if self.services.get(provider_id, False) and type(account_name) in [str, unicode] and len(account_name):
+            if self.services.get(provider_id, False) and type(account_name) in [str, unicode]:
                 new_address = self.services[provider_id].getnewaddress(account_name)
                 # clear cache
-                self.cache['accounts'] = {}
+                self.cache.purge('accounts')
                 return new_address
         else:
             return False
-        
-        return new_address
     
     @timeit
     def getbalance(self, selected_provider_id=0, account_name="*"):

@@ -52,8 +52,8 @@
 		  	<tr>
 		  		<td width="200"><span class="address-label label-default">{{ account.currency_symbol }} {{ address }}</span></td>
 		  		<td>
-		  		{% if address.aliases.0 %}
-					<div id="link_{{ address }}"><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> <a href="javascript:void(0)" onclick="editAlias('{{ address }}')">{{ address.aliases.0.alias }}</a></span></div>
+		  		{% if address.alias %}
+					<div id="link_{{ address }}"><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> <a href="javascript:void(0)" onclick="editAlias('{{ address }}')">{{ address.alias }}</a></span></div>
 		  		{% else %}
 		  			<div id="link_{{ address }}"><span class="faded addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> <a href="javascript:void(0)" onclick="editAlias('{{ address }}')">add an alias</a></span></div>
 		  		{% endif %}
@@ -129,8 +129,8 @@
 	       {% if transaction.category = 'move' %}
 	       		<td class="hidden-xs"><span style="color:#ccc;">this account</span></td>
 	       {% elif transaction.category == 'receive' %}
-			  {% if transaction.address.aliases.0.alias %}
-		    	<td class="hidden-xs" nowrap><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> {{ transaction.address.aliases.0.alias }}</span></td>
+			  {% if transaction.address.alias %}
+		    	<td class="hidden-xs" nowrap><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> {{ transaction.address.alias }}</span></td>
 	       	  {% else %}
 	       	    <td class="hidden-xs" nowrap><span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span></td>
 	       	  {% endif %}

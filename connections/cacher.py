@@ -56,6 +56,14 @@ class Cacher(object):
                 print "Cache MISS for %s %s" % (section, hashkey)
             return False
         
+    def purge(self, section):
+        '''
+        Removed cached contents for section
+        '''    
+        if self._cache.get(section, False):
+            self._cache[section] = {}
+            return True
+    
     def setDebug(self, flag):
         self._debug = flag
         

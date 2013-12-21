@@ -225,16 +225,17 @@ def setAddressAlias(request):
     return HttpResponse(json, mimetype="application/x-javascript")
 
 @login_required
-def createNewAddress(request, provider_id, account_identifier):
+def createNewAddress(request, selected_provider_id, account_identifier):
     '''
-    Create a new address for the account of old_address
+    Create a new address for the account of account_identifier
     '''
+    selected_provider_id = int(selected_provider_id)
     if request.method == 'POST': 
-        account_details = connector.getAccountByIdentifier(provider_id, account_identifier)
-        if account_details:
-            new_address = connector.getnewaddress(account_details['provider_id'], account_details['name'])
-            messages.success(request, 'New address %s created' % new_address, extra_tags="success")
-            events.addEvent(request, 'New address "%s" created for account "%s"' % (new_address, account_details['name']), 'info')
-        return HttpResponseRedirect(reverse('accounts:details', kwargs={'selected_provider_id': provider_id, 'account_identifier': account_identifier}))
+        account = connector.getAccountByIdentifier(selected_provider_id, account_identifier)
+        if account:
+            new_address = connector.getnewaddress(account['provider_id'], account['name'])
+            messages.success(request, 'New address "%s" created for account "%s"' % (new_address, account['name']), extra_tags="success")
+            events.addEvent(request, 'New address "%s" created for account "%s"' % (new_address, account['name']), 'info')
+        return HttpResponseRedirect(reverse('accounts:details', kwargs={'selected_provider_id': selected_provider_id, 'account_identifier': account_identifier}))
     
     
