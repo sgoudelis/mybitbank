@@ -46,7 +46,7 @@ class Connector(object):
                 'ppc': {'mainnet': '\x37', 'testnet': '\x6f'},
                 'nmc': {'mainnet': '\x34', 'testnet': '\x6f'},
                 'nvc': {'mainnet': '\x08', 'testnet': '\x6f'},
-                'doge': {'mainnet': '\x33', 'testnet': '\x6f'},
+                'doge': {'mainnet': '\x30', 'testnet': '\x6f'},
                }
     
     # caching data
