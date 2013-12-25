@@ -50,7 +50,7 @@ def getaddressbookname(address):
         if address_book_name:
             return address_book_name
         else:
-            return address
+            return None
 
 register = template.Library()
 register.filter('keyvalue', keyvalue)

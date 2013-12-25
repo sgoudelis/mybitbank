@@ -45,8 +45,8 @@
                         	{% if transaction.category == "move" %}
                         	<a href="{% url 'accounts:details' transaction.account.provider_id transaction.account.identifier %}" class="btn btn-default btn-xs">{{ transaction.account.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
                         	{% elif transaction.category == "send" %}
-                        		{% if transaction.addressbook_name %}
-                        			<span class="addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.addressbook_name }}</span>
+                        		{% if transaction.address|getaddressbookname %}
+                        			<span class="addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address|getaddressbookname }}</span>
                         		{% else %}
                         			<span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span>
                         		{% endif %}
@@ -57,7 +57,7 @@
                         
                         <td  class="hidden-xs">
                         	{% if transaction.category == "receive" %}
-	                        	{% if transaction.source_address.getAddressBookName %}
+	                        	{% if transaction.source_address|getaddressbookname %}
 	                        		<span class="fixed-width-font addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.source_address|getaddressbookname }} <span data-toggle="tooltip" title="{{ sender_address_tooltip_text }}" class="small-info-icon glyphicon glyphicon-info-sign"></span></span>
 	                        	{% else %}
 	                        		<span class="sender-address address-label label-default">{{ transaction.currency_symbol }} {{ transaction.source_address }} <span data-toggle="tooltip" title="{{ sender_address_tooltip_text }}" class="small-info-icon glyphicon glyphicon-info-sign"></span></span>

@@ -82,6 +82,8 @@ class CoinTransaction(object):
             return self.getRawTransaction()
         elif key == "source_address":
             return self.getSenderAddress()
+        elif key == "address":
+            return CoinAddress(self._transaction['address'], self._transaction['account'])
         
         transaction = getattr(self, '_transaction')
         return transaction.get(key, None)
