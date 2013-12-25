@@ -390,3 +390,23 @@ span.amount.out {
 .alert {
 	font-weight: bold;
 }
+
+.panel-dark {
+	border-color: #E5E5E5;
+}
+
+.panel-dark > .panel-heading {
+    background-color: #E5E5E5;
+    border-color: #E5E5E5;
+    color: #333333;
+}
+
+.panel-purple {
+	border-color: #E0D1E0;
+}
+
+.panel-purple > .panel-heading {
+    background-color: #E0D1E0;
+    border-color: #E0D1E0;
+    color: #333333;
+}
