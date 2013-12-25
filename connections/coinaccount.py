@@ -1,15 +1,25 @@
 import connections
 import generic
 import hashlib
+from connections.cacher import Cacher
+from connections.coinaddress import CoinAddress
+from connections.cointransaction import CoinTransaction
 
 class CoinAccount(object):
     '''
     Class for an account
     '''
-    _account = {}
-    _hidden = False
     
     def __init__(self, accountDetails):
+        self._errors = []
+        self._account = {}
+        self._hidden = False
+        self._cache = Cacher({
+         'transactions': {},
+         'balances': {},
+         'addressesbyaccount': {},
+         })
+        
         if type(accountDetails) is dict:
             self._account = accountDetails
             self._provider_id = accountDetails['provider_id']
@@ -19,7 +29,7 @@ class CoinAccount(object):
         '''
         Property for the provider id
         '''
-        return self.get('id', None)
+        return self.get('provider_id', None)
            
     def __getitem__(self, key):
         '''
@@ -66,6 +76,16 @@ class CoinAccount(object):
         else:
             return False
     
+    def getParamHash(self, param=""):
+        '''
+        This function takes a string and calculates a sha224 hash out of it. 
+        It is used to hash the input parameters of functions/method in order to 
+        uniquely identify a cached result based  only on the input parameters of 
+        the function/method call.
+        '''
+        cache_hash = hashlib.sha224(param).hexdigest()
+        return cache_hash
+    
     def getIdentifier(self):
         '''
         There is no unique identifier for an account in a xxxcoind daemon
@@ -101,10 +121,23 @@ class CoinAccount(object):
     
     def getAddresses(self):
         '''
-        Return a list of addresses for this account
+        Get the address for an account name
         '''
-        addressess = connections.connector.getaddressesbyaccount(self['name'], self['provider_id'])
-        return addressess
+        # check for cached data, use that or get it again
+        cache_hash = self.getParamHash("name=%s" % (self['name']))
+        cached_object = self._cache.fetch('addressesbyaccount', cache_hash)
+        if cached_object:
+            return cached_object
+        
+        addresses = connections.connector.getAddressesByAccount(self['name'], self.provider_id)
+        addresses_list = []
+        for address in addresses:
+            coinaddr = CoinAddress(address, self)
+            addresses_list.append(coinaddr)
+            
+        # cache the result
+        self._cache.store('addressesbyaccount', cache_hash, addresses_list)
+        return addresses_list
     
     def getAddressesCount(self):
         '''
@@ -117,9 +150,9 @@ class CoinAccount(object):
         '''
         Return the date of the last activity
         '''
-        transactions = connections.connector.listtransactionsbyaccount(self['name'], self['provider_id'], 1, 0)
-        if transactions:
-            last_activity = generic.twitterizeDate(transactions[0]['time'])
+        last_transaction = self.listTransactions(1, 0)
+        if last_transaction:
+            last_activity = generic.twitterizeDate(last_transaction[0]['time'])
         else:
             last_activity = "never"
             
@@ -138,11 +171,42 @@ class CoinAccount(object):
         '''
         return self.get('currency', "").lower()
     
-    def getTransactions(self, sort_by='time', reverse_order=False, count=10, start=0):
+    def listTransactions(self, limit=100000, start=0, orderby='time', reverse=True):    
         '''
-        Return transactions list for account
+        Get a list of transactions by account name and provider_id
         '''
-        transactions = connections.connector.listtransactionsbyaccount(self['name'], self['provider_id'], count, start)
-        transactions_ordered = sorted(transactions, key=lambda k: k.get(sort_by,0), reverse=reverse_order)
-        return transactions_ordered
+
+        cache_hash = self.getParamHash("limit=%s&start=%sorderby=%s&reverse=%s" % (limit, start, orderby, reverse))
+        cached_object = self._cache.fetch('transactions', cache_hash)
+        if cached_object:
+            return cached_object
+        
+        transactions = []
+        transaction_list = connections.connector.listTransactionsByAccount(self['name'], self['provider_id'], limit, start)
+        
+        for entry in transaction_list:
+            if entry.get('address', False):
+                entry['address'] = CoinAddress(entry['address'], self)
+            
+            # give out a provider id and a currency code to the transaction dict
+            entry['provider_id'] = self.provider_id
+            entry['currency'] = self['currency']
+            
+            if entry['category'] == 'receive':
+                entry['source_address'] = CoinAddress(entry.get('details', {}).get('sender_address', False), "This is a sender address!")
+            elif entry['category'] == 'send':
+                entry['source_addresses'] = self['wallet'].getAddressesByAccount(entry['account'])
+            
+            entry['wallet'] = self['wallet']
+            
+            coin_transaction = CoinTransaction(entry)
+            transactions.append(coin_transaction)
+            
+        # sort result
+        transactions = sorted(transactions, key=lambda transaction: transaction[orderby], reverse=reverse) 
+            
+        # cache the result
+        self._cache.store('transactions', cache_hash, transactions)
+        return transactions
+    
     

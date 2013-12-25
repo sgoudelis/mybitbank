@@ -38,7 +38,7 @@
 			        			<strong>Account:</strong> 
 			        			</td>
 			        			<td>
-			        			<a href="/accounts/details/{{ account.addresses.0}}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.details.0.account }}</strong></a>
+			        			<a href="{% url 'accounts:details' account.provider_id account.identifier %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ account|getaccountname }}</strong></a>
 			        			</td>
 			        		</tr>
 			        		

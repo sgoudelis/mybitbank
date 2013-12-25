@@ -29,8 +29,12 @@
 	  	</td>
 	  </tr>
 	  <tr>
+	  	<td class="no-top-solid-border" width="10%">Wallet</td>
+	  	<td class="no-top-solid-border text-right" width="40%">{{ wallet.name }}</td>
+	  </tr>
+	  <tr>
 	  	<td class="no-top-solid-border" width="10%">Currency</td>
-	  	<td class="no-top-solid-border text-right" width="40%">{{ currency_name }} ({{ currency_symbol }})</td>
+	  	<td class="no-top-solid-border text-right" width="40%">{{ account.currency|upper }} ({{ account.currency_symbol }})</td>
 	  </tr>
 	  <tr>
 		<td width="10%">Last activity</td>
@@ -167,8 +171,8 @@
 
          <td class="hidden-xs text-center"><span style="color: {{ transaction.status_color }};" class="bigger-icon glyphicon {{ transaction.status_icon }}" title="{{ transaction.tooltip }}" data-toggle="tooltip"></span></td>
          <td class="text-center">{% if transaction.txid %}<a href="{% url 'transactions:details' transaction.provider_id transaction.txid %}"><span data-toggle="tooltip" title="View transaction details" class="bigger-icon glyphicon glyphicon-info-sign"></span></a>{% endif %}</td>
-         <td class="text-center">{{ transaction.time_pretty }}</td>
-         <td class="text-right" style="font-family: courier;"><span class="amount {% if transaction.amount > 0 %}in{% else %}out{% endif %}">{{ transaction.amount }}</span> {{ transaction.currency|upper }}</td>
+         <td width="120" class="text-center">{{ transaction.time_pretty }}</td>
+         <td width="200" class="text-right" style="font-family: courier;"><span class="amount {% if transaction.amount > 0 %}in{% else %}out{% endif %}">{{ transaction.amount }}</span> {{ transaction.currency|upper }}</td>
      </tr>
      {% endfor %}
      {% else %}

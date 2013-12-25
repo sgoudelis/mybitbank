@@ -22,9 +22,17 @@ def index(request):
     '''
     Handler for the accounts view
     '''
+    
+    # get all wallets
+    wallets = generic.getWallets(connector)
+
+    accounts = []
+    for wallet in wallets:
+        accounts_by_wallet = wallet.listAccounts(gethidden=True)
+        accounts = accounts + accounts_by_wallet
+    
     sections = generic.getSiteSections(current_section)
-    accounts = generic.getAllAccounts(connector)
-        
+    
     page_title = _("Accounts")
     context = {
                'globals': config.MainConfig['globals'], 
@@ -117,12 +125,13 @@ def details(request, selected_provider_id, account_identifier="pipes", page=1):
     # add a list of pages in the view
     sections = generic.getSiteSections(current_section)
     
-    # get account details
-    account = connector.getAccountByIdentifier(selected_provider_id, account_identifier)
-    currency_symbol = generic.getCurrencySymbol(account['currency'])
-    currency_name = connector.config[account['provider_id']]['name']
+    # get a wallet
+    wallet = generic.getWalletByProviderId(connector, selected_provider_id)
     
-    # get addressbook
+    # get account details
+    account = wallet.getAccountByIdentifier(account_identifier)
+    
+    # get address book entries
     addressBookAddresses = savedAddress.objects.filter(status__gt=1)
     saved_addresses = {}
     for saved_address in addressBookAddresses:
@@ -131,42 +140,8 @@ def details(request, selected_provider_id, account_identifier="pipes", page=1):
     transactions = []
     if account:
         # get transaction details
-        #transactions = generic.getTransactionsByAccount(connector, account['name'], account['provider_id'], reverse_order=True, count=transactions_per_page, start=(transactions_per_page*(page-1)))
-        
-        transactions = account.getTransactions(reverse_order=True, count=transactions_per_page, start=(transactions_per_page*(page-1)))
-        
-        '''
-        for transaction in transactions:
-            transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
-            if not transaction.get('details', {}).get('sender_address', False):
-                    transaction['details']['sender_address'] = '(unknown)'
-            
-            # addressbook names and address resolution
-            if transaction['category'] == 'move':
-                transaction['otheraccount_address'] = connector.getaddressesbyaccount(transaction['otheraccount'], transaction['provider_id'])
-            elif transaction['category'] == 'receive':
-                transaction['source_address'] = transaction.get('details', {}).get('sender_address', '(no sender address)')
-                transaction['addressbook_name'] = saved_addresses.get(transaction['source_address'], False)
-            elif transaction['category'] == 'send':
-                transaction['source_addresses'] = connector.getaddressesbyaccount(transaction['account'], transaction['provider_id'])
-                transaction['addressbook_name'] = saved_addresses.get(transaction['address'], False)
-                
-            # use icons and colors to represent confirmations
-            if transaction.get('confirmations', False) is not False:
-                if transaction['confirmations'] <= config.MainConfig['globals']['confirmation_limit']:
-                    transaction['status_icon'] = 'glyphicon-time'
-                    transaction['status_color'] = '#DDD';
-                    transaction['tooltip'] = transaction['confirmations']
-                else:
-                    transaction['status_icon'] = 'glyphicon-ok-circle'
-                    transaction['status_color'] = '#1C9E3F';
-                    transaction['tooltip'] = transaction['confirmations']
-    else:
-        account = {}
-        account['name'] = _('no such account')
-        transactions = []
-    '''
-        
+        transactions = account.listTransactions(limit=transactions_per_page, start=(transactions_per_page*(page-1)))
+
     page_title = _('Account details for "%s"') % (account['name'])
     sender_address_tooltip_text = "This address has been calculated using the Input Script Signature. You should verify before using it."
     
@@ -181,11 +156,10 @@ def details(request, selected_provider_id, account_identifier="pipes", page=1):
                'next_page': (page+1), 
                'prev_page': max(1, page-1), 
                'levels': [(max(1, (page-10)), max(1, (page-100)), max(1, (page-1000))), ((page+10), (page+100), (page+1000))],
-               'page_sections': sections, 
+               'page_sections': sections,
+               'wallet': wallet,
                'account': account,
                'transactions': transactions,
-               'currency_name': currency_name,
-               'currency_symbol': currency_symbol,
                'sender_address_tooltip_text': sender_address_tooltip_text,
                'transactions_per_page': transactions_per_page,
                }
@@ -230,8 +204,9 @@ def createNewAddress(request, selected_provider_id, account_identifier):
     Create a new address for the account of account_identifier
     '''
     selected_provider_id = int(selected_provider_id)
+    wallet = generic.getWalletByProviderId(connector, selected_provider_id)
     if request.method == 'POST': 
-        account = connector.getAccountByIdentifier(selected_provider_id, account_identifier)
+        account = wallet.getAccountByIdentifier(account_identifier)
         if account:
             new_address = connector.getnewaddress(account['provider_id'], account['name'])
             messages.success(request, 'New address "%s" created for account "%s"' % (new_address, account['name']), extra_tags="success")

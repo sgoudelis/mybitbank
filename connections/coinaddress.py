@@ -7,15 +7,18 @@ class CoinAddress(object):
     '''
     Class for addresses
     '''
-    _address = None
-    _aliases = []
+
     
-    def __init__(self, address):
+    def __init__(self, address, account):
         '''
         Initialize CoinAddress object
         '''
+        
         super(CoinAddress, self).__init__()
+        self._address = None
+        self._aliases = []
         self._address = address
+        self._account = account
         
         # fill in the aliases
         self._aliases = addressAliases.objects.filter(address=address, status__gt=1)
@@ -69,4 +72,9 @@ class CoinAddress(object):
         except:
             return False
         
+    def getAccount(self):
+        '''
+        Return account object
+        '''
+        return self._account
         

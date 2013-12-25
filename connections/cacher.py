@@ -35,7 +35,7 @@ class Cacher(object):
         if not self._cache.get(section, False):
             self._cache[section] = {}
             
-        self._cache[section][hashkey] = {'data': copy.deepcopy(value), 'when': (datetime.datetime.utcnow().replace(tzinfo=utc) + datetime.timedelta(seconds=howlong))}
+        self._cache[section][hashkey] = {'data': value, 'when': (datetime.datetime.utcnow().replace(tzinfo=utc) + datetime.timedelta(seconds=howlong))}
         return True
         
     def fetch(self, section, hashkey):
@@ -50,7 +50,7 @@ class Cacher(object):
             cached_data = self._cache[section][hashkey]['data']
             if self._debug:
                 print "Cache HIT for %s %s" % (section, hashkey)
-            return copy.deepcopy(cached_data)
+            return cached_data
         else:
             if self._debug:
                 print "Cache MISS for %s %s" % (section, hashkey)

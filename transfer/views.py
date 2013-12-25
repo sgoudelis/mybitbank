@@ -30,6 +30,9 @@ def commonContext(request={}, selected_provider_id=1, form=None, errors=[], show
     page_title = "Transfer"
     selected_provider_id = int(selected_provider_id)
     
+    wallet = generic.getWalletByProviderId(connector, selected_provider_id)
+    
+    # get all, codes, names and symbols for currencies
     currency_codes = {}
     currency_names = {}
     currency_symbols = {}
@@ -42,14 +45,14 @@ def commonContext(request={}, selected_provider_id=1, form=None, errors=[], show
     #currency_codes = sorted(currency_codes)
     
     # get a list of source accounts
-    accounts = connector.listaccounts(gethidden=True, getarchived=True)
+    accounts = wallet.listAccounts(gethidden=True, getarchived=True)
     
     # addressbook values
     saved_addresses = savedAddress.objects.filter(currency=currency_codes.get(selected_provider_id, None), status__gt=1)
     addressbook_addresses = {}
     for saved_address in saved_addresses:
         addressbook_addresses[saved_address.address] = saved_address.name
-    
+
     context = {
                'globals': config.MainConfig['globals'], 
                'system_errors': connector.errors,
@@ -100,9 +103,10 @@ def send(request, selected_provider_id):
             sendfrom_exit = False
             
             # get from account details
-            list_of_accounts = connector.listaccounts(gethidden=True, getarchived=True, selected_provider_id=selected_provider_id)
+            wallet = generic.getWalletByProviderId(connector, selected_provider_id)
+            list_of_accounts = wallet.listAccounts(gethidden=True, getarchived=True)
             from_account = None
-            for account in list_of_accounts.get(selected_provider_id, []):
+            for account in list_of_accounts:
                 if account['identifier'] == from_account_identifier:
                     from_account = account
                     break
@@ -113,8 +117,7 @@ def send(request, selected_provider_id):
                 return render(request, 'transfer/index.html', context)
             
             # get to account details if there is one
-            to_account = connector.getaccountdetailsbyaddress(to_address, selected_provider_id)
-            
+            to_account = wallet.getAccountByAddress(to_address)
             # if to_account is set then it is a local move, do a move()
             if to_account:
                 # this address/account is hosted locally, do a move

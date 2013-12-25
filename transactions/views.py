@@ -31,8 +31,14 @@ def index(request, selected_provider_id=False, page=1):
     for saved_address in addressBookAddresses:
         saved_addresses[saved_address.address] = saved_address.name
 
+    wallet = None
+    wallets = generic.getWallets(connector)
+    for w in wallets:
+        if w.provider_id == selected_provider_id:
+            wallet = w
+            
     # get transactions
-    transactions_list = connector.listtransactionsbyaccount('*', selected_provider_id, items_per_page, (items_per_page*(page-1)))
+    transactions_list = wallet.listTransactions(items_per_page, (items_per_page*(page-1)))
     # sort transactions
     transactions_list = sorted(transactions_list, key=lambda k: k.get('time',0), reverse=True)
     
@@ -45,10 +51,13 @@ def index(request, selected_provider_id=False, page=1):
     else:
         transactions = transactions_list
     
+    
+    '''
     for transaction in transactions:
         if transaction['category'] == "move" and hide_moves:
             continue
-        '''
+        
+        
         transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'].lower())
         
         if transaction.get('category', False) in ['receive','send']:
@@ -126,33 +135,27 @@ def index(request, selected_provider_id=False, page=1):
 @login_required
 def transactionDetails(request, txid, provider_id):
     provider_id = int(provider_id)
-    transaction = connector.gettransaction(txid, provider_id)
     
-    transaction['timereceived_pretty'] = generic.twitterizeDate(transaction.get('timereceived', 'never'))
-    transaction['time_pretty'] = generic.twitterizeDate(transaction.get('time', 'never'))
-    transaction['timereceived_human'] = datetime.datetime.fromtimestamp(transaction.get('timereceived', 0))
-    transaction['time_human'] = datetime.datetime.fromtimestamp(transaction.get('time', 0))
-    transaction['blocktime_human'] = datetime.datetime.fromtimestamp(transaction.get('blocktime', 0))
-    transaction['blocktime_pretty'] = generic.twitterizeDate(transaction.get('blocktime', 'never'))
-    transaction['currency'] = connector.config[provider_id]['currency']
-    transaction['currency_symbol'] = generic.getCurrencySymbol(transaction['currency'])
+    wallet = generic.getWalletByProviderId(connector, provider_id) 
+    
+    transaction = wallet.getTransactionById(txid)
     
     if transaction.get('fee', False):
         transaction['fee'] = generic.longNumber(transaction['fee'])
     else:
         transaction['fee'] = ""
         
-    account_addresses = []
     if transaction['details'][0]['category'] == 'receive':
         if not len(transaction['details'][0]['account']):
             # get the default account for provider_id
-            account = connector.getdefaultaccount(provider_id)
+            account = wallet.getDefaultAccount()
         else:
-            account = connector.getaccountdetailsbyaddress(transaction['details'][0]['address'])
+            account = wallet.getAccountByAddress(transaction['details'][0]['address'])
     elif transaction['details'][0]['category'] == 'send':
-        account_addresses = connector.getaddressesbyaccount(transaction['details'][0]['account'], provider_id)
-        account = connector.getaccountdetailsbyaddress(account_addresses[0])
-        
+        account = transaction['account']
+    print transaction._transaction
+    print account
+    
     page_title = "Transaction details for %s" % txid
     context = {
            'globals': config.MainConfig['globals'],

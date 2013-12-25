@@ -22,7 +22,7 @@ def index(request):
     # more efficient if we do only one call
     transactions = []
     for wallet in wallets:
-        transactions = transactions + wallet.getTransactions(5, 0)
+        transactions = transactions + wallet.listTransactions(5, 0)
     
     # sort result
     transactions = sorted(transactions, key=lambda k: k.get('time',0), reverse=True)

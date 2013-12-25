@@ -135,20 +135,12 @@ class Connector(object):
         if provider_id not in self.services.keys():
             return {'message': 'Non-existing currency provider id %s' % provider_id, 'code':-100}
         
-        # check for cached data, use that or get it again
-        cache_hash = self.getParamHash("provider_id=%s" % provider_id)
-        cached_peerinfo = self.cache.fetch('info', cache_hash)
-        if cached_peerinfo:
-            return cached_peerinfo
-        
         peerinfo = {}
         try:        
             peerinfo = self.services[provider_id].getinfo()
         except (JSONRPCException, Exception), e:
             self.errors.append({'message': 'Error occurred while getting info from currency provider (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
             self.removeCurrencyService(provider_id)
-        
-        self.cache.store('info', cache_hash, peerinfo)
         
         return peerinfo
     
@@ -182,11 +174,34 @@ class Connector(object):
         return peers
     
     @timeit
-    def listaccounts(self, gethidden=False, getarchived=False, selected_provider_id=-1):
+    def listAccounts(self, gethidden=False, getarchived=False, selected_provider_id=-1):
         '''
         Get a list of accounts. This method also supports filtering, fetches address for each account etc.
         '''
         
+        # get data from the connector (xxxcoind)
+        fresh_accounts = {}
+        
+        if selected_provider_id > 0:
+            provider_ids = [int(selected_provider_id)]
+        else:
+            provider_ids = self.config.keys()
+        
+        for provider_id in provider_ids:
+            if self.config[provider_id]['enabled'] is True:
+                try:
+                    fresh_accounts[provider_id] = self.services[provider_id].listaccounts()
+                    for fresh_account_name, fresh_account_balance in fresh_accounts[provider_id].items():
+                        fresh_accounts[provider_id][fresh_account_name] = self.longNumber(fresh_account_balance)
+                    
+                except Exception, e:
+                    # in case of an error, store the error, remove the service and move on
+                    self.errors.append({'message': 'Error occurred while getting a list of accounts (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+                    self.removeCurrencyService(provider_id)
+                    
+        return fresh_accounts
+        
+        '''
         # check for cached data, use that or get it again
         cache_hash = self.getParamHash("gethidden=%s&getarchived=%s&selected_provider_id=%s" % (gethidden, getarchived, selected_provider_id))
         cached_object = self.cache.fetch('accounts', cache_hash)
@@ -201,14 +216,7 @@ class Connector(object):
         else:
             provider_ids = self.config.keys()
         
-        for provider_id in provider_ids:
-            if self.config[provider_id]['enabled'] is True:
-                try:
-                    fresh_accounts[provider_id] = self.services[provider_id].listaccounts()
-                except Exception, e:
-                    # in case of an error, store the error, remove the service and move on
-                    self.errors.append({'message': 'Error occurred while getting a list of accounts (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
-                    self.removeCurrencyService(provider_id)
+
             
         # get a list of archived address
         address_ignore_list = []
@@ -265,15 +273,7 @@ class Connector(object):
         # cache the result
         self.cache.store('accounts', cache_hash, accounts)
         return accounts
-    
-    def getAccountByIdentifier(self, provider_id, identifier):
         '''
-        Get account by identifier
-        '''
-        list_of_accounts = self.listaccounts(gethidden=True, getarchived=True, selected_provider_id=provider_id)
-        for account in list_of_accounts[provider_id]:
-            if account.getIdentifier() == identifier:
-                return account
     
     @timeit
     def getParamHash(self, param=""):
@@ -287,7 +287,7 @@ class Connector(object):
         return cache_hash
     
     @timeit
-    def getaddressesbyaccount(self, account, provider_id):
+    def getAddressesByAccount(self, account, provider_id):
         '''
         Get the address of an account name
         '''
@@ -299,12 +299,6 @@ class Connector(object):
         else:
             return []
             
-        # check for cached data, use that or get it again
-        cache_hash = self.getParamHash("name=%s&provider_id=%s" % (name, provider_id))
-        cached_object = self.cache.fetch('addressesbyaccount', cache_hash)
-        if cached_object:
-            return cached_object
-        
         addresses = []
         if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
             try:
@@ -312,67 +306,23 @@ class Connector(object):
             except Exception, e:
                 self.errors.append({'message': 'Error occurred while compiling a list of addresses (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                 self.removeCurrencyService(provider_id)
-            
-            addresses_list = []
-            for address in addresses:
-                coinaddr = CoinAddress(address)
-                addresses_list.append(coinaddr)
-        else:
-            addresses_list = []
-            
-        # cache the result
-        self.cache.store('addressesbyaccount', cache_hash, addresses_list)
-        return addresses_list
+
+        return addresses
     
     @timeit
-    def listtransactionsbyaccount(self, account_name, provider_id, limit=100000, start=0):    
+    def listTransactionsByAccount(self, account_name, provider_id, limit=100000, start=0):    
         '''
         Get a list of transactions by account name and provider_id
         '''
         
-        cache_hash = self.getParamHash("account_name=%s&provider_id=%s&limit=%s&start=%s" % (account_name, provider_id, limit, start))
-        cached_object = self.cache.fetch('transactions', cache_hash)
-        if cached_object:
-            return cached_object
-        
         transactions = []
-        transaction_list = []
         if self.config[provider_id]['enabled'] is True:
             try:
-                transaction_list = self.services[provider_id].listtransactions(account_name, limit, start)
+                transactions = self.services[provider_id].listtransactions(account_name, limit, start)
             except Exception as e:
-                self.errors.append({'message': 'Error occurred while compiling list of transactions (%s) while doing listalltransactions()' % (e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+                self.errors.append({'message': 'Error occurred while getting a list of transactions (%s) while doing listalltransactions()' % (e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                 self.removeCurrencyService(provider_id)
             
-        for entry in transaction_list:
-            if entry.get('address', False):
-                entry['address'] = CoinAddress(entry['address'])
-                
-            entry['provider_id'] = provider_id
-            entry['timereceived_pretty'] = generic.twitterizeDate(entry.get('timereceived', 'never'))
-            entry['time_pretty'] = generic.twitterizeDate(entry.get('time', 'never'))
-            entry['timereceived_human'] = datetime.datetime.fromtimestamp(entry.get('timereceived', 0))
-            entry['time_human'] = datetime.datetime.fromtimestamp(entry.get('time', 0))
-            entry['currency'] = self.config[provider_id]['currency']
-            
-            entry['details'] = {}
-            if entry.get('txid', False):
-                transaction_details = self.gettransactiondetails(entry, provider_id)
-                if not transaction_details.get('code', False):
-                    entry['details'] = transaction_details
-                else:
-                    self.errors.append({'message': transaction_details, 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
-            
-            if entry['category'] == 'receive':
-                entry['source_address'] = CoinAddress(entry.get('details', {}).get('sender_address', False))
-            elif entry['category'] == 'send':
-                entry['source_addresses'] = self.getaddressesbyaccount(entry['account'], entry['provider_id'])
-            
-            coin_transaction = CoinTransaction(entry)
-            transactions.append(coin_transaction)
-            
-        # cache the result
-        self.cache.store('transactions', cache_hash, transactions)
         return transactions
     
     @timeit
@@ -442,31 +392,6 @@ class Connector(object):
         self.cache.store('balances', cache_hash, balances)
         
         return balances
-    
-    @timeit
-    def getaccountdetailsbyaddress(self, address, filter_provider_id=False):
-        '''
-        Return account details by address
-        '''
-        
-        accounts = self.listaccounts(gethidden=True, getarchived=True)
-        
-        if filter_provider_id is not False:
-            provider_ids = [filter_provider_id]
-        else:
-            provider_ids = accounts.keys()
-        
-        provider_ids = map(int, provider_ids)
-        
-        target_account = None
-        for provider_id in provider_ids:
-            for account in accounts[provider_id]:
-                if address in account['addresses']:
-                    target_account = account
-                    target_account['currency'] = self.config[provider_id]['currency']
-                    target_account['provider_id'] = provider_id
-                    break
-        return target_account
    
     @timeit
     def getdefaultaccount(self, provider_id):
@@ -501,11 +426,11 @@ class Connector(object):
         except:
             return {'message': 'Invalid minconf value', 'code':-105}
         
-        account_list = self.listaccounts(True, True)
-        
+        account_list = self.services[provider_id].listaccounts()
+
         account_names = []
-        for account in account_list[provider_id]:
-            account_names.append(account['name'])
+        for account_name, account_balance in account_list.items():
+            account_names.append(account_name)
         
         if from_account in account_names and to_account in account_names:
             # both accounts have being found, perform the move
@@ -538,11 +463,11 @@ class Connector(object):
         if type(comment) not in [str, unicode]  or type(comment_to) not in [str, unicode]:
             return {'message': 'Comment is not valid', 'code':-104}
         
-        account_list = self.listaccounts(True, True)
+        account_list = self.services[provider_id].listaccounts()
         
         account_names = []
-        for account in account_list[provider_id]:
-            account_names.append(account['name'])
+        for account_name, account_balance in account_list.items():
+            account_names.append(account_name)
             
         if from_account in account_names:
             # account given exists, continue
@@ -561,20 +486,16 @@ class Connector(object):
             return {'message': 'Source account not found', 'code': -106}
 
     @timeit
-    def gettransactiondetails(self, transaction, provider_id):
+    def getRawTransaction(self, txid, provider_id):
         '''
         Return transaction details, like sender address
         '''
-        if type(transaction) is not dict:
-            return {'message': 'Invalid transaction details', 'code': -120}
-        
+
         if provider_id not in self.config.keys():
             return {'message': 'Non-existing currency provider id %s' % provider_id, 'code': -121}
         
         if self.config[provider_id]['enabled'] is not True:
             return {'message': 'Currency service %s disabled for now' % provider_id, 'code':-150}
-        
-        txid = transaction.get('txid', "")
         
         if type(txid) not in [str, unicode] or not len(txid):
             return {'message': 'Transaction ID is not valid', 'code': -127} 
@@ -586,22 +507,17 @@ class Connector(object):
             return {}
         except Exception:
             return {}
-
-        if transaction['category'] == 'receive':
-            sender_address = self.decodeScriptSig(transaction_details, self.config[provider_id]['currency'], self.getNet(provider_id))
-        else:
-            sender_address = ""
-            
-        return {'sender_address': sender_address}
+        
+        return transaction_details
     
     @timeit
     def decoderawtransaction(self, transaction, provider_id):
         return self.services[provider_id].decoderawtransaction(transaction)
     
     @timeit
-    def gettransaction(self, txid, provider_id):
+    def getTransaction(self, txid, provider_id):
         '''
-        Return transaction
+        Return a transaction
         '''
         if provider_id not in self.config.keys():
             return {'message': 'Non-existing currency provider id %s' % provider_id, 'code': -121}
@@ -620,40 +536,7 @@ class Connector(object):
         except Exception:
             return {}
     
-        return CoinTransaction(transaction_details)
-
-    @timeit
-    def decodeScriptSig(self, rawtransaction, currency, net='testnet'):
-        '''
-        Decode input script signature, courtesy of:
-        http://bitcoin.stackexchange.com/questions/7838/why-does-gettransaction-report-me-only-the-receiving-address/8864#8864
-        '''
-        
-        try:
-            script_sig = rawtransaction['vin'][0]['scriptSig']['asm']
-        except:
-            return "not enough info"
-        
-        script = script_sig.split()
-        
-        h = hashlib.sha256(script[1].decode("hex")).digest()
-        ripe160 =  hashlib.new('ripemd160')
-        ripe160.update(h)
-        d = ripe160.digest()
-        
-        prefix = self.prefixes[currency.lower()][net]
-        address = (prefix + d)
-        
-        # calculate checksum
-        checksum = hashlib.sha256(hashlib.sha256(address).digest()).digest()[:4]
-        
-        # build the raw address
-        address += checksum
-        
-        # encode the address in base58
-        encoded_address = generic.b58encode(address)
-        
-        return encoded_address
+        return transaction_details
     
     @timeit
     def walletpassphrase(self, passphrase, provider_id):
