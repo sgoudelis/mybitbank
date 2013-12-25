@@ -184,6 +184,20 @@ function convertAmounts(to, from) {
 					    }
 					});
 				  break;
+				case 'doge':
+					$.ajax({
+					    type: "POST",
+					    url: ratesProxyUrl,
+					    data: ratesUrl['doge_'+to.toLowerCase()],
+					    success: function(json) {
+							curr = {'code': "USD", 'name': "US Dollar", 'rate': json['last_trade']}
+							convertSpecificCurrencies('doge', curr);
+					    },
+					    error: function (xhr, textStatus, errorThrown) {
+					        console.info("Could not retrieve currency rates for DOGE");
+					    }
+					});
+				  break;
 			}
 		}
 	}
