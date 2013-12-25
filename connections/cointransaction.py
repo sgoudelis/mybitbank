@@ -4,6 +4,7 @@ import config
 import hashlib
 import datetime
 from connections.cacher import Cacher
+from connections.coinaddress import CoinAddress
 
 class CoinTransaction(object):
     '''
@@ -175,7 +176,7 @@ class CoinTransaction(object):
         if self['category'] == 'receive':
             meta_properties = self.metaProperties()
             if meta_properties.get('sender_address', False):
-                return meta_properties['sender_address']
+                return CoinAddress(meta_properties['sender_address'], 'This is a sender address!')
             
         return None
 
