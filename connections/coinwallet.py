@@ -108,17 +108,14 @@ class CoinWallet(object):
         cache_hash = self.getParamHash("balance")
         cached_object = self._cache.fetch('balance', cache_hash)
         if cached_object:
-            return cached_object
+            return cached_object.get(self.provider_id, "-")
         
         balance = connections.connector.getBalance(self.provider_id)
-        if balance.get(self.provider_id, True) is True:
-            # no balance value
-            balance[self.provider_id] = "-"
 
         # store result in cache
         self._cache.store('balance', cache_hash, balance)
         
-        return balance.get(self.provider_id, None)
+        return balance.get(self.provider_id, "-")
     
     def getParamHash(self, param=""):
         '''
