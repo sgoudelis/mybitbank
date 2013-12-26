@@ -410,3 +410,23 @@ span.amount.out {
     border-color: #E0D1E0;
     color: #333333;
 }
+
+.panel-red {
+	border-color: #E0B4BA;
+}
+
+.panel-red > .panel-heading {
+    background-color: #E0B4BA;
+    border-color: #E0B4BA;
+    color: #333333;
+}
+
+.panel-green {
+	border-color: #B7C7A7;
+}
+
+.panel-green > .panel-heading {
+    background-color: #B7C7A7;
+    border-color: #B7C7A7;
+    color: #333333;
+}

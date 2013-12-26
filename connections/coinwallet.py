@@ -42,7 +42,6 @@ class CoinWallet(object):
         '''
         Getter for dictionary-line behavior
         '''
-        
         if key == "currency_symbol":
             return self.getCurrencySymbol()
         elif key == "currency_code":
@@ -105,7 +104,6 @@ class CoinWallet(object):
         '''
         Get wallet balance
         '''
-        
         # check for cached data, use that or get it again
         cache_hash = self.getParamHash("balance")
         cached_object = self._cache.fetch('balance', cache_hash)
@@ -113,9 +111,12 @@ class CoinWallet(object):
             return cached_object
         
         balance = connections.connector.getBalance(self.provider_id)
-        
+        if balance.get(self.provider_id, True) is True:
+            # no balance value
+            balance[self.provider_id] = "-"
+
         # store result in cache
-        self._cache.store('accounts', cache_hash, balance)
+        self._cache.store('balance', cache_hash, balance)
         
         return balance.get(self.provider_id, None)
     
