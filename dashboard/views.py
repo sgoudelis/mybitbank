@@ -28,10 +28,10 @@ def index(request):
     transactions = sorted(transactions, key=lambda k: k.get('time',0), reverse=True)
     
     # get only 10 transactions
-    transactions = transactions[0:10]
+    transactions = transactions[0:5]
 
     # events
-    list_of_events = Events.objects.all().order_by('-entered')[:10]  
+    list_of_events = Events.objects.all().order_by('-entered')[:5]  
     for single_event in list_of_events:
         timestamp = calendar.timegm(single_event.entered.timetuple())
         single_event.entered_pretty = generic.twitterizeDate(timestamp)
