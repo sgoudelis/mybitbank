@@ -84,7 +84,6 @@ def getWallets(connector):
     wallets = []
     for provider_id ,wallet_config in connector.config.items():
         wallet_config['provider_id'] = provider_id
-        wallet_config['enabled'] = True
         wallets.append(CoinWallet(wallet_config))
     return wallets
 

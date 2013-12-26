@@ -105,7 +105,18 @@ class CoinWallet(object):
         '''
         Get wallet balance
         '''
-        balance = connections.connector.getbalance(self.provider_id)
+        
+        # check for cached data, use that or get it again
+        cache_hash = self.getParamHash("balance")
+        cached_object = self._cache.fetch('balance', cache_hash)
+        if cached_object:
+            return cached_object
+        
+        balance = connections.connector.getBalance(self.provider_id)
+        
+        # store result in cache
+        self._cache.store('accounts', cache_hash, balance)
+        
         return balance.get(self.provider_id, None)
     
     def getParamHash(self, param=""):
@@ -146,7 +157,7 @@ class CoinWallet(object):
                 address_hidden_list.append(hidden_account.address.encode('ascii'))
         
         accountObjects = []
-        for account_name, account_balance in fresh_accounts[self.provider_id].items():
+        for account_name, account_balance in fresh_accounts.get(self.provider_id, {}).items():
 
             '''
             # check all addresses if they are in the archive list

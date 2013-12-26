@@ -3,6 +3,7 @@ import generic
 import hashlib
 import events
 import time
+import copy
 from coinaccount import CoinAccount
 #from bitcoinrpc.authproxy import AuthServiceProxy
 from jsonrpc import ServiceProxy
@@ -60,31 +61,24 @@ class Connector(object):
         '''
         Constructor, load config 
         '''
+        
         self.cache.setDebug(False)
         try:
             import walletconfig
             currency_configs = walletconfig.config
         except (AttributeError, ImportError) as e:
-            self.errors.append({'message': 'Error occurred while compiling list of accounts (%s)' % (e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+            self.errors.append({'message': 'Error occurred while loading the wallet configuration file (%s)' % (e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
 
         for currency_config in currency_configs:
             if currency_config.get('enabled', True):
                 self.config[currency_config['id']] = currency_config
                 self.config[currency_config['id']]['enabled'] = True
                 self.services[currency_config['id']] = ServiceProxy("http://%s:%s@%s:%s" % 
-                                                                                 (currency_config['rpcusername'], 
-                                                                                  currency_config['rpcpassword'], 
-                                                                                  currency_config['rpchost'], 
-                                                                                  currency_config['rpcport']))
-                
-                '''
-                self.services[currency_config['id']] = AuthServiceProxy("http://%s:%s@%s:%s" % 
-                                                                     (currency_config['rpcusername'], 
-                                                                      currency_config['rpcpassword'], 
-                                                                      currency_config['rpchost'], 
-                                                                      currency_config['rpcport']))
-                '''
-            
+                                                         (currency_config['rpcusername'], 
+                                                          currency_config['rpcpassword'], 
+                                                          currency_config['rpchost'], 
+                                                          currency_config['rpcport']))
+
     @timeit
     def getNet(self, provider_id):
         '''
@@ -110,10 +104,13 @@ class Connector(object):
         
         if self.config.get(provider_id, False):
             currency_provider_config = self.config.get(provider_id, {})
-            self.alerts.append({'type': 'currencybackend', 'provider_id': provider_id, 'message': 'Currency service provider %s named %s is disabled for %s seconds due an error communicating.' % (provider_id, self.config[provider_id]['name'], self.disable_time), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
-            self.config[provider_id]['enabled'] = datetime.datetime.utcnow().replace(tzinfo=utc) + datetime.timedelta(0,self.disable_time)
-            events.addEvent(None, "Currency service %s has being disabled for %s seconds" % (currency_provider_config['currency'], self.disable_time), 'alert')
-            del self.services[provider_id]
+            if currency_provider_config.get('enabled', False) is True:
+                self.alerts.append({'type': 'currencybackend', 'provider_id': provider_id, 'message': 'Currency service provider %s named %s is disabled for %s seconds due an error communicating.' % (provider_id, currency_provider_config['name'], self.disable_time), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+                currency_provider_config['enabled'] = datetime.datetime.utcnow().replace(tzinfo=utc) + datetime.timedelta(0,self.disable_time)
+                currency_provider_config["pipes"] = datetime.datetime.utcnow().replace(tzinfo=utc) + datetime.timedelta(0,self.disable_time)
+                events.addEvent(None, "Currency service %s has being disabled for %s seconds" % (currency_provider_config['currency'], self.disable_time), 'alert')
+                if self.services.get(provider_id):
+                    del self.services[provider_id]
 
     def longNumber(self, x):
         '''
@@ -131,10 +128,11 @@ class Connector(object):
             return {'message': 'Non-existing currency provider id %s' % provider_id, 'code':-100}
         
         peerinfo = {}
-        try:        
-            peerinfo = self.services[provider_id].getinfo()
+        try:
+            if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
+                peerinfo = self.services[provider_id].getinfo()
         except (JSONRPCException, Exception), e:
-            self.errors.append({'message': 'Error occurred while getting info from currency provider (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+            self.errors.append({'message': 'Error occurred while doing getinfo (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
             self.removeCurrencyService(provider_id)
         
         return peerinfo
@@ -153,14 +151,14 @@ class Connector(object):
         
         peers = []
         try:
-            if self.config[provider_id]['enabled'] is True:
+            if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
                 peers = self.services[provider_id].getpeerinfo()
         except JSONRPCException:
             # in case coind not support getpeerinfo command
             return {'error'} 
         except Exception, e:
             # in case of an error, store the error, disabled the service and move on
-            self.errors.append({'message': 'Error occurred while getting peers info of accounts (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+            self.errors.append({'message': 'Error occurred while doing getpeerinfo (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
             self.removeCurrencyService(provider_id)
             
         # cache peer info
@@ -183,7 +181,7 @@ class Connector(object):
             provider_ids = self.config.keys()
         
         for provider_id in provider_ids:
-            if self.config[provider_id]['enabled'] is True:
+            if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
                 try:
                     fresh_accounts[provider_id] = self.services[provider_id].listaccounts()
                     for fresh_account_name, fresh_account_balance in fresh_accounts[provider_id].items():
@@ -191,85 +189,11 @@ class Connector(object):
                     
                 except Exception, e:
                     # in case of an error, store the error, remove the service and move on
-                    self.errors.append({'message': 'Error occurred while getting a list of accounts (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+                    self.errors.append({'message': 'Error occurred while doing listaccounts (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                     self.removeCurrencyService(provider_id)
                     
         return fresh_accounts
         
-        '''
-        # check for cached data, use that or get it again
-        cache_hash = self.getParamHash("gethidden=%s&getarchived=%s&selected_provider_id=%s" % (gethidden, getarchived, selected_provider_id))
-        cached_object = self.cache.fetch('accounts', cache_hash)
-        if cached_object:
-            return cached_object
-        
-        # get data from the connector (coind)
-        fresh_accounts = {}
-        
-        if selected_provider_id > 0:
-            provider_ids = [int(selected_provider_id)]
-        else:
-            provider_ids = self.config.keys()
-        
-
-            
-        # get a list of archived address
-        address_ignore_list = []
-        if not getarchived:
-            ignore_list = accountFilter.objects.filter(status=1)
-            for ignored_account in ignore_list:
-                address_ignore_list.append(ignored_account.address.encode('ascii'))
-        
-        # get a list of hidden accounts
-        address_hidden_list = []
-        if not gethidden:
-            hidden_list = accountFilter.objects.filter(status=2)
-            for hidden_account in hidden_list:
-                address_hidden_list.append(hidden_account.address.encode('ascii'))
-        
-        try:
-            accounts = {}
-            for provider_id in self.config.keys():
-                if self.config[provider_id]['enabled'] is True:
-                    accounts[provider_id] = []
-                    if fresh_accounts.get(provider_id, False):
-                        account_from_provider = fresh_accounts[provider_id]
-            
-                        for account_name, account_balance in account_from_provider.items():
-                            try:
-                                account_addresses = self.getaddressesbyaccount(account_name, provider_id)
-                            except Exception, e:
-                                self.errors.append({'message': 'Error getting addresses for account %s (provider id: %s, error: %s)' % (account_name, provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
-                                
-                            # check all addresses if they are in the archive list
-                            for ignored_address in address_ignore_list:
-                                if ignored_address in account_addresses:
-                                    del account_addresses[account_addresses.index(ignored_address)]
-                            
-                            # check all addresses if they are in the hidden list
-                            hidden_flag = False
-                            for hidden_address in address_hidden_list:
-                                if hidden_address in account_addresses:
-                                    hidden_flag = True
-                            
-                            accounts[provider_id].append(CoinAccount({
-                                                       'name': account_name, 
-                                                       'balance': self.longNumber(account_balance), 
-                                                       'addresses': account_addresses, 
-                                                       'hidden': hidden_flag,
-                                                       'currency': self.config[provider_id]['currency'],
-                                                       'provider_id': provider_id,
-                                                       }))
-                    
-        except Exception as e:
-            self.errors.append({'message': 'Error occurred while compiling list of accounts (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
-            self.removeCurrencyService(provider_id)
-        
-        # cache the result
-        self.cache.store('accounts', cache_hash, accounts)
-        return accounts
-        '''
-    
     @timeit
     def getParamHash(self, param=""):
         '''
@@ -299,7 +223,7 @@ class Connector(object):
             try:
                 addresses = self.services[provider_id].getaddressesbyaccount(name)
             except Exception, e:
-                self.errors.append({'message': 'Error occurred while compiling a list of addresses (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+                self.errors.append({'message': 'Error occurred while doing getaddressesbyaccount (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                 self.removeCurrencyService(provider_id)
 
         return addresses
@@ -311,11 +235,11 @@ class Connector(object):
         '''
         
         transactions = []
-        if self.config[provider_id]['enabled'] is True:
+        if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
             try:
                 transactions = self.services[provider_id].listtransactions(account_name, limit, start)
             except Exception as e:
-                self.errors.append({'message': 'Error occurred while getting a list of transactions (%s) while doing listalltransactions()' % (e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+                self.errors.append({'message': 'Error occurred while doing listtransactions (provider_id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                 self.removeCurrencyService(provider_id)
             
         return transactions
@@ -346,27 +270,18 @@ class Connector(object):
         if provider_id not in self.config.keys():
             return False
         
-        if self.config[provider_id]['enabled'] is True:
+        if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
             if self.services.get(provider_id, False) and type(account_name) in [str, unicode]:
                 new_address = self.services[provider_id].getnewaddress(account_name)
-                # clear cache
-                self.cache.purge('accounts')
                 return new_address
         else:
             return False
     
     @timeit
-    def getbalance(self, selected_provider_id=0, account_name="*"):
+    def getBalance(self, selected_provider_id=0, account_name="*"):
         '''
         Get balance for each provider
         '''
-        
-        # check for cached data, use that or get it again
-        cache_hash = self.getParamHash("selected_provider_id=%s&account_name=%s" % (selected_provider_id, account_name))
-        cached_object = self.cache.fetch('balances', cache_hash)
-        if cached_object:
-            return cached_object
-        
         balances = {}
         
         if selected_provider_id>0:
@@ -375,16 +290,13 @@ class Connector(object):
             provider_ids = self.config.keys()
         
         for provider_id in provider_ids:
-            if self.config[provider_id]['enabled'] is True:
+            if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
                 try:
                     balances[provider_id] = generic.longNumber(self.services[provider_id].getbalance(account_name))
                 except Exception as e:
                     # in case of an Exception continue on to the next currency service (xxxcoind)
-                    self.errors.append({'message': 'Error occurred while getting balances (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+                    self.errors.append({'message': 'Error occurred while doing getbalance (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                     self.removeCurrencyService(provider_id)
-        
-        # store data to cache
-        self.cache.store('balances', cache_hash, balances)
         
         return balances
    
@@ -497,7 +409,8 @@ class Connector(object):
         
         transaction_details = None
         try:
-            transaction_details = self.services[provider_id].getrawtransaction(txid, 1)
+            if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
+                transaction_details = self.services[provider_id].getrawtransaction(txid, 1)
         except JSONRPCException:
             return {}
         except Exception:
@@ -507,7 +420,11 @@ class Connector(object):
     
     @timeit
     def decoderawtransaction(self, transaction, provider_id):
-        return self.services[provider_id].decoderawtransaction(transaction)
+        '''
+        Decode raw transaction
+        '''
+        if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
+            return self.services[provider_id].decoderawtransaction(transaction)
     
     @timeit
     def getTransaction(self, txid, provider_id):
@@ -525,7 +442,8 @@ class Connector(object):
         
         transaction_details = None
         try:
-            transaction_details = self.services[provider_id].gettransaction(txid)
+            if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
+                transaction_details = self.services[provider_id].gettransaction(txid)
         except JSONRPCException:
             return {}
         except Exception:
@@ -552,7 +470,10 @@ class Connector(object):
             return {'message': 'Currency service provider id %s disabled for now' % provider_id, 'code':-150}
         
         try:
-            unload_exit = self.services[provider_id].walletpassphrase(passphrase, 30)
+            if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
+                unload_exit = self.services[provider_id].walletpassphrase(passphrase, 30)
+            else:
+                return False
         except JSONRPCException, e:
             return e.error
         except Exception, e:
@@ -572,5 +493,6 @@ class Connector(object):
         if provider_id not in self.services.keys():
             return {'message': 'Invalid non-existing or disabled currency', 'code': -112}
         
-        self.services[provider_id].walletlock()
+        if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
+            self.services[provider_id].walletlock()
         

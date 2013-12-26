@@ -124,19 +124,20 @@
    
    {% if system_errors %}
    {% for error in system_errors %}
-    <div class="alert alert-danger">
-      <span><strong>{{error.message}}</strong></span>
-    </div>
-    {% endfor %}
+	   <div class="alert alert-danger alert-dismissable">
+	      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	      <div class="row"><div class="col-md-1 tiny-col"><span class="glyphicon glyphicon-ban-circle message-icon"></span></div><div class="col-md-10 alert-message">{{error.message}}</div></div>
+	   </div>
+   {% endfor %}
    {% endif %}
    
 	{% if messages %}
 	{% for message in messages %}
 		<div class="alert alert-dismissable alert-{{ message.extra_tags }}">
-		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-		<div class="row"><div class="col-md-1 tiny-col"><span class="glyphicon glyphicon-{{ message.extra_tags|getalerticon }} message-icon"></span></div><div class="col-md-10 alert-message">{{ message }}</div></div>
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<div class="row"><div class="col-md-1 tiny-col"><span class="glyphicon glyphicon-{{ message.extra_tags|getalerticon }} message-icon"></span></div><div class="col-md-10 alert-message">{{ message }}</div></div>
 		</div>
-		{% endfor %}
+	{% endfor %}
 	{% endif %}
    
    {% block content %}{% endblock %}
