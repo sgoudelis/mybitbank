@@ -3,13 +3,10 @@ import generic
 import hashlib
 import events
 import time
-from coinaddress import CoinAddress
 from coinaccount import CoinAccount
-from cointransaction import CoinTransaction
 #from bitcoinrpc.authproxy import AuthServiceProxy
 from jsonrpc import ServiceProxy
 from connections.cacher import Cacher 
-from accounts.models import accountFilter
 from bitcoinrpc.authproxy import JSONRPCException
 from django.utils.timezone import utc
 
@@ -71,24 +68,22 @@ class Connector(object):
             self.errors.append({'message': 'Error occurred while compiling list of accounts (%s)' % (e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
 
         for currency_config in currency_configs:
-            # true is enabled, anything but boolean is disabled up to the value as a timestamp
-            # this will caught by the middleware
-            
-            self.config[currency_config['id']] = currency_config
-            self.config[currency_config['id']]['enabled'] = True
-            self.services[currency_config['id']] = ServiceProxy("http://%s:%s@%s:%s" % 
-                                                                             (currency_config['rpcusername'], 
-                                                                              currency_config['rpcpassword'], 
-                                                                              currency_config['rpchost'], 
-                                                                              currency_config['rpcport']))
-            
-            '''
-            self.services[currency_config['id']] = AuthServiceProxy("http://%s:%s@%s:%s" % 
-                                                                 (currency_config['rpcusername'], 
-                                                                  currency_config['rpcpassword'], 
-                                                                  currency_config['rpchost'], 
-                                                                  currency_config['rpcport']))
-            '''
+            if currency_config.get('enabled', True):
+                self.config[currency_config['id']] = currency_config
+                self.config[currency_config['id']]['enabled'] = True
+                self.services[currency_config['id']] = ServiceProxy("http://%s:%s@%s:%s" % 
+                                                                                 (currency_config['rpcusername'], 
+                                                                                  currency_config['rpcpassword'], 
+                                                                                  currency_config['rpchost'], 
+                                                                                  currency_config['rpcport']))
+                
+                '''
+                self.services[currency_config['id']] = AuthServiceProxy("http://%s:%s@%s:%s" % 
+                                                                     (currency_config['rpcusername'], 
+                                                                      currency_config['rpcpassword'], 
+                                                                      currency_config['rpchost'], 
+                                                                      currency_config['rpcport']))
+                '''
             
     @timeit
     def getNet(self, provider_id):
