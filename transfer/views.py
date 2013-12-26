@@ -30,6 +30,10 @@ def commonContext(request={}, selected_provider_id=1, form=None, errors=[], show
     page_title = "Transfer"
     selected_provider_id = int(selected_provider_id)
     
+    # set the request in the connector object
+    connector.request = request
+    
+    # get wallet for provider_id
     wallet = generic.getWalletByProviderId(connector, selected_provider_id)
     
     # get all, codes, names and symbols for currencies
@@ -82,6 +86,9 @@ def send(request, selected_provider_id):
     '''
     post_errors = []
     selected_provider_id = int(selected_provider_id)
+    
+    # set the request in the connector object
+    connector.request = request
     
     if request.method == 'POST': 
         # we have a POST request

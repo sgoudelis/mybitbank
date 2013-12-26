@@ -26,7 +26,9 @@ def index(request):
     return render(request, 'addressbook/index.html', context)
 
 def getAddressBookCommonContext(request, form=None):
-    
+    '''
+    Get common context
+    '''
     page_title = "Addressbook"
     
     # add a list of pages in the view
@@ -68,13 +70,22 @@ def getAddressBookCommonContext(request, form=None):
     return context
 
 def add(request):
+    '''
     
+    '''
     form = forms.AddAddressBookForm()
     context = getAddressBookCommonContext(request=request,form=form)
     context['breadcrumbs'] = generic.buildBreadcrumbs(current_section, '', 'Add address')
     return render(request, 'addressbook/add.html', context)
     
 def create(request):
+    '''
+    Create a new address book entry
+    '''
+    
+    # set the request in the connector object
+    connector.request = request
+    
     if request.method == 'POST': 
         # we have a POST request
         form = forms.AddAddressBookForm(request.POST)
@@ -118,7 +129,7 @@ def delete(request, addressid):
         addressbook[0].status=0
         addressbook[0].save()
         messages.success(request, 'Addressbook entry %s with address %s deleted' % (name, address), extra_tags="warning")
-        events.addEvent(request, 'Addressbook entry deleted with name "%s" and address "%s"' % (name, address), 'info')
+        events.addEvent(request, 'Addressbook entry deleted with name "%s" and address "%s"' % (name, address), 'warning')
         
     return HttpResponseRedirect(reverse('addressbook:index'))
     
@@ -140,7 +151,7 @@ def toggleStatus(request, addressid):
             addressbook[0].status=1
             addressbook[0].save()
             messages.success(request, 'Addressbook entry %s with address %s disabled.' % (name, address), extra_tags="warning")
-            events.addEvent(request, 'Addressbook entry disabled with name "%s" and address "%s"' % (name, address), 'info')
+            events.addEvent(request, 'Addressbook entry disabled with name "%s" and address "%s"' % (name, address), 'warning')
             
     return HttpResponseRedirect(reverse('addressbook:index'))
     

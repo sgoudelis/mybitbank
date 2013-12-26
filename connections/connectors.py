@@ -30,11 +30,24 @@ def timeit(method):
 class Connector(object):
     # how long to cache responses
     caching_time = 10
+    
+    # how long to disable a failing service
     disable_time = 10
+    
+    # currency providers config
     config = {}
+    
+    # ServiceProxies objects
     services = {}
+    
+    # errors 
     errors = []
+    
+    # alerts shown on the UI as alerts
     alerts = []
+    
+    # the WSGIRequest object we are serving
+    request = None
     
     # source: https://github.com/zamgo/PHPCoinAddress/blob/master/README.md
     prefixes = {
@@ -101,15 +114,13 @@ class Connector(object):
         '''
         Remove the ServiceProxy object from the list of service in case of a xxxcoind daemon not responding in time
         '''
-        
         if self.config.get(provider_id, False):
             currency_provider_config = self.config.get(provider_id, {})
             if currency_provider_config.get('enabled', False) is True:
                 self.alerts.append({'type': 'currencybackend', 'provider_id': provider_id, 'message': 'Currency service provider %s named %s is disabled for %s seconds due an error communicating.' % (provider_id, currency_provider_config['name'], self.disable_time), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                 currency_provider_config['enabled'] = datetime.datetime.utcnow().replace(tzinfo=utc) + datetime.timedelta(0,self.disable_time)
-                currency_provider_config["pipes"] = datetime.datetime.utcnow().replace(tzinfo=utc) + datetime.timedelta(0,self.disable_time)
-                events.addEvent(None, "Currency service %s has being disabled for %s seconds" % (currency_provider_config['currency'], self.disable_time), 'alert')
-                if self.services.get(provider_id):
+                events.addEvent(self.request, "Currency service %s has being disabled for %s seconds due to error communicating" % (currency_provider_config['currency'], self.disable_time), 'error')
+                if self.services.get(provider_id, None):
                     del self.services[provider_id]
 
     def longNumber(self, x):

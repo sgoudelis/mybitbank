@@ -16,6 +16,9 @@ def index(request):
     '''
     currect_section = 'dashboard'
     
+    # set the request in the connector object
+    connector.request = request
+    
     # get all wallets
     wallets = generic.getWallets(connector)
 
@@ -58,6 +61,9 @@ def proxy(request):
     '''
     Proxy script view for rates ticker APIs
     '''
+    
+    # set the request in the connector object
+    connector.request = request
     
     if request.is_ajax():
         if request.method == 'POST':

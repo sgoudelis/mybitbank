@@ -31,6 +31,9 @@ def index(request, selected_provider_id=False, page=1):
     for saved_address in addressBookAddresses:
         saved_addresses[saved_address.address] = saved_address.name
 
+    # set the request in the connector object
+    connector.request = request
+
     wallet = None
     wallets = generic.getWallets(connector)
     for w in wallets:
@@ -136,6 +139,10 @@ def index(request, selected_provider_id=False, page=1):
 def transactionDetails(request, txid, provider_id):
     provider_id = int(provider_id)
     
+    # set the request in the connector object
+    connector.request = request
+    
+    # get wallet for provider_id
     wallet = generic.getWalletByProviderId(connector, provider_id) 
     
     transaction = wallet.getTransactionById(txid)
@@ -153,8 +160,6 @@ def transactionDetails(request, txid, provider_id):
             account = wallet.getAccountByAddress(transaction['details'][0]['address'])
     elif transaction['details'][0]['category'] == 'send':
         account = transaction['account']
-    print transaction._transaction
-    print account
     
     page_title = "Transaction details for %s" % txid
     context = {

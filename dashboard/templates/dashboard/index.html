@@ -54,15 +54,15 @@
 			<tr>
 				<td class="text-center">
 				{% if event.level == 'info' %}
-				<i data-toggle="tooltip" title="informational" class="fa fa-info-circle light-blue-font smaller-font-2"></i>
+				<i data-toggle="tooltip" title="informational" class="glyphicon glyphicon-info-sign light-blue-font smaller-font-2"></i>
 				{% elif event.level == 'error' %}
-				<i data-toggle="tooltip" title="error" class="fa fa-times-circle-o red-font smaller-font-2"></i>
+				<i data-toggle="tooltip" title="error" class="glyphicon glyphicon-ban-circle red-font smaller-font-2"></i>
 				{% elif event.level == 'warning' %}
-				<i data-toggle="tooltip" title="warning" class="fa fa-exclamation-triangle orange-font smaller-font-2"></i>
+				<i data-toggle="tooltip" title="warning" class="glyphicon glyphicon-exclamation-sign orange-font smaller-font-2"></i>
 				{% elif event.level == 'debug' %}
 				<i data-toggle="tooltip" title="debug" class="fa fa-bug green-font smaller-font-2"></i>
 				{% elif event.level == 'alert' %}
-				<i data-toggle="tooltip" title="alert" class="fa fa-minus-circle red-font smaller-font-2"></i>
+				<i data-toggle="tooltip" title="alert" class="glyphicon glyphicon-minus-sign red-font smaller-font-2"></i>
 				{% endif %}
 				
 				</td>

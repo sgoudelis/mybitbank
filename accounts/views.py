@@ -23,6 +23,9 @@ def index(request):
     Handler for the accounts view
     '''
     
+    # set the request in the connector object
+    connector.request = request
+    
     # get all wallets
     wallets = generic.getWallets(connector)
 
@@ -89,6 +92,9 @@ def create(request):
     Handler for POST of create account form
     '''
     
+    # set the request in the connector object
+    connector.request = request
+    
     if request.method == 'POST': 
         
         # we have a POST request
@@ -118,6 +124,10 @@ def details(request, selected_provider_id, account_identifier="pipes", page=1):
     '''
     Handler for the account details
     '''
+    
+    # set the request in the connector object
+    connector.request = request
+    
     transactions_per_page = 10
     selected_provider_id = int(selected_provider_id)
     page = int(page)
@@ -171,6 +181,10 @@ def setAddressAlias(request):
     '''
     Set address alias
     '''
+    
+    # set the request in the connector object
+    connector.request = request
+    
     return_msg = {'alias': ''}
     
     if request.method == 'POST':
@@ -203,6 +217,10 @@ def createNewAddress(request, selected_provider_id, account_identifier):
     '''
     Create a new address for the account of account_identifier
     '''
+    
+    # set the request in the connector object
+    connector.request = request
+    
     selected_provider_id = int(selected_provider_id)
     wallet = generic.getWalletByProviderId(connector, selected_provider_id)
     if request.method == 'POST': 
