@@ -32,12 +32,12 @@
             {% if ssl_warning == 1 %}
             <div class="alert alert-dismissable alert-danger">
 			  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-			  <strong>Warning!</strong> You are NOT over SSL! Please re-consider transmitting your passphrase over an insecure connection.
+			  <div class="row"><div class="col-md-1 tiny-col"><span class="glyphicon glyphicon-ban-circle message-icon"></span></div><div class="col-md-10 alert-message">Warning! You are NOT over SSL! Please re-consider transmitting your passphrase over an insecure connection.</div></div>
 			</div>
 			{% elif ssl_warning == -1 %}
 			<div class="alert alert-dismissable alert-success">
 			  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-			  <strong>Safety assured!</strong> You are over SSL. You may proceed safely.
+			  <div class="row"><div class="col-md-1 tiny-col"><span class="glyphicon glyphicon-lock message-icon"></span></div><div class="col-md-10 alert-message">Safety assured! You are over SSL. You may proceed safely.</div></div>
 			</div>
 			{% endif %}
             
@@ -45,7 +45,7 @@
             {% for error in errors %}
             <div class="alert alert-dismissable alert-danger">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            <strong>{{ error.message }}</strong>
+            <div class="row"><div class="col-md-1 tiny-col"><span class="glyphicon glyphicon-ban-circle message-icon"></span></div><div class="col-md-10 alert-message">{{error.message}}</div></div>
             </div>
             {% endfor %}
             {% endif %}
@@ -56,7 +56,7 @@
                   <div class="form-group {% if form.from_address.errors %}has-error{% endif %}">
                     <label for="passphrase"><h5>Passphrase</h5></label>
                     <input type="password" class="form-control fixed-width-font2" id="passphrase" name="passphrase" placeholder="passphrase" value="">
-                    {{ form.passphrase.errors }}
+                    <span class="red-font">{{ form.passphrase.errors|striptags }}</span>
                   </div>
               </div>
             </div>
@@ -76,7 +76,7 @@
                 {% endfor %}
                 {% endif %}
                 </select>
-                {{ form.from_account.errors }}
+                <span class="red-font">{{ form.from_account.errors|striptags }}</span>
                 </div>
               </div>
 			  <!--
@@ -101,7 +101,7 @@
                   <div class="form-group {% if form.to_address.errors %}has-error{% endif %}">
                     <label for="to_address">To</label>
                     <input type="text" class="text-center form-control fixed-width-font2" id="to_address" name="to_address" placeholder="type address" value="{{ form.to_address.value }}">
-                    {{ form.to_address.errors }}
+                    <span class="red-font">{{ form.to_address.errors|striptags }}</span>
                   </div>
               </div>
               <div class="col-md-6">
@@ -121,7 +121,6 @@
                 	<optgroup label=""></optgroup>
                 {% endif %}
                 
-
                 {% endif %}
                 </select>
               </div>
@@ -141,7 +140,7 @@
                   <span class="input-group-addon"><span class="glyphicon glyphicon-comment"></span></span>
                   <input placeholder="store what the transaction is for" type="text" class="form-control" name="comment" value="{{ form.comment.value }}">
                 </div>
-                {{ form.comment.errors }}
+                <span class="red-font">{{ form.comment.errors|striptags }}</span>
               </div></div>
               <div class="col-md-6"></div>
             </div>
@@ -157,7 +156,7 @@
                   <span class="input-group-addon"><span class="glyphicon glyphicon-comment"></span></span>
                   <input placeholder="name of the person or organization to which you're sending the transaction" type="text" class="form-control" name="comment_to" value="{{ form.comment_to.value }}">
                 </div>
-                {{ form.comment_to.errors }}
+                <span class="red-font">{{ form.comment_to.errors|striptags }}</span>
               </div></div>
               <div class="col-md-6"></div>
             </div>
@@ -170,7 +169,7 @@
                   <span class="input-group-addon">{{ currency_symbols|keyvalue:selected_provider_id }}</span>
                   <input type="text" class="form-control" name="amount" style="text-align:right;" value="{{ form.amount.value }}">
                 </div>
-                {{ form.amount.errors }}
+                <span class="red-font">{{ form.amount.errors|striptags }}</span>
               </div></div>
               <div class="col-md-6"></div>
             </div>

@@ -27,7 +27,9 @@ class CoinAmount(CharField):
         super(CharField, self).validate(value)
         if not generic.isFloat(value):
             raise forms.ValidationError("Please provide a valid amount eg. 12.3456789")
-
+        
+        if value == 0 or value < 0:
+            raise forms.ValidationError("Please provide a valid amount eg. 12.3456789")
 
 class CoinCurrency(CharField):
     def validate(self, value):
