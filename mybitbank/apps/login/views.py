@@ -25,10 +25,10 @@ def index(request):
         
     page_title = _("Login")
     context = {
-               'globals': MainConfig['globals'], 
-               'breadcrumbs': misc.buildBreadcrumbs(current_section, 'all'), 
+               'globals': MainConfig['globals'],
+               'breadcrumbs': misc.buildBreadcrumbs(current_section, 'all'),
                'system_errors': connector.errors,
-               'page_title': page_title, 
+               'page_title': page_title,
                'next_url': request.GET.get('next', reverse('dashboard:index')),
                }
     return render(request, 'login/index.html', context)
@@ -97,10 +97,10 @@ def processLogin(request):
     if not auth_process:
         page_title = _("Login")
         context = {
-                   'globals': MainConfig['globals'], 
-                   'breadcrumbs': misc.buildBreadcrumbs(current_section, 'all'), 
+                   'globals': MainConfig['globals'],
+                   'breadcrumbs': misc.buildBreadcrumbs(current_section, 'all'),
                    'system_errors': connector.errors,
-                   'page_title': page_title, 
+                   'page_title': page_title,
                    'form': login_form,
                    'main_error': auth_message,
                    }

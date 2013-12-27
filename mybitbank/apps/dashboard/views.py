@@ -32,7 +32,7 @@ def index(request):
         transactions = transactions + wallet.listTransactions(5, 0)
     
     # sort result
-    transactions = sorted(transactions, key=lambda k: k.get('time',0), reverse=True)
+    transactions = sorted(transactions, key=lambda k: k.get('time', 0), reverse=True)
     
     # get only 10 transactions
     transactions = transactions[0:5]
@@ -46,14 +46,14 @@ def index(request):
     page_title = "Dashboard"
     sections = misc.getSiteSections('dashboard')
     context = {
-               'globals': MainConfig['globals'], 
+               'globals': MainConfig['globals'],
                'system_errors': connector.errors,
                'system_alerts': connector.alerts,
                'request': request,
-               'breadcrumbs': misc.buildBreadcrumbs(currect_section), 
-               'page_title': page_title, 
-               'page_sections': sections, 
-               'wallets': wallets, 
+               'breadcrumbs': misc.buildBreadcrumbs(currect_section),
+               'page_title': page_title,
+               'page_sections': sections,
+               'wallets': wallets,
                'transactions': transactions,
                'events': list_of_events
                }
@@ -72,8 +72,8 @@ def proxy(request):
     if request.is_ajax():
         if request.method == 'POST':
             url = request.body
-            #cache_hash = connector.getParamHash(url)
-            #cache_object = connector.cache.fetch('rates', cache_hash)
+            # cache_hash = connector.getParamHash(url)
+            # cache_object = connector.cache.fetch('rates', cache_hash)
             cache_object = False
             if cache_object:
                 return HttpResponse(cache_object, content_type="application/json")
@@ -82,5 +82,5 @@ def proxy(request):
                 opener.addheaders = [('User-agent', "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:25.0) Gecko/20100101 Firefox/25.0")]
                 response = opener.open(url)
                 rates_json = response.read()
-                #connector.cache.store('rates', cache_hash, rates_json, 60)
+                # connector.cache.store('rates', cache_hash, rates_json, 60)
                 return HttpResponse(rates_json, content_type="application/json")

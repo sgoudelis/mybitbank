@@ -192,7 +192,7 @@ class ServiceProxyStubBTCWithPass(object):
         return True
     
     def sendfrom(self, from_account, to_address, amount, minconf, comment, comment_to):
-        return {'code': -13, 'message': u'Error: Please enter the wallet passphrase with walletpassphrase first.'}
+        return {'code':-13, 'message': u'Error: Please enter the wallet passphrase with walletpassphrase first.'}
 
     def walletpassphrase(self, passphrase, timeout):
         return True
@@ -219,7 +219,7 @@ class TransferIndexTests(TestCase):
                              'code': 'BTC',
                              'network': "testnet",
                              'enabled': True,
-                           },}
+                           }, }
                 
         user = User.objects.create_user('testing', 'testing@testingpipes.com', 'testingpassword')
         user.save()
@@ -237,7 +237,7 @@ class TransferIndexTests(TestCase):
                 
         io_response.seek(0)
         with io_response as f:
-            html_list = f.readlines()[(line_no-1):]
+            html_list = f.readlines()[(line_no - 1):]
 
         return html_response.join(html_list)
 
@@ -280,9 +280,9 @@ class TransferIndexTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'amount': "",    
-                    'comment': "",    
-                    'comment_to': "",   
+                    'amount': "",
+                    'comment': "",
+                    'comment_to': "",
                     'csrfmiddlewaretoken': "",
                     'from_address': "",
                     'provider_id': provider_id,
@@ -303,9 +303,9 @@ class TransferIndexTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'amount': "",    
-                    'comment': "",    
-                    'comment_to': "",   
+                    'amount': "",
+                    'comment': "",
+                    'comment_to': "",
                     'csrfmiddlewaretoken': "",
                     'from_address': "",
                     'provider_id': provider_id,
@@ -333,9 +333,9 @@ class TransferIndexTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'amount': "",    
-                    'comment': "",    
-                    'comment_to': "",   
+                    'amount': "",
+                    'comment': "",
+                    'comment_to': "",
                     'csrfmiddlewaretoken': "",
                     'from_address': "mox7nxwfu9hrTQCn24RBTDce1wiHEP1NQp",
                     'provider_id': provider_id,
@@ -363,9 +363,9 @@ class TransferIndexTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'amount': "",    
-                    'comment': "",    
-                    'comment_to': "",   
+                    'amount': "",
+                    'comment': "",
+                    'comment_to': "",
                     'csrfmiddlewaretoken': "",
                     'from_address': "",
                     'provider_id': 1,
@@ -393,9 +393,9 @@ class TransferIndexTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'amount': "",    
-                    'comment': "",    
-                    'comment_to': "",   
+                    'amount': "",
+                    'comment': "",
+                    'comment_to': "",
                     'csrfmiddlewaretoken': "",
                     'from_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP",
                     'provider_id': provider_id,
@@ -423,9 +423,9 @@ class TransferIndexTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'amount': "",    
-                    'comment': "",    
-                    'comment_to': "",   
+                    'amount': "",
+                    'comment': "",
+                    'comment_to': "",
                     'csrfmiddlewaretoken': "",
                     'from_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP",
                     'selected_currency': "btc",
@@ -451,9 +451,9 @@ class TransferIndexTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'amount': 3,    
-                    'comment': "",    
-                    'comment_to': "",   
+                    'amount': 3,
+                    'comment': "",
+                    'comment_to': "",
                     'csrfmiddlewaretoken': "",
                     'from_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP",
                     'provider_id': provider_id,
@@ -473,9 +473,9 @@ class TransferIndexTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'amount': 3,    
-                    'comment': "",    
-                    'comment_to': "",   
+                    'amount': 3,
+                    'comment': "",
+                    'comment_to': "",
                     'csrfmiddlewaretoken': "",
                     'from_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP",
                     'provider_id': provider_id,
@@ -500,9 +500,9 @@ class TransferIndexTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'amount': 3,    
-                    'comment': "",    
-                    'comment_to': "",   
+                    'amount': 3,
+                    'comment': "",
+                    'comment_to': "",
                     'csrfmiddlewaretoken': "",
                     'from_address': "mxgWFbqGPywQUK",
                     'provider_id': provider_id,
@@ -531,9 +531,9 @@ class TransferIndexTests(TestCase):
         connector.services = {provider_id: ServiceProxyStubBTCWithPass()}
         
         post_data = {
-                    'amount': 3,    
-                    'comment': "",    
-                    'comment_to': "",   
+                    'amount': 3,
+                    'comment': "",
+                    'comment_to': "",
                     'csrfmiddlewaretoken': "",
                     'from_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP",
                     'provider_id': provider_id,

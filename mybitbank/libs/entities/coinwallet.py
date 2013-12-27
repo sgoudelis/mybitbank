@@ -172,8 +172,8 @@ class CoinWallet(object):
             '''
             
             accountObjects.append(CoinAccount({
-                                       'name': account_name, 
-                                       'balance': account_balance, 
+                                       'name': account_name,
+                                       'balance': account_balance,
                                        'currency': self['currency'],
                                        'provider_id': self.provider_id,
                                        'wallet': self,

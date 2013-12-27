@@ -178,7 +178,7 @@ class ConnectorsTests(TestCase):
                                      'code': 'BTC',
                                      'network': "testnet",
                                      'enabled': True,
-                                   },}
+                                   }, }
         
         user = User.objects.create_user('testing', 'testing@testingpipes.com', 'testingpassword')
         user.save()

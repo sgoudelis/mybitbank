@@ -40,7 +40,7 @@ class CoinTransaction(object):
             self['blocktime_pretty'] = misc.twitterizeDate(self.get('blocktime', 'never'))
             self['currency_symbol'] = misc.getCurrencySymbol(connector, self['currency'])
             
-            if self.get('category', False) in ['receive','send']:
+            if self.get('category', False) in ['receive', 'send']:
                 if self['confirmations'] <= MainConfig['globals']['confirmation_limit']:
                     self['status_icon'] = 'glyphicon-time'
                     self['status_color'] = '#AAA';
@@ -196,7 +196,7 @@ class CoinTransaction(object):
         script = script_sig.split()
         
         h = hashlib.sha256(script[1].decode("hex")).digest()
-        ripe160 =  hashlib.new('ripemd160')
+        ripe160 = hashlib.new('ripemd160')
         ripe160.update(h)
         d = ripe160.digest()
         

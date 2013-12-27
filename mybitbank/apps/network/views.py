@@ -33,10 +33,10 @@ def index(request, selected_provider_id=sorted(connector.config.keys())[0]):
             peer['port'] = peer['addr'].partition(':')[2]
             peer['country'] = info.get('country_name', "")
             peer['country_code'] = info.get('country_code', "")
-            peer['city'] =  info.get('city', None) if info.get('city', None) != None else ''
-            peer['lat'] =  info.get('latitude', "");
-            peer['lon'] =  info.get('longitude', "");
-            peer['subver'] = peer['subver'].replace("/","")
+            peer['city'] = info.get('city', None) if info.get('city', None) != None else ''
+            peer['lat'] = info.get('latitude', "");
+            peer['lon'] = info.get('longitude', "");
+            peer['subver'] = peer['subver'].replace("/", "")
             peer['in'] = misc.humanBytes(peer['bytesrecv']) if 'bytesrecv' in peer else 'N/A'
             peer['out'] = misc.humanBytes(peer['bytessent']) if 'bytessent' in peer else 'N/A'
             peer['lastsend'] = misc.twitterizeDate(peer['lastsend']) if 'lastsend' in peer else 'N/A'
@@ -56,12 +56,12 @@ def index(request, selected_provider_id=sorted(connector.config.keys())[0]):
     
     page_title = _("Network")
     context = {
-               'globals': MainConfig['globals'], 
-               'breadcrumbs': misc.buildBreadcrumbs(current_section, '', currency_names[selected_provider_id]), 
+               'globals': MainConfig['globals'],
+               'breadcrumbs': misc.buildBreadcrumbs(current_section, '', currency_names[selected_provider_id]),
                'system_errors': connector.errors,
                'system_alerts': connector.alerts,
-               'page_title': page_title, 
-               'page_sections': sections, 
+               'page_title': page_title,
+               'page_sections': sections,
                'request': request,
                'currency_codes': currency_codes,
                'currency_names': currency_names,

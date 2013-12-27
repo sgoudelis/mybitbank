@@ -22,7 +22,7 @@ def timeit(method):
         result = method(*args, **kw)
         te = time.time()
 
-        print '%r() (%r, %r) %2.2f sec' % (method.__name__, args, kw, te-ts)
+        print '%r() (%r, %r) %2.2f sec' % (method.__name__, args, kw, te - ts)
         return result
 
     return timed
@@ -71,9 +71,9 @@ class Connector(object):
                 self.config[currency_config['id']] = currency_config
                 self.config[currency_config['id']]['enabled'] = True
                 self.services[currency_config['id']] = ServiceProxy("http://%s:%s@%s:%s" % 
-                                                         (currency_config['rpcusername'], 
-                                                          currency_config['rpcpassword'], 
-                                                          currency_config['rpchost'], 
+                                                         (currency_config['rpcusername'],
+                                                          currency_config['rpcpassword'],
+                                                          currency_config['rpchost'],
                                                           currency_config['rpcport']))
 
 
@@ -134,7 +134,7 @@ class Connector(object):
             currency_provider_config = self.config.get(provider_id, {})
             if currency_provider_config.get('enabled', False) is True:
                 self.addAlert('currencybackend', {'provider_id': provider_id, 'message': 'Currency service provider %s named %s is disabled for %s seconds due an error communicating.' % (provider_id, currency_provider_config['name'], self.disable_time), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
-                currency_provider_config['enabled'] = datetime.datetime.utcnow().replace(tzinfo=utc) + datetime.timedelta(0,self.disable_time)
+                currency_provider_config['enabled'] = datetime.datetime.utcnow().replace(tzinfo=utc) + datetime.timedelta(0, self.disable_time)
                 mybitbank.libs.events.addEvent(self.request, "Currency service %s has being disabled for %s seconds due to error communicating" % (currency_provider_config['currency'], self.disable_time), 'error')
                 if self.services.get(provider_id, None):
                     del self.services[provider_id]
@@ -284,7 +284,7 @@ class Connector(object):
         '''
         balances = {}
         
-        if selected_provider_id>0:
+        if selected_provider_id > 0:
             provider_ids = [selected_provider_id]
         else:
             provider_ids = self.config.keys()
@@ -352,7 +352,7 @@ class Connector(object):
             return {'message': 'Invalid input to account or address', 'code':-101}
 
         if provider_id not in self.services.keys():
-            return {'message': 'Non-existing currency provider id %s' % provider_id, 'code': -100}
+            return {'message': 'Non-existing currency provider id %s' % provider_id, 'code':-100}
         
         if not misc.isFloat(amount) or type(amount) is bool:
             return {'message': 'Amount is not a number', 'code':-102}
@@ -373,14 +373,14 @@ class Connector(object):
             except JSONRPCException, e:
                 return e.error
             except ValueError, e:
-                return {'message': e, 'code': -1}
+                return {'message': e, 'code':-1}
             except Exception, e: 
                 return e.error
             
             return reply
         else:
             # account not found
-            return {'message': 'Source account not found', 'code': -106}
+            return {'message': 'Source account not found', 'code':-106}
 
     @timeit
     def getRawTransaction(self, txid, provider_id):
@@ -389,13 +389,13 @@ class Connector(object):
         '''
 
         if provider_id not in self.config.keys():
-            return {'message': 'Non-existing currency provider id %s' % provider_id, 'code': -121}
+            return {'message': 'Non-existing currency provider id %s' % provider_id, 'code':-121}
         
         if self.config[provider_id]['enabled'] is not True:
             return {'message': 'Currency service %s disabled for now' % provider_id, 'code':-150}
         
         if type(txid) not in [str, unicode] or not len(txid):
-            return {'message': 'Transaction ID is not valid', 'code': -127} 
+            return {'message': 'Transaction ID is not valid', 'code':-127} 
         
         transaction_details = None
         try:
@@ -422,13 +422,13 @@ class Connector(object):
         Return a transaction
         '''
         if provider_id not in self.config.keys():
-            return {'message': 'Non-existing currency provider id %s' % provider_id, 'code': -121}
+            return {'message': 'Non-existing currency provider id %s' % provider_id, 'code':-121}
         
         if self.config[provider_id]['enabled'] is not True:
             return {'message': 'Currency service provider id %s disabled for now' % provider_id, 'code':-150}
         
         if type(txid) not in [str, unicode] or not len(txid):
-            return {'message': 'Transaction ID is not valid', 'code': -127} 
+            return {'message': 'Transaction ID is not valid', 'code':-127} 
         
         transaction_details = None
         try:
@@ -448,13 +448,13 @@ class Connector(object):
         '''
 
         if type(passphrase) not in [str, unicode]:
-            return {'message': 'Incorrect data type for passphrase', 'code': -110}
+            return {'message': 'Incorrect data type for passphrase', 'code':-110}
         
         if len(passphrase) < 1:
-            return {'message': 'No passphrase given', 'code': -111}
+            return {'message': 'No passphrase given', 'code':-111}
         
         if provider_id not in self.services.keys():
-            return {'message': 'Invalid non-existing or disabled currency', 'code': -112}
+            return {'message': 'Invalid non-existing or disabled currency', 'code':-112}
         
         if self.config[provider_id]['enabled'] is not True:
             return {'message': 'Currency service provider id %s disabled for now' % provider_id, 'code':-150}
@@ -481,7 +481,7 @@ class Connector(object):
         Lock wallet
         '''
         if provider_id not in self.services.keys():
-            return {'message': 'Invalid non-existing or disabled currency', 'code': -112}
+            return {'message': 'Invalid non-existing or disabled currency', 'code':-112}
         
         if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
             self.services[provider_id].walletlock()

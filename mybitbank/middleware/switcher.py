@@ -23,9 +23,9 @@ class CurrencyEnabler():
                 if datetime.datetime.utcnow().replace(tzinfo=utc) >= connector.config[provider_id]['enabled']:
                     # re-enable currency service
                     connector.services[provider_id] = ServiceProxy("http://%s:%s@%s:%s" % 
-                                                                                  (connector.config[provider_id]['rpcusername'], 
-                                                                                   connector.config[provider_id]['rpcpassword'], 
-                                                                                   connector.config[provider_id]['rpchost'], 
+                                                                                  (connector.config[provider_id]['rpcusername'],
+                                                                                   connector.config[provider_id]['rpcpassword'],
+                                                                                   connector.config[provider_id]['rpchost'],
                                                                                    connector.config[provider_id]['rpcport']))
                     connector.config[provider_id]['enabled'] = True
                     connector.alerts['currencybackend'][:] = [alert for alert in connector.alerts['currencybackend'] if alert.get('provider_id') != provider_id]

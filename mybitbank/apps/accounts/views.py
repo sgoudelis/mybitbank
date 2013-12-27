@@ -41,12 +41,12 @@ def index(request):
     
     page_title = _("Accounts")
     context = {
-               'globals': MainConfig['globals'], 
-               'breadcrumbs': misc.buildBreadcrumbs(current_section, 'all'), 
+               'globals': MainConfig['globals'],
+               'breadcrumbs': misc.buildBreadcrumbs(current_section, 'all'),
                'system_errors': connector.errors,
                'system_alerts': connector.alerts,
-               'page_title': page_title, 
-               'page_sections': sections, 
+               'page_title': page_title,
+               'page_sections': sections,
                'accounts': accounts,
                'request': request,
                }
@@ -75,15 +75,15 @@ def getAddAccountFormContext(account_name='', error=None, form=None):
     page_title = _("Create account")
     sections = misc.getSiteSections(current_section)
     context = {
-               'globals': MainConfig['globals'], 
+               'globals': MainConfig['globals'],
                'system_alerts': connector.alerts,
                'system_errors': connector.errors,
                'breadcrumbs': misc.buildBreadcrumbs(current_section, '', 'Create'),
-               'page_sections': sections, 
-               'page_title': page_title, 
-               'providers': providers_available, 
-               'account_name': account_name, 
-               'provider_id': provider_id, 
+               'page_sections': sections,
+               'page_title': page_title,
+               'providers': providers_available,
+               'account_name': account_name,
+               'provider_id': provider_id,
                'error_message': error,
                'form': form,
                }
@@ -153,7 +153,7 @@ def details(request, selected_provider_id, account_identifier="pipes", page=1):
     transactions = []
     if account:
         # get transaction details
-        transactions = account.listTransactions(limit=transactions_per_page, start=(transactions_per_page*(page-1)))
+        transactions = account.listTransactions(limit=transactions_per_page, start=(transactions_per_page * (page - 1)))
 
     page_title = _('Account details for "%s"') % (account['name'])
     sender_address_tooltip_text = "This address has been calculated using the Input Script Signature. You should verify before using it."
@@ -163,12 +163,12 @@ def details(request, selected_provider_id, account_identifier="pipes", page=1):
                'request': request,
                'system_alerts': connector.alerts,
                'system_errors': connector.errors,
-               'breadcrumbs': misc.buildBreadcrumbs(current_section, '', account['name']), 
-               'page_title': page_title, 
+               'breadcrumbs': misc.buildBreadcrumbs(current_section, '', account['name']),
+               'page_title': page_title,
                'current_page': page,
-               'next_page': (page+1), 
-               'prev_page': max(1, page-1), 
-               'levels': [(max(1, (page-10)), max(1, (page-100)), max(1, (page-1000))), ((page+10), (page+100), (page+1000))],
+               'next_page': (page + 1),
+               'prev_page': max(1, page - 1),
+               'levels': [(max(1, (page - 10)), max(1, (page - 100)), max(1, (page - 1000))), ((page + 10), (page + 100), (page + 1000))],
                'page_sections': sections,
                'wallet': wallet,
                'account': account,

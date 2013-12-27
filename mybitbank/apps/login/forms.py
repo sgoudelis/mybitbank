@@ -21,9 +21,9 @@ class LoginForm(forms.Form):
     
     def clean(self):
         cleaned_data = super(LoginForm, self).clean()
-        #username = cleaned_data.get('username', "")
-        #password = cleaned_data.get('password', "")
-        #remember = cleaned_data.get('remember', False)
-        #next_url = cleaned_data.get('next_url', "")
+        # username = cleaned_data.get('username', "")
+        # password = cleaned_data.get('password', "")
+        # remember = cleaned_data.get('remember', False)
+        # next_url = cleaned_data.get('next_url', "")
         
         return cleaned_data

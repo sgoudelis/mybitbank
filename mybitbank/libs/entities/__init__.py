@@ -6,7 +6,7 @@ def getWallets(connector):
     Return a list of wallets
     '''
     wallets = []
-    for provider_id ,wallet_config in connector.config.items():
+    for provider_id , wallet_config in connector.config.items():
         wallet_config['provider_id'] = provider_id
         wallets.append(CoinWallet(wallet_config))
     return wallets

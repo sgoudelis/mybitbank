@@ -48,7 +48,7 @@ def commonContext(request={}, selected_provider_id=1, form=None, errors=[], show
         currency_codes[provider_id] = connector.config[provider_id]['currency']
             
     # sort in reverse
-    #currency_codes = sorted(currency_codes)
+    # currency_codes = sorted(currency_codes)
     
     # get a list of source accounts
     accounts = wallet.listAccounts(gethidden=True, getarchived=True)
@@ -60,12 +60,12 @@ def commonContext(request={}, selected_provider_id=1, form=None, errors=[], show
         addressbook_addresses[saved_address.address] = saved_address.name
 
     context = {
-               'globals': MainConfig['globals'], 
+               'globals': MainConfig['globals'],
                'system_errors': connector.errors,
                'system_alerts': connector.alerts,
                'request': request,
-               'breadcrumbs': misc.buildBreadcrumbs(current_section, '', currency_names.get(selected_provider_id, "n/a")), 
-               'page_sections': misc.getSiteSections('transfer'), 
+               'breadcrumbs': misc.buildBreadcrumbs(current_section, '', currency_names.get(selected_provider_id, "n/a")),
+               'page_sections': misc.getSiteSections('transfer'),
                'page_title': page_title,
                'currency_codes': currency_codes,
                'currency_names': currency_names,
@@ -131,10 +131,10 @@ def send(request, selected_provider_id):
             if to_account:
                 # this address/account is hosted locally, do a move
                 move_exit = connector.moveamount(
-                                                 from_account=from_account['name'], 
-                                                 to_account=to_account['name'], 
-                                                 provider_id=provider_id, 
-                                                 amount=amount, 
+                                                 from_account=from_account['name'],
+                                                 to_account=to_account['name'],
+                                                 provider_id=provider_id,
+                                                 amount=amount,
                                                  comment=comment
                                                 )
                 
@@ -158,11 +158,11 @@ def send(request, selected_provider_id):
                 
                 # to_address not local, do a send
                 sendfrom_exit = connector.sendfrom(
-                                                   from_account=from_account['name'], 
-                                                   to_address=to_address, 
-                                                   amount=amount, 
-                                                   provider_id=provider_id, 
-                                                   comment=comment, 
+                                                   from_account=from_account['name'],
+                                                   to_address=to_address,
+                                                   amount=amount,
+                                                   provider_id=provider_id,
+                                                   comment=comment,
                                                    comment_to=comment_to
                                                   )
                 
@@ -172,9 +172,9 @@ def send(request, selected_provider_id):
                     # check if passphrase is needed
                     if sendfrom_exit['code'] == -13:
                         # passphrase is needed
-                        show_passphrase=True
+                        show_passphrase = True
                     else:
-                        show_passphrase=False
+                        show_passphrase = False
                     
                     if not request.is_secure() and show_passphrase:
                         show_warning_ssl = 1
@@ -196,11 +196,11 @@ def send(request, selected_provider_id):
             if move_exit:
                 messages.success(request, 'Local move of %s %s completed from account "%s" to "%s"' % (amount, connector.config[provider_id]['currency'].upper(), from_account['name'], to_account['name']), extra_tags="success")
                 events.addEvent(request, 'Local move occurred from "%s" to "%s" in the amount of %s %s' % (from_account['name'], to_account['name'], amount, connector.config[provider_id]['currency'].upper()), 'info')
-                return HttpResponseRedirect(reverse('transactions:index', kwargs={'selected_provider_id': selected_provider_id, 'page': '1'})) # Redirect after POST
+                return HttpResponseRedirect(reverse('transactions:index', kwargs={'selected_provider_id': selected_provider_id, 'page': '1'}))  # Redirect after POST
             elif sendfrom_exit:
                 messages.success(request, 'Transfer of %s %s initialized with transaction id %s' % (amount, connector.config[provider_id]['currency'].upper(), sendfrom_exit), extra_tags="success")
                 events.addEvent(request, 'Transfer initialized from "%s" to "%s" of %s %s' % (from_account['name'], to_address, amount, connector.config[provider_id]['currency'].upper()), 'info')
-                return HttpResponseRedirect(reverse('transactions:details', kwargs={'provider_id': provider_id, 'txid':sendfrom_exit})) # Redirect after POST
+                return HttpResponseRedirect(reverse('transactions:details', kwargs={'provider_id': provider_id, 'txid':sendfrom_exit}))  # Redirect after POST
             
     else:
         form = forms.SendCurrencyForm()

@@ -56,15 +56,15 @@ def getAddressBookCommonContext(request, form=None):
             address.icon_color = 'green-font'
     
     context = {
-               'globals': MainConfig['globals'], 
+               'globals': MainConfig['globals'],
                'system_errors': connector.errors,
                'system_alerts': connector.alerts,
                'user': request.user,
-               'breadcrumbs': misc.buildBreadcrumbs(current_section), 
-               'page_sections': sections, 
+               'breadcrumbs': misc.buildBreadcrumbs(current_section),
+               'page_sections': sections,
                'page_title': page_title,
                'book': book,
-               'currencies': currencies_available, 
+               'currencies': currencies_available,
                'currency_symbols': currency_symbols,
                'form': form,
                }
@@ -76,7 +76,7 @@ def add(request):
     
     '''
     form = forms.AddAddressBookForm()
-    context = getAddressBookCommonContext(request=request,form=form)
+    context = getAddressBookCommonContext(request=request, form=form)
     context['breadcrumbs'] = misc.buildBreadcrumbs(current_section, '', 'Add address')
     return render(request, 'addressbook/add.html', context)
     
@@ -97,7 +97,7 @@ def create(request):
             name = form.cleaned_data['name']
             address = form.cleaned_data['address']
             provider_id = form.cleaned_data['provider_id']
-            comment =  form.cleaned_data['comment']
+            comment = form.cleaned_data['comment']
             
             # add address to addressbook
             newAddressEntry = savedAddress(name=name, address=address, currency=connector.config[provider_id]['currency'], comment=comment, status=2, entered=datetime.datetime.utcnow().replace(tzinfo=utc))
@@ -128,7 +128,7 @@ def delete(request, addressid):
     if addressbook:
         name = addressbook[0].name
         address = addressbook[0].address
-        addressbook[0].status=0
+        addressbook[0].status = 0
         addressbook[0].save()
         messages.success(request, 'Addressbook entry %s with address %s deleted' % (name, address), extra_tags="warning")
         events.addEvent(request, 'Addressbook entry deleted with name "%s" and address "%s"' % (name, address), 'warning')
@@ -145,12 +145,12 @@ def toggleStatus(request, addressid):
         name = addressbook[0].name
         address = addressbook[0].address
         if addressbook[0].status == 1:
-            addressbook[0].status=2
+            addressbook[0].status = 2
             addressbook[0].save()
             messages.success(request, 'Addressbook entry %s with address %s enabled' % (name, address), extra_tags="info")
             events.addEvent(request, 'Addressbook entry enabled with name "%s" and address "%s"' % (name, address), 'info')
         else:
-            addressbook[0].status=1
+            addressbook[0].status = 1
             addressbook[0].save()
             messages.success(request, 'Addressbook entry %s with address %s disabled.' % (name, address), extra_tags="warning")
             events.addEvent(request, 'Addressbook entry disabled with name "%s" and address "%s"' % (name, address), 'warning')

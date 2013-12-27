@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_noop as _
 
 MainConfig = {
               'globals' : {
-                    'site_brand': "", # change this to whatever you want
+                    'site_brand': "",  # change this to whatever you want
                     'confirmation_limit': 5,
                },
                   
@@ -33,7 +33,7 @@ MainConfig = {
                      ]},
                     {'name': 'network', 'path':"/network", 'title': _("Network"), 'subsections': 
                      [
-                        #{'name': 'add', 'path':"/addressbook/add", 'title': _('Add address')},
+                        # {'name': 'add', 'path':"/addressbook/add", 'title': _('Add address')},
                      
                      ]},
                ]

@@ -43,9 +43,9 @@ def index(request, selected_provider_id=False, page=1):
             wallet = w
             
     # get transactions
-    transactions_list = wallet.listTransactions(items_per_page, (items_per_page*(page-1)))
+    transactions_list = wallet.listTransactions(items_per_page, (items_per_page * (page - 1)))
     # sort transactions
-    transactions_list = sorted(transactions_list, key=lambda k: k.get('time',0), reverse=True)
+    transactions_list = sorted(transactions_list, key=lambda k: k.get('time', 0), reverse=True)
     
     # remove moves if there is a user setting for it
     transactions = []
@@ -67,15 +67,15 @@ def index(request, selected_provider_id=False, page=1):
                'system_errors': connector.errors,
                'system_alerts': connector.alerts,
                'request': request,
-               'breadcrumbs': misc.buildBreadcrumbs(current_section, '', connector.config[selected_provider_id]['name']), 
-               'page_title': page_title, 
-               'page_sections': misc.getSiteSections(current_section), 
-               'transactions': transactions, 
+               'breadcrumbs': misc.buildBreadcrumbs(current_section, '', connector.config[selected_provider_id]['name']),
+               'page_title': page_title,
+               'page_sections': misc.getSiteSections(current_section),
+               'transactions': transactions,
                'transactions_per_page': items_per_page,
-               'show_pager': True, 
-               'next_page': (page+1), 
-               'prev_page': max(1, page-1), 
-               'levels': [(max(1, (page-10)), max(1, (page-100)), max(1, (page-1000))), ((page+10), (page+100), (page+1000))],
+               'show_pager': True,
+               'next_page': (page + 1),
+               'prev_page': max(1, page - 1),
+               'levels': [(max(1, (page - 10)), max(1, (page - 100)), max(1, (page - 1000))), ((page + 10), (page + 100), (page + 1000))],
                'current_page': page,
                'saved_addresses': saved_addresses,
                'sender_address_tooltip_text': sender_address_tooltip_text,
@@ -116,9 +116,9 @@ def transactionDetails(request, txid, provider_id):
            'system_errors': connector.errors,
            'system_alerts': connector.alerts,
            'request': request,
-           'breadcrumbs': misc.buildBreadcrumbs(current_section, '', 'Details of %s' % txid), 
-           'page_title': page_title, 
-           'page_sections': misc.getSiteSections(current_section), 
+           'breadcrumbs': misc.buildBreadcrumbs(current_section, '', 'Details of %s' % txid),
+           'page_title': page_title,
+           'page_sections': misc.getSiteSections(current_section),
            'transaction': transaction,
            'account': account,
            'conf_limit': MainConfig['globals']['confirmation_limit'],

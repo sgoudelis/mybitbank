@@ -34,11 +34,11 @@ def twitterizeDate(ts):
     elif s < 120:
         return '1 minute ago'
     elif s < 3600:
-        return '{} minutes ago'.format(s/60)
+        return '{} minutes ago'.format(s / 60)
     elif s < 7200:
         return '1 hour ago'
     else:
-        return '{} hours ago'.format(s/3600)
+        return '{} hours ago'.format(s / 3600)
 
 def timeSince(time):
     '''
@@ -129,7 +129,7 @@ def humanBytes(num):
     '''
     Humanize bytes
     '''
-    for x in ['bytes','KB','MB','GB','TB']:
+    for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
         if num < 1024.0:
             return "%3.1f %s" % (num, x)
         num /= 1024.0
@@ -167,7 +167,7 @@ def b58encode(v):
     
     long_value = 0L
     for (i, c) in enumerate(v[::-1]):
-        long_value += ord(c) << (8*i) # 2x speedup vs. exponentiation
+        long_value += ord(c) << (8 * i)  # 2x speedup vs. exponentiation
     
     result = ''
     while long_value >= __b58base:
@@ -183,4 +183,4 @@ def b58encode(v):
         if c == '\0': nPad += 1
         else: break
 
-    return (__b58chars[0]*nPad) + result
+    return (__b58chars[0] * nPad) + result

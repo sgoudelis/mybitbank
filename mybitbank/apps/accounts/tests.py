@@ -191,7 +191,7 @@ class ServiceProxyStubBTCWithPass(object):
         return True
     
     def sendfrom(self, from_account, to_address, amount, minconf, comment, comment_to):
-        return {'code': -13, 'message': u'Error: Please enter the wallet passphrase with walletpassphrase first.'}
+        return {'code':-13, 'message': u'Error: Please enter the wallet passphrase with walletpassphrase first.'}
 
     def walletpassphrase(self, passphrase, timeout):
         return True
@@ -225,7 +225,7 @@ class CreateAccountTests(TestCase):
                 
         io_response.seek(0)
         with io_response as f:
-            html_list = f.readlines()[(line_no-1):]
+            html_list = f.readlines()[(line_no - 1):]
 
         return html_response.join(html_list)
 
@@ -247,9 +247,9 @@ class CreateAccountTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-            'amount': "",    
-            'comment': "",    
-            'comment_to': "",   
+            'amount': "",
+            'comment': "",
+            'comment_to': "",
             'csrfmiddlewaretoken': "",
             'from_address': "",
             'provider_id': 1,
@@ -269,8 +269,8 @@ class CreateAccountTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'account_name': None,    
-                    'provider_id': None,      
+                    'account_name': None,
+                    'provider_id': None,
                     'csrfmiddlewaretoken': "",
                     }
         
@@ -292,8 +292,8 @@ class CreateAccountTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'account_name': "new account name",    
-                    'provider_id': 1,    
+                    'account_name': "new account name",
+                    'provider_id': 1,
                     'csrfmiddlewaretoken': "",
                     }
         

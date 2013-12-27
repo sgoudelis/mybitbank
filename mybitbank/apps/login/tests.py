@@ -191,7 +191,7 @@ class ServiceProxyStubBTCWithPass(object):
         return True
     
     def sendfrom(self, from_account, to_address, amount, minconf, comment, comment_to):
-        return {'code': -13, 'message': u'Error: Please enter the wallet passphrase with walletpassphrase first.'}
+        return {'code':-13, 'message': u'Error: Please enter the wallet passphrase with walletpassphrase first.'}
 
     def walletpassphrase(self, passphrase, timeout):
         return True
@@ -225,7 +225,7 @@ class LoginTests(TestCase):
                 
         io_response.seek(0)
         with io_response as f:
-            html_list = f.readlines()[(line_no-1):]
+            html_list = f.readlines()[(line_no - 1):]
 
         return html_response.join(html_list)
 
@@ -244,12 +244,12 @@ class LoginTests(TestCase):
         '''
         
         client = Client(enforce_csrf_checks=True)
-        #client.login(username='testing', password='testingpassword')
+        # client.login(username='testing', password='testingpassword')
         
         post_data = {
-            'username': "",    
-            'password': "",    
-            'remember': 1,   
+            'username': "",
+            'password': "",
+            'remember': 1,
             'csrfmiddlewaretoken': "",
             }
         
@@ -263,7 +263,7 @@ class LoginTests(TestCase):
         '''
         
         client = Client()
-        #client.login(username='testing', password='testingpassword')
+        # client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'username': "",
@@ -286,7 +286,7 @@ class LoginTests(TestCase):
         '''
         
         client = Client()
-        #client.login(username='testing', password='testingpassword')
+        # client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'username': "bogususername",
@@ -308,7 +308,7 @@ class LoginTests(TestCase):
         '''
         
         client = Client()
-        #client.login(username='testing', password='testingpassword')
+        # client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'username': "bogususername",
@@ -331,7 +331,7 @@ class LoginTests(TestCase):
         '''
         
         client = Client()
-        #client.login(username='testing', password='testingpassword')
+        # client.login(username='testing', password='testingpassword')
         
         post_data = {
                     'username': "testing",
