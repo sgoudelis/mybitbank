@@ -1,8 +1,9 @@
 from django.conf.urls import patterns, include, url
+from django.contrib import admin
 from django.http.response import HttpResponseRedirect
 
+
 # Uncomment the next two lines to enable the admin:
-from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -17,25 +18,25 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     
     # dashboard
-    url(r'^dashboard/', include('dashboard.urls', namespace="dashboard")),
+    url(r'^dashboard/', include('mybitbank.apps.dashboard.urls', namespace="dashboard")),
     
     # accounts
-    url(r'^accounts/', include('accounts.urls', namespace="accounts")),
+    url(r'^accounts/', include('mybitbank.apps.accounts.urls', namespace="accounts")),
     
     # addressbook
-    url(r'^addressbook/', include('addressbook.urls', namespace="addressbook")),
+    url(r'^addressbook/', include('mybitbank.apps.addressbook.urls', namespace="addressbook")),
     
     # transfer
-    url(r'^transfer/', include('transfer.urls', namespace="transfer")),
+    url(r'^transfer/', include('mybitbank.apps.transfer.urls', namespace="transfer")),
     
     # transactions
-    url(r'^transactions/', include('transactions.urls', namespace="transactions")),
+    url(r'^transactions/', include('mybitbank.apps.transactions.urls', namespace="transactions")),
     
     # login
-    url(r'^login/', include('login.urls', namespace="login")),
+    url(r'^login/', include('mybitbank.apps.login.urls', namespace="login")),
     
     # network
-    url(r'^network/', include('network.urls', namespace="network")),
+    url(r'^network/', include('mybitbank.apps.network.urls', namespace="network")),
     
     # language
     (r'^i18n/', include('django.conf.urls.i18n')),

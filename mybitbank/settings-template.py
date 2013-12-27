@@ -101,8 +101,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'connections.switcher.CurrencyEnabler',
-    'dashboard.sslchecker.SSLChecker',
+    'mybitbank.libs.connections.switcher.CurrencyEnabler',
+    'mybitbank.apps.dashboard.sslchecker.SSLChecker',
 )
 
 ROOT_URLCONF = 'mybitbank.urls'
@@ -127,15 +127,16 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'connections',
-    'dashboard',
-    'accounts',
-    'addressbook',
-    'transfer',
-    'transactions',
-    'login',
-    'network',
-    'events',
+    'mybitbank.libs.connections',
+    'mybitbank.apps.dashboard',
+    'mybitbank.apps.accounts',
+    'mybitbank.apps.addressbook',
+    'mybitbank.apps.transfer',
+    'mybitbank.apps.transactions',
+    'mybitbank.apps.login',
+    'mybitbank.apps.network',
+    'mybitbank.libs.events',
+    'south',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
@@ -199,3 +200,5 @@ LOGIN_URL = '/login'
 GEOIP_PATH = '.geoip/'
 
 GEOIP_LIBRARY_PATH = '/opt/local/lib/libGeoIP.dylib'
+
+AUTH_PROFILE_MODULE = "mybitbank.apps.login.Setting"
