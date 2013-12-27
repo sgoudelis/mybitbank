@@ -57,14 +57,15 @@
                 
 	            <ul class="nav navbar-nav navbar-right navbar-user">
 		           <li class="dropdown alerts-dropdown messages-dropdown">
-	              <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-bell"></i> Alerts <span class="badge {% if system_alerts %}badge-alert{% endif %}">{{ system_alerts|length }}</span> <b class="caret"></b></a>
+	              <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-bell"></i> Alerts <span class="badge {% if system_alerts %}badge-alert{% endif %}">{{ system_alerts|getnumberofalert }}</span> <b class="caret"></b></a>
 	              
 	              <ul class="dropdown-menu">
 	              {% if system_alerts %}
 	              
-	                <li class="dropdown-header">{{ system_alerts|length }} active alerts</li>
+	                <li class="dropdown-header">{{ system_alerts|getnumberofalert }} active alerts</li>
 	                
-					{% for system_alert in system_alerts %}
+					{% for system_alert_type, system_alerts_per_type in system_alerts.items %}
+					{% for system_alert in system_alerts_per_type %}
 					<li class="divider"></li>
 	                <li class="message-preview">
 	                  <a href="#">
@@ -74,6 +75,7 @@
 	                    <span class="time"><i class="icon-time"></i> {{ system_alert.when|date:'H:i' }}</span>
 	                  </a>
 	                </li>
+	                {% endfor %}
 	                {% endfor %}
 	                <!-- <li><a href="#">View Inbox <span class="badge">7</span></a></li>  -->
 				  {% else %}

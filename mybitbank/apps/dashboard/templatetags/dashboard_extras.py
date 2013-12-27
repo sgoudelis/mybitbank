@@ -54,8 +54,20 @@ def getaddressbookname(address):
         else:
             return None
 
+def getnumberofalert(system_alerts):
+    '''
+    Measure the number of system alerts
+    '''
+    num = 0
+    for system_alert_type, system_alert_per_type in system_alerts.items():
+        for system_alert in system_alert_per_type:
+            num += 1
+    return num
+    
+
 register = template.Library()
 register.filter('keyvalue', keyvalue)
 register.filter('getalerticon', getalerticon)
 register.filter('getaccountname', getaccountname)
 register.filter('getaddressbookname', getaddressbookname)
+register.filter('getnumberofalert', getnumberofalert)

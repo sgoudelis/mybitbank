@@ -10,8 +10,8 @@ class SSLChecker():
     def process_request(self, request):
         if request.is_secure():
             # clear alert about non-existing SSL
-            connector.alerts[:] = [m for m in connector.alerts if m.get('type', None) == 'sslchecker']
+            connector.alerts['sslchecker'] = []
         else:
-            if not any(alert.get('type', None) == 'sslchecker' for alert in connector.alerts):
+            if connector.alerts.get('sslchecker', True) is True:
                 # add alert about non-existing SSL
-                connector.alerts.append({'type': 'sslchecker', 'message': 'You are currently not secure. No HTTPS/SSL connection detected!', 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+                connector.addAlert('sslchecker', {'message': 'You are currently not secure. No HTTPS/SSL connection detected!', 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})

@@ -27,7 +27,7 @@ class CurrencyEnabler():
                                                                                    connector.config[provider_id]['rpchost'], 
                                                                                    connector.config[provider_id]['rpcport']))
                     connector.config[provider_id]['enabled'] = True
-                    connector.alerts[:] = [m for m in connector.alerts if m.get('type', None) == 'currencybackend' and m.get('provider_id', None) != provider_id]
+                    connector.alerts['currencybackend'][:] = [alert for alert in connector.alerts['currencybackend'] if alert.get('provider_id') != provider_id]
             
         return None
     

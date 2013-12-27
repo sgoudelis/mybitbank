@@ -47,21 +47,10 @@ class Connector(object):
     errors = []
     
     # alerts shown on the UI as alerts
-    alerts = []
+    alerts = {}
     
     # the WSGIRequest object we are serving
     request = None
-    
-    # source: https://github.com/zamgo/PHPCoinAddress/blob/master/README.md
-    prefixes = {
-                'btc': {'mainnet': '\x00', 'testnet': '\x6f'},
-                'ltc': {'mainnet': '\x30', 'testnet': '\x6f'},
-                'ftc': {'mainnet': '\x0E', 'testnet': '\x6f'},
-                'ppc': {'mainnet': '\x37', 'testnet': '\x6f'},
-                'nmc': {'mainnet': '\x34', 'testnet': '\x6f'},
-                'nvc': {'mainnet': '\x08', 'testnet': '\x6f'},
-                'doge': {'mainnet': '\x30', 'testnet': '\x6f'},
-               }
     
     @timeit
     def __init__(self):
@@ -103,11 +92,8 @@ class Connector(object):
         def timeout_handler(signum, frame):
             raise ExecuteCommandTimeoutException()
         
-        print "pipes"
         old_handler = signal.signal(signal.SIGALRM, timeout_handler) 
-        print "ipipes2 "
         signal.alarm(self.signal_timeout)
-        
         
         try: 
             rpc_method = getattr(self.services[provider_id], command)
@@ -126,6 +112,16 @@ class Connector(object):
         signal.alarm(0)
         return rpc_response
 
+    def addAlert(self, category, alert):
+        '''
+        Add an alert for the UI
+        '''
+        if self.alerts.get(category, True) is True:
+            self.alerts[category] = []
+        
+        self.alerts[category].append(alert)
+        return True
+    
     @timeit
     def removeCurrencyService(self, provider_id):
         '''
@@ -134,7 +130,7 @@ class Connector(object):
         if self.config.get(provider_id, False):
             currency_provider_config = self.config.get(provider_id, {})
             if currency_provider_config.get('enabled', False) is True:
-                self.alerts.append({'type': 'currencybackend', 'provider_id': provider_id, 'message': 'Currency service provider %s named %s is disabled for %s seconds due an error communicating.' % (provider_id, currency_provider_config['name'], self.disable_time), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+                self.addAlert('currencybackend', {'provider_id': provider_id, 'message': 'Currency service provider %s named %s is disabled for %s seconds due an error communicating.' % (provider_id, currency_provider_config['name'], self.disable_time), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                 currency_provider_config['enabled'] = datetime.datetime.utcnow().replace(tzinfo=utc) + datetime.timedelta(0,self.disable_time)
                 mybitbank.libs.events.addEvent(self.request, "Currency service %s has being disabled for %s seconds due to error communicating" % (currency_provider_config['currency'], self.disable_time), 'error')
                 if self.services.get(provider_id, None):
