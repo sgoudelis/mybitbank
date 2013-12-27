@@ -24,21 +24,19 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container">
-  
-  
-  <div class="holder">     
-    <div id="popup" class="popup">            
-        <div class="content">
+   <div class="container"> 
+   <div class="holder">     
+     <div id="popup" class="popup">            
+         <div class="content">
         
         
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <div class="row">
-                  <div class="col-xs-6"><h3 class="panel-title">{% trans "Login" %}</h3></div>
-                  <div class="col-xs-6 text-right"></div>
-                </div>
-            </div>
+	        <div class="panel panel-primary">
+	            <div class="panel-heading">
+	                <div class="row">
+	                  <div class="col-xs-6"><h3 class="panel-title">{% trans "Login" %}</h3></div>
+	                  <div class="col-xs-6 text-right"></div>
+	                </div>
+	            </div>
                 <div class="panel-body">
 				<form role="form" action="{% url 'login:processLogin' %}" method="post">
 				{% csrf_token %}
@@ -48,7 +46,7 @@
 				    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
 				    <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" value="{{ form.username.value }}">
 				  </div>
-				  {{ form.username.errors }}
+				  {{ form.username.errors }}	
 				  <label for="username">{% trans "Password" %}</label>
 				  <div class="form-group {% if form.password.errors %}has-error{% endif %} input-group">
 				    <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
@@ -65,16 +63,13 @@
 					{% endif %}
 				  <button type="submit" class="btn btn-primary">{% trans "Login" %}</button>
 				</form>
-
              </div>
-        </div>
-      </div>
-    </div>
-		
-		</div>
-    </div>
+         </div>
+       </div>
+     </div>
+	</div>
+  </div>
 </div>
-
-    </div><!-- /container -->
+</div><!-- /container -->
 </body>
 </html>

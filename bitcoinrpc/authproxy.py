@@ -48,7 +48,7 @@ except ImportError:
 
 USER_AGENT = "AuthServiceProxy/0.1"
 
-HTTP_TIMEOUT = 5
+HTTP_TIMEOUT = 3
 
 
 class JSONRPCException(Exception):

@@ -105,7 +105,7 @@ def create(request):
             provider_id = form.cleaned_data['provider_id']
             
             # all ok, create account
-            new_address = connector.getnewaddress(provider_id, new_account_name)
+            new_address = connector.getNewAddress(provider_id, new_account_name)
             
             if new_address:
                 messages.success(request, 'New account created with one address (%s)' % new_address, extra_tags="success")
@@ -226,7 +226,7 @@ def createNewAddress(request, selected_provider_id, account_identifier):
     if request.method == 'POST': 
         account = wallet.getAccountByIdentifier(account_identifier)
         if account:
-            new_address = connector.getnewaddress(account['provider_id'], account['name'])
+            new_address = connector.getNewAddress(account['provider_id'], account['name'])
             messages.success(request, 'New address "%s" created for account "%s"' % (new_address, account['name']), extra_tags="success")
             events.addEvent(request, 'New address "%s" created for account "%s"' % (new_address, account['name']), 'info')
         return HttpResponseRedirect(reverse('accounts:details', kwargs={'selected_provider_id': selected_provider_id, 'account_identifier': account_identifier}))

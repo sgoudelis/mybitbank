@@ -3,9 +3,7 @@ import generic
 import hashlib
 import events
 import time
-import copy
 from coinaccount import CoinAccount
-#from bitcoinrpc.authproxy import AuthServiceProxy
 from jsonrpc import ServiceProxy
 from connections.cacher import Cacher 
 from bitcoinrpc.authproxy import JSONRPCException
@@ -92,23 +90,6 @@ class Connector(object):
                                                           currency_config['rpchost'], 
                                                           currency_config['rpcport']))
 
-    @timeit
-    def getNet(self, provider_id):
-        '''
-        Return network value, mainnet or testnet
-        '''
-        info = self.getinfo(provider_id)
-        is_testnet = False
-        if info.has_key('testnet'):
-            is_testnet = info.get('testnet')
-            if is_testnet is False:
-                return "mainnet"
-            elif is_testnet is True:
-                return "testnet"
-        else:
-            # default to mainnet
-            return "mainnet"
-    
     @timeit
     def removeCurrencyService(self, provider_id):
         '''
@@ -256,23 +237,7 @@ class Connector(object):
         return transactions
     
     @timeit
-    def listalltransactions(self, limit=100000, start=0):
-        '''
-        Get a list of transactions, default is 100000 transactions per account
-        '''
-        
-        accounts = self.listaccounts(gethidden=True, getarchived=True)
-        transactions = {}
-        for provider_id in accounts.keys():
-            transactions[provider_id] = []
-            for account in accounts[provider_id]:
-                # append list
-                transactions[provider_id] = transactions[provider_id] + self.listtransactionsbyaccount(account['name'], provider_id, limit, start)
-
-        return transactions
-    
-    @timeit
-    def getnewaddress(self, provider_id, account_name):
+    def getNewAddress(self, provider_id, account_name):
         '''
         Create a new address
         '''
@@ -311,16 +276,6 @@ class Connector(object):
         
         return balances
    
-    @timeit
-    def getdefaultaccount(self, provider_id):
-        '''
-        Return the default (default account) account for a provider
-        '''
-        
-        account_addresses = self.getaddressesbyaccount(u'', provider_id)
-        account = self.getaccountdetailsbyaddress(account_addresses[0])
-        return account
-    
     @timeit
     def moveamount(self, from_account, to_account, provider_id, amount, minconf=1, comment=""):
         '''
