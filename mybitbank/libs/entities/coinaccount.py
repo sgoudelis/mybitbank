@@ -7,7 +7,6 @@ from cacher import Cacher
 from coinaddress import CoinAddress
 from cointransaction import CoinTransaction
 
-
 class CoinAccount(object):
     '''
     Class for an account
