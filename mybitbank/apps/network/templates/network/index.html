@@ -23,7 +23,7 @@
 </div>
 
 <div class="panel panel-default no-border-top no-border-radius">
-	{% if peers|length > 0 %}
+	
 	<!-- Table -->
 	<div class="table-responsive">
 	<table class="table table-condensed no-border-top no-border-radius vertical-align-middle">
@@ -40,6 +40,7 @@
 			<th class="hidden-sm hidden-xs text-center">Sync Node</th>
 		</thead>
 		<tbody>
+		{% if peers|length > 0 %}
 			{% for peer in peers %}
 			<tr>
 				<td class="text-center"><span class="label label-primary">{{ forloop.counter }}</span></td>
@@ -71,21 +72,26 @@
 				</td>
 			</tr>
 			{% endfor %}
+		{% else %}
+			<tr>
+				<td colspan="10">
+				{% if notsupported %}
+				<p>
+				&nbsp;
+				</p>
+				<p class="text-info text-center"><strong>This currency provider does not support peerinfo</strong></p>
+				{% else %}
+				<p>
+				&nbsp;
+				</p>
+				<p class="text-info text-center"><strong>This currency provider does not have any peers connected</strong></p>
+				{% endif %}
+				</td>
+			</tr>
+		{% endif %}
 		</tbody>
 	</table>
 	</div>
-	 {% else %}
-	 <div class="row">
-		 <div class="col-sm-10 col-sm-offset-1">
-		 	<br>
-		 		{% if notsupported == 1 %}
-		 			<div class="alert alert-warning">Your coind does not support peer information :(</div>
-	     	    {% else %}
-	     	    	<div class="alert alert-info">Currently, your selected coind is not connected to any peers</div>
-	     	    {% endif %}
-	       </div>
-     </div>
-    {% endif %}
 
 </div>
 
