@@ -1,4 +1,4 @@
-from bitcoinrpc.authproxy import AuthServiceProxy as ServiceProxy, \
+from mybitbank.libs.bitcoinrpc.authproxy import AuthServiceProxy as ServiceProxy, \
     JSONRPCException
 
 

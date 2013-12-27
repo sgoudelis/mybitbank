@@ -1,4 +1,4 @@
-from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
+from mybitbank.libs.bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
 
 
 __all__ = ['AuthServiceProxy', 'JSONRPCException']
