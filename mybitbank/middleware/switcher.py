@@ -2,7 +2,6 @@ import datetime
 
 from django.utils.timezone import utc
 from mybitbank.libs.jsonrpc import ServiceProxy
-
 from mybitbank.libs.connections import connector
 
 

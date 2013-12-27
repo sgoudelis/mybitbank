@@ -101,8 +101,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'mybitbank.libs.connections.switcher.CurrencyEnabler',
-    'mybitbank.apps.dashboard.sslchecker.SSLChecker',
+    'mybitbank.middleware.switcher.CurrencyEnabler',
+    'mybitbank.middleware.sslchecker.SSLChecker',
 )
 
 ROOT_URLCONF = 'mybitbank.urls'
@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'mybitbank.middleware',
     'mybitbank.libs.connections',
     'mybitbank.apps.dashboard',
     'mybitbank.apps.accounts',
