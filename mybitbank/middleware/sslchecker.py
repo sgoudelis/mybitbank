@@ -1,7 +1,9 @@
 import datetime
 
 from django.utils.timezone import utc
+
 from mybitbank.libs.connections import connector
+
 
 class SSLChecker():
     '''

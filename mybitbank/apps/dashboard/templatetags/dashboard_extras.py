@@ -46,7 +46,6 @@ def getaddressbookname(address):
     '''
     Template tag to return the address book entry name
     '''
-    
     if isinstance(address, CoinAddress):
         address_book_name = address.getAddressBookName()
         if address_book_name:
@@ -54,7 +53,7 @@ def getaddressbookname(address):
         else:
             return None
 
-def getnumberofalert(system_alerts):
+def getnumberofalerts(system_alerts):
     '''
     Measure the number of system alerts
     '''
@@ -70,4 +69,4 @@ register.filter('keyvalue', keyvalue)
 register.filter('getalerticon', getalerticon)
 register.filter('getaccountname', getaccountname)
 register.filter('getaddressbookname', getaddressbookname)
-register.filter('getnumberofalert', getnumberofalert)
+register.filter('getnumberofalerts', getnumberofalerts)

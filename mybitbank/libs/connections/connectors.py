@@ -1,12 +1,15 @@
 import datetime
+import hashlib
 import signal
 import time
-import hashlib
-import mybitbank.libs.events
-from mybitbank.libs.bitcoinrpc.authproxy import JSONRPCException
-from mybitbank.libs.jsonrpc import ServiceProxy
-from mybitbank.libs import misc
+
 from django.utils.timezone import utc
+
+from mybitbank.libs import misc
+from mybitbank.libs.bitcoinrpc.authproxy import JSONRPCException
+import mybitbank.libs.events
+from mybitbank.libs.jsonrpc import ServiceProxy
+
 
 measure_time = False
 

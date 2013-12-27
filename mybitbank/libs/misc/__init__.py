@@ -1,6 +1,8 @@
 import datetime
 import dateutil.relativedelta
+
 from mybitbank.libs.config import MainConfig
+
 
 def longNumber(x):
     '''

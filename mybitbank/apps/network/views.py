@@ -3,9 +3,10 @@ from django.contrib.gis.geoip import GeoIP
 from django.shortcuts import render
 from django.utils.translation import ugettext as _
 
+from mybitbank.libs import misc
 from mybitbank.libs.config import MainConfig
 from mybitbank.libs.connections import connector
-from mybitbank.libs import misc
+
 
 current_section = 'network'
 

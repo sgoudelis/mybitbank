@@ -1,18 +1,16 @@
-import forms
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from mybitbank.libs.entities import getWalletByProviderId
+import forms
 from mybitbank.apps.addressbook.models import savedAddress
+from mybitbank.libs import events, misc
 from mybitbank.libs.config import MainConfig
 from mybitbank.libs.connections import connector
+from mybitbank.libs.entities import getWalletByProviderId
 
-from mybitbank.libs import events
-from mybitbank.libs import misc
 
 current_section = 'transfer'
 

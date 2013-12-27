@@ -1,5 +1,4 @@
 import datetime
-import forms
 import json
 
 from django.contrib import messages
@@ -10,13 +9,14 @@ from django.shortcuts import render
 from django.utils.timezone import utc
 from django.utils.translation import ugettext as _
 
-from mybitbank.libs.entities import getWallets, getWalletByProviderId
+import forms
 from models import addressAliases
 from mybitbank.apps.addressbook.models import savedAddress
+from mybitbank.libs import events, misc
 from mybitbank.libs.config import MainConfig
 from mybitbank.libs.connections import connector
-from mybitbank.libs import events
-from mybitbank.libs import misc
+from mybitbank.libs.entities import getWallets, getWalletByProviderId
+
 
 current_section = 'accounts'
 

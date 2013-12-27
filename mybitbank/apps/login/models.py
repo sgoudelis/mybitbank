@@ -3,6 +3,7 @@ from django.db import models
 
 from settings import UserSettings
 
+
 class Setting(models.Model):
     user = models.ForeignKey(User, unique=False)
     name = models.CharField(max_length=200, unique=True)

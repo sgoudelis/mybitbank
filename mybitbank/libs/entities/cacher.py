@@ -2,6 +2,7 @@ import datetime
 
 from django.utils.timezone import utc
 
+
 class Cacher(object):
     '''
     Caching object for data

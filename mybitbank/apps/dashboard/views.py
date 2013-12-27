@@ -1,17 +1,17 @@
 import calendar
 import urllib2
 
-from mybitbank.libs.entities import getWallets
-
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
+from mybitbank.libs import misc
 from mybitbank.libs.config import MainConfig
 from mybitbank.libs.connections import connector
+from mybitbank.libs.entities import getWallets
 from mybitbank.libs.events import Events
-from mybitbank.libs import misc
+
 
 @login_required
 def index(request):

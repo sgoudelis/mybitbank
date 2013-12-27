@@ -1,6 +1,5 @@
 import calendar
 import datetime
-import forms
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -10,11 +9,12 @@ from django.shortcuts import render
 from django.utils.timezone import utc
 from django.utils.translation import ugettext as _
 
+import forms
+from models import savedAddress
+from mybitbank.libs import events, misc
 from mybitbank.libs.config import MainConfig
 from mybitbank.libs.connections import connector
-from mybitbank.libs import events
-from mybitbank.libs import misc
-from models import savedAddress
+
 
 current_section = 'addressbook'
 

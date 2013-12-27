@@ -1,5 +1,6 @@
 from coinwallet import CoinWallet
 
+
 def getWallets(connector):
     '''
     Return a list of wallets
