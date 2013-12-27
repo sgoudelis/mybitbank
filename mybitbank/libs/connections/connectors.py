@@ -9,7 +9,7 @@ from mybitbank.libs import misc
 from mybitbank.libs.bitcoinrpc.authproxy import JSONRPCException
 import mybitbank.libs.events
 from mybitbank.libs.jsonrpc import ServiceProxy
-
+#from mybitbank.libs.entities.cacher import Cacher
 
 measure_time = False
 
@@ -54,6 +54,9 @@ class Connector(object):
     
     # the WSGIRequest object we are serving
     request = None
+    
+    # cache object
+    cache = []
     
     @timeit
     def __init__(self):
