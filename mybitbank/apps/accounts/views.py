@@ -1,12 +1,12 @@
 import datetime
 import forms
+import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from django.utils import simplejson
 from django.utils.timezone import utc
 from django.utils.translation import ugettext as _
 
@@ -212,8 +212,8 @@ def setAddressAlias(request):
             else:
                 return_msg = {'alias': 'sugnomi xasate'}
                 
-    json = simplejson.dumps(return_msg)             
-    return HttpResponse(json, mimetype="application/x-javascript")
+    json_str = json.dumps(return_msg)             
+    return HttpResponse(json_str, mimetype="application/x-javascript")
 
 @login_required
 def createNewAddress(request, selected_provider_id, account_identifier):
