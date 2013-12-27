@@ -3,6 +3,7 @@ import generic
 import hashlib
 import events
 import time
+import signal
 from coinaccount import CoinAccount
 from jsonrpc import ServiceProxy
 from connections.cacher import Cacher 
@@ -25,9 +26,16 @@ def timeit(method):
 
     return timed
 
+class ExecuteCommandTimeoutException(Exception): 
+    pass 
+
+
 class Connector(object):
     # how long to cache responses
     caching_time = 10
+    
+    # signal timeout
+    signal_timeout = 3
     
     # how long to disable a failing service
     disable_time = 10
@@ -89,6 +97,48 @@ class Connector(object):
                                                           currency_config['rpcpassword'], 
                                                           currency_config['rpchost'], 
                                                           currency_config['rpcport']))
+
+
+    def executeCommand(self, provider_id, command, *args):
+        '''
+        WIP! Do not use. This does not work when outside main thread!
+        
+        Call the command from the currency provider (xxxcoinds) with timeout signals
+        since the xxxcoinds may accept the connection but will not respond because they are busy. 
+        They can be busy for many reasons. Some calls block the RCP threads or they could be downloading 
+        blocks. This make the httplib timeout useless. Using signals we can timeout any function regardless
+        of the reason it is delaying.
+        '''
+        
+        print "provider_id: %s" % provider_id
+        print "command: %s" % command
+        print args
+        
+        def timeout_handler(signum, frame):
+            raise ExecuteCommandTimeoutException()
+        
+        print "pipes"
+        old_handler = signal.signal(signal.SIGALRM, timeout_handler) 
+        print "ipipes2 "
+        signal.alarm(self.signal_timeout)
+        
+        
+        try: 
+            rpc_method = getattr(self.services[provider_id], command)
+            rpc_response = rpc_method(*args)
+            print rpc_response
+        except ExecuteCommandTimeoutException:
+            print "timeout"
+            self.errors.append({'message': 'Signal timeout occurred while doing %s (provider id: %s)' % (command, provider_id), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+            self.removeCurrencyService(provider_id)
+            return None
+        finally:
+            print "finally"
+            signal.signal(signal.SIGALRM, old_handler) 
+        
+        print "returning"
+        signal.alarm(0)
+        return rpc_response
 
     @timeit
     def removeCurrencyService(self, provider_id):
