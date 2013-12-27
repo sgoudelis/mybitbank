@@ -57,7 +57,7 @@
                 
 	            <ul class="nav navbar-nav navbar-right navbar-user">
 		           <li class="dropdown alerts-dropdown messages-dropdown">
-	              <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-bell"></i> Alerts <span class="badge {% if system_alerts %}badge-alert{% endif %}">{{ system_alerts|getnumberofalert }}</span> <b class="caret"></b></a>
+	              <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-bell"></i> Alerts <span class="badge {% if system_alerts|getnumberofalert %}badge-alert{% endif %}">{{ system_alerts|getnumberofalert }}</span> <b class="caret"></b></a>
 	              
 	              <ul class="dropdown-menu">
 	              {% if system_alerts %}
