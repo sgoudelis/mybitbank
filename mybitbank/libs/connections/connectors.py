@@ -5,9 +5,9 @@ import time
 
 from django.utils.timezone import utc
 
+from mybitbank.libs import events
 from mybitbank.libs import misc
 from mybitbank.libs.bitcoinrpc.authproxy import JSONRPCException
-import mybitbank.libs.events
 from mybitbank.libs.jsonrpc import ServiceProxy
 #from mybitbank.libs.entities.cacher import Cacher
 
@@ -138,7 +138,7 @@ class Connector(object):
             if currency_provider_config.get('enabled', False) is True:
                 self.addAlert('currencybackend', {'provider_id': provider_id, 'message': 'Currency service provider %s named %s is disabled for %s seconds due an error communicating.' % (provider_id, currency_provider_config['name'], self.disable_time), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                 currency_provider_config['enabled'] = datetime.datetime.utcnow().replace(tzinfo=utc) + datetime.timedelta(0, self.disable_time)
-                mybitbank.libs.events.addEvent(self.request, "Currency service %s has being disabled for %s seconds due to error communicating" % (currency_provider_config['currency'], self.disable_time), 'error')
+                events.addEvent(self.request, "Currency service %s has being disabled for %s seconds due to error communicating" % (currency_provider_config['currency'], self.disable_time), 'error')
                 if self.services.get(provider_id, None):
                     del self.services[provider_id]
 
