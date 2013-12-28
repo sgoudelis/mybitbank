@@ -329,7 +329,7 @@ class Connector(object):
         account_list = self.services[provider_id].listaccounts()
 
         account_names = []
-        for account_name, account_balance in account_list.items():
+        for account_name in account_list:
             account_names.append(account_name)
         
         if from_account in account_names and to_account in account_names:
@@ -366,7 +366,7 @@ class Connector(object):
         account_list = self.services[provider_id].listaccounts()
         
         account_names = []
-        for account_name, account_balance in account_list.items():
+        for account_name in account_list:
             account_names.append(account_name)
             
         if from_account in account_names:
