@@ -146,43 +146,6 @@
 
     </div>
     <!-- /container -->
-    
-  <div data-backdrop="false" data-keyboard="true" class="modal fade" id="unlockDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Unlock wallet</h4>
-        </div>
-        <div class="modal-body text-center">
-          <div class="btn-group" data-toggle="buttons">
-          {% for currency in currency_symbols %}
-		  <label class="btn btn-default">
-		    <input type="radio" name="options" id="option1"><span class="huge-symbol">{{ currency_symbols|keyvalue:currency }}</span>
-		  </label>
-		  {% endfor %}
-		  </div>
-		  
-		   <div class="row">&nbsp;</div>
-            <div class="row">
-              <div class="col-md-12 text-center">
-                  <div class="form-group {% if form.from_address.errors %}has-error{% endif %}">
-                    <label for="passphrase"><h4>Passphrase</h4></label>
-                    <input type="password" class="form-control fixed-width-font" id="passphrase" name="passphrase" placeholder="passphrase" value="">
-                    {{ form.passphrase.errors }}
-                  </div>
-              </div>
-            </div>
-            
-            
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
 	    
   <script type="text/javascript">
   $(document).ready(function() {

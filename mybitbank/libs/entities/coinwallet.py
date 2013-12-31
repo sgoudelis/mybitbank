@@ -87,7 +87,7 @@ class CoinWallet(object):
         if cached_peerinfo:
             info = cached_peerinfo
         else:
-            info = connector.getinfo(self.provider_id)
+            info = connector.getInfo(self.provider_id)
             self._cache.store('info', cache_hash, info)
         
         is_testnet = False

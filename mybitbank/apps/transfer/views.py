@@ -130,7 +130,7 @@ def send(request, selected_provider_id):
             # if to_account is set then it is a local move, do a move()
             if to_account:
                 # this address/account is hosted locally, do a move
-                move_exit = connector.moveamount(
+                move_exit = connector.moveAmount(
                                                  from_account=from_account['name'],
                                                  to_account=to_account['name'],
                                                  provider_id=provider_id,
@@ -148,7 +148,7 @@ def send(request, selected_provider_id):
                 # otherwise do a sendfrom(), it is a regular transaction
                 if passphrase:
                     # a passphrase was given, unlock wallet first
-                    unlock_exit = connector.walletpassphrase(passphrase, provider_id)
+                    unlock_exit = connector.walletPassphrase(passphrase, provider_id)
                     
                     if unlock_exit is not True:
                         # show form with error
@@ -157,7 +157,7 @@ def send(request, selected_provider_id):
                         return render(request, 'transfer/index.html', context)
                 
                 # to_address not local, do a send
-                sendfrom_exit = connector.sendfrom(
+                sendfrom_exit = connector.sendFrom(
                                                    from_account=from_account['name'],
                                                    to_address=to_address,
                                                    amount=amount,
@@ -190,7 +190,7 @@ def send(request, selected_provider_id):
                 
             if passphrase:
                 # lock wallet again
-                connector.walletlock(provider_id)
+                connector.walletLock(provider_id)
                 
             # process the data in form.cleaned_data
             if move_exit:

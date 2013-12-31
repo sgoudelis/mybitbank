@@ -159,7 +159,7 @@ class Connector(object):
         return cache_hash
     
     @timeit
-    def getinfo(self, provider_id):
+    def getInfo(self, provider_id):
         '''
         Get xxxcoind info
         '''
@@ -178,7 +178,7 @@ class Connector(object):
         return peerinfo
     
     @timeit
-    def getpeerinfo(self, provider_id):
+    def getPeerInfo(self, provider_id):
         '''
         Get peer info from the connector (xxxcoind)
         '''
@@ -304,7 +304,7 @@ class Connector(object):
         return balances
    
     @timeit
-    def moveamount(self, from_account, to_account, provider_id, amount, minconf=1, comment=""):
+    def moveAmount(self, from_account, to_account, provider_id, amount, minconf=1, comment=""):
         '''
         Move amount from local to local accounts
         Note: from_account my be an empty string 
@@ -347,7 +347,7 @@ class Connector(object):
             return {'message': 'source or destination account not found', 'code':-103}
     
     @timeit          
-    def sendfrom(self, from_account, to_address, amount, provider_id, minconf=1, comment="", comment_to=""):
+    def sendFrom(self, from_account, to_address, amount, provider_id, minconf=1, comment="", comment_to=""):
         if type(from_account) not in [str, unicode]:
             return {'message': 'Invalid input from account', 'code':-156}
         
@@ -412,7 +412,7 @@ class Connector(object):
         return transaction_details
     
     @timeit
-    def decoderawtransaction(self, transaction, provider_id):
+    def decodeRawTransaction(self, transaction, provider_id):
         '''
         Decode raw transaction
         '''
@@ -445,7 +445,7 @@ class Connector(object):
         return transaction_details
     
     @timeit
-    def walletpassphrase(self, passphrase, provider_id):
+    def walletPassphrase(self, passphrase, provider_id):
         '''
         Unlock the wallet
         '''
@@ -479,7 +479,7 @@ class Connector(object):
             return True
     
     @timeit    
-    def walletlock(self, provider_id):
+    def walletLock(self, provider_id):
         '''
         Lock wallet
         '''

@@ -12,7 +12,7 @@ from django.test.client import Client
 from django.test.utils import setup_test_environment
 from lxml import etree
 
-from connections import connector
+from mybitbank.libs.connections import connector
 
 
 rawData = {

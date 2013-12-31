@@ -1,4 +1,3 @@
-# instantiate the Connector() class
 import connectors
 
 

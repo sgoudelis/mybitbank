@@ -3,8 +3,7 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from connections import Connector
-
+from mybitbank.libs.connections.connectors import Connector
 
 # import generic
 rawData = {

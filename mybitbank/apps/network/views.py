@@ -20,7 +20,7 @@ def index(request, selected_provider_id=sorted(connector.config.keys())[0]):
     
     g = GeoIP()
     notsupported = 0;
-    peers = connector.getpeerinfo(selected_provider_id)
+    peers = connector.getPeerInfo(selected_provider_id)
     if 'error' in peers :
         peers = {}
         notsupported = 1
