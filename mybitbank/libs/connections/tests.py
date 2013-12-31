@@ -297,7 +297,7 @@ class ConnectorsTests(TestCase):
         
     def test_getBalance(self):
         '''
-        Test getbalance() method
+        Test getBalance() method
         '''        
         provider_id = 1
         balance = self.connector.getBalance(provider_id, "my test BTC account")
@@ -306,7 +306,7 @@ class ConnectorsTests(TestCase):
         
     def test_getBalance_all_accounts(self):
         '''
-        Test getbalance() method, return all accounts
+        Test getBalance() method, return all accounts
         '''        
         provider_id = 1
         balance = self.connector.getBalance(provider_id)
