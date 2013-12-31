@@ -22,6 +22,11 @@
 <script src="../../assets/js/html5shiv.js"></script>
 <script src="../../assets/js/respond.min.js"></script>
 <![endif]-->
+<style>
+.form-group { 
+	margin-bottom: 0px; 
+}
+</style>
 </head>
 <body>
    <div class="container"> 
@@ -46,13 +51,19 @@
 				    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
 				    <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" value="{{ form.username.value }}">
 				  </div>
-				  {{ form.username.errors }}	
+				  {% if form.username.errors %}
+				  <div class="red-font">{{ form.username.errors|striptags }}</div>
+				  <br/>
+				  {% endif %}
 				  <label for="username">{% trans "Password" %}</label>
 				  <div class="form-group {% if form.password.errors %}has-error{% endif %} input-group">
 				    <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
 				    <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
 				  </div>
-				  {{ form.password.errors }}
+				  {% if form.password.errors %}
+				  <div class="red-font">{{ form.password.errors|striptags }}</div>
+				  <br/>
+				  {% endif %}
 				  <div class="checkbox">
 				    <label>
 				      <input type="checkbox" name="remember" value="True" {% if form.remember.value %}checked="1"{% endif %}/> {% trans "Remember me" %}

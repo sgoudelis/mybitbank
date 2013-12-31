@@ -19,7 +19,7 @@
         <label for="name">Address name</label>
         <input type="text" class="form-control" id="name" name="name" placeholder="address name" value="{{ form.name.value }}">
       	{% if form.errors.name %}
-      	{{ form.errors.name }}
+      	<span class="red-font">{{ form.errors.name|striptags }}</span>
       	{% endif %}
       </div>
      </div>
@@ -29,7 +29,7 @@
         <label for="address">Address</label>
         <input type="text" class="form-control" id="address" name="address" placeholder="address" value="{{ form.address.value }}">
       	{% if form.errors.address %}
-      	{{ form.errors.address }}
+      	<span class="red-font">{{ form.errors.address|striptags }}</span>
       	{% endif %}
       </div>
      </div>
@@ -38,13 +38,13 @@
        {% for currency in currencies %}
         <div class="radio">
           <label>
-            <input type="radio" name="provider_id" id="provider_id" value="{{ currency.provider_id }}" {% ifequal form.provider_id.value currency.provider_id|stringformat:"s" %}checked{% endifequal %}>
+            <input type="radio" name="provider_id" id="provider_id" value="{{ currency.provider_id }}" {% ifequal form.provider_id.value|stringformat:"s"  currency.provider_id|stringformat:"s" %}checked{% endifequal %}>
             {{ currency.name }}
           </label>
         </div>
        {% endfor %}
        {% if form.errors.provider_id %}
-       {{ form.errors.provider_id }}
+       <span class="red-font">{{ form.errors.provider_id|striptags }}</span>
        {% endif %}
       </div>
     </div>
@@ -54,7 +54,7 @@
         <label for="comment">Comment</label>
         <textarea class="form-control" rows="3" id="comment" name="comment" placeholder="comment" value="{{ form.comment.value }}"></textarea>
       	{% if form.errors.comment %}
-      	{{ form.errors.comment }}
+      	<span class="red-font">{{ form.errors.comment|striptags }}</span>
       	{% endif %}
       </div>
       </div>

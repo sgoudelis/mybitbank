@@ -20,7 +20,7 @@
         <label for="account_name">Account name</label>
         <input type="text" class="form-control" id="account_name" name="account_name" placeholder="account name" value="{{ form.account_name.value }}">
       	{% if form.errors.account_name %}
-      	{{ form.errors.account_name }}
+      	<span class="red-font">{{ form.errors.account_name|striptags }}</span>
       	{% endif %}
       </div>
       <div class="form-group">
@@ -33,8 +33,8 @@
         </div>
        {% endfor %}
 	     {% if form.errors.provider_id %}
-	   	{{ form.errors.provider_id }}
-	   	{% endif %}
+	     <span class="red-font">{{ form.errors.provider_id|striptags }}</span>
+	   	 {% endif %}
       </div>
     
      </div>

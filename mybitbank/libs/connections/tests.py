@@ -138,13 +138,16 @@ class ServiceProxyStubBTC(object):
     def getnewaddress(self, account_name):
         return self._rawData['new_account_address']
     
-    def getbalance(self):
-        return self._rawData['balance']
+    def getbalance(self, account_name):
+        if account_name=='*':
+            return self._rawData['accounts']
+        else:
+            return self._rawData['accounts'][account_name]
     
     def move(self, from_account, to_account, amount, minconf, comment):
         return True
     
-    def sendfrom(self, from_account, to_address, amount, minconf, comment, comment_to):
+    def sendFrom(self, from_account, to_address, amount, minconf, comment, comment_to):
         return True
 
     def walletpassphrase(self, passphrase, timeout):
@@ -152,6 +155,10 @@ class ServiceProxyStubBTC(object):
     
     def walletlock(self):
         return True
+    
+    def gettransaction(self, txid, verbose=1):
+        transaction = self._rawData['transactions']['pipes'][0]
+        return transaction
     
     def getrawtransaction(self, transaction, verbose=1):
         return self._rawData['rawtransactions'][0]
@@ -174,8 +181,6 @@ class ConnectorsTests(TestCase):
                                      'name': 'Bitcoin (BTC)',
                                      'currency': 'btc',
                                      'symbol': "B",
-                                     'code': 'BTC',
-                                     'network': "testnet",
                                      'enabled': True,
                                    }, }
         
@@ -197,11 +202,11 @@ class ConnectorsTests(TestCase):
         self.assertEquals(num, "10.00000000", "Connector.longNumber method is problematic")
         self.connector = None
         
-    def test_listaccounts(self):
+    def test_listAccounts(self):
         '''
-        Test listaccounts() method
+        Test listAccounts() method
         '''
-        accounts = self.connector.listaccounts(gethidden=True, getarchived=True)
+        accounts = self.connector.listAccounts(gethidden=True, getarchived=True)
         provider_id = 1
         
         # check number of in and out accounts        
@@ -242,49 +247,24 @@ class ConnectorsTests(TestCase):
         addresses = self.connector.services[provider_id].getaddressesbyaccount(account_name)
         self.assertTrue(addresses is False, 'Connector.getaddressesbyaccount() method error, wrong address returned')
         
-    def test_listtransactionsbyaccount(self):
+    def test_listTransactionsByAccount(self):
         '''
-        Test listtransactionsbyaccount() method
+        Test listTransactionsByAccount() method
         '''
         
-        account_name = "pipes"
+        accoount_name = "pipes"
         provider_id = 1
-        transactions = self.connector.listtransactionsbyaccount(account_name, provider_id)
+        transactions = self.connector.listTransactionsByAccount(accoount_name, provider_id)
+        correct_transactions = rawData['transactions']['pipes']
         
-        # test number of transactions returned
-        number_transactions = len(transactions)
-        self.assertEquals(number_transactions, 2, 'Connector.listtransactionsbyaccount() method returned wrong number of transactions')
+        self.assertEquals(transactions, correct_transactions, 'Connector.listtransactions() method returned wrong number of transactions')
         
-        # test validity of transaction dictionaries
-        for transaction in transactions:
-            self.assertTrue(account_name in transaction['account'], 'Connector.listtransactionsbyaccount() method error, wrong transactions returned')
-            self.assertIsNotNone(transaction['time_pretty'])
-            self.assertIsNotNone(transaction['currency'])
-            self.assertIsNotNone(transaction['timereceived_pretty'])
-            self.assertIsNotNone(transaction['time_human'])
-            self.assertIsNotNone(transaction['timereceived_human'])
-            self.assertIsNotNone(transaction['txid'])
-        
-    def test_listtransactions(self):
-        '''
-        Test listtransactions() method
-        '''
-        
-        provider_id = 1
-        transactions = self.connector.listtransactions()
-        print "TRANSACTIONS:"
-        print transactions
-        # test number of transactions returned
-        number_transactions = len(transactions[provider_id])
-        print "num: %s" % number_transactions
-        self.assertEquals(number_transactions, 2, 'Connector.listtransactions() method returned wrong number of transactions')
-        
-    def test_getnewaddress(self):
+    def test_getNewAddress(self):
         '''
         Test getnewaddress() method
         '''
         provider_id = 1
-        new_address = self.connector.getnewaddress(provider_id, rawData['new_account_address'])
+        new_address = self.connector.getNewAddress(provider_id, rawData['new_account_address'])
         self.assertEquals(new_address, rawData['new_account_address'])
         
     def test_getnewaddress_invalid_currency(self):
@@ -292,7 +272,7 @@ class ConnectorsTests(TestCase):
         Test getnewaddress() method with invalid currency id
         '''
         
-        new_address = self.connector.getnewaddress('INV', rawData['new_account_address'])
+        new_address = self.connector.getNewAddress('INV', rawData['new_account_address'])
         self.assertEquals(new_address, False)
 
     def test_getnewaddress_unicode_account_name(self):
@@ -302,7 +282,7 @@ class ConnectorsTests(TestCase):
         
         account_name = u'thisisunicode'
         provider_id = 1
-        new_address = self.connector.getnewaddress(provider_id, account_name)
+        new_address = self.connector.getNewAddress(provider_id, account_name)
         self.assertEquals(new_address, 'new account address')        
         
     def test_getnewaddress_nonstring_account_name(self):
@@ -312,57 +292,26 @@ class ConnectorsTests(TestCase):
         
         account_name = False
         provider_id = 1
-        new_address = self.connector.getnewaddress(provider_id, account_name)
+        new_address = self.connector.getNewAddress(provider_id, account_name)
         self.assertEquals(new_address, None)
         
-    def test_getnewaddress_no_name(self):
-        '''
-        Test getnewaddress() method with empty name
-        '''
-        provider_id = 1
-        new_address = self.connector.getnewaddress(provider_id, "")
-        self.assertEquals(new_address, None)
-        
-    def test_getbalance(self):
+    def test_getBalance(self):
         '''
         Test getbalance() method
         '''        
         provider_id = 1
-        balance = self.connector.getbalance()
-        correct_result = {provider_id: self.connector.longNumber(rawData['balance'])}
+        balance = self.connector.getBalance(provider_id, "my test BTC account")
+        correct_result = {provider_id: rawData['accounts']['my test BTC account']}
         self.assertEquals(balance, correct_result)
         
-    def test_getaccountdetailsbyaddress(self):
+    def test_getBalance_all_accounts(self):
         '''
-        Test getaccountdetailsbyaddress() method
-        '''
-        
-        test_account_name = "pipes"
-        address = "second address for pipes account"
-        account = self.connector.getaccountdetailsbyaddress(address)
-        
-        self.assertEquals(account['name'], test_account_name)
-        
-    def test_getaccountdetailsbyaddress_nonexistant_address(self):
-        '''
-        Test getaccountdetailsbyaddress() method
-        '''
-        
-        address = "otinanaitalegame"
-        account = self.connector.getaccountdetailsbyaddress(address)
-        
-        self.assertEquals(account, None)
-        
-    def test_getaccountdetailsbyaddress_incorrect_name(self):
-        '''
-        Test getaccountdetailsbyaddress() method
-        '''
-        
-        test_account_name = "koumoutses"
-        address = "second address for pipes account"
-        account = self.connector.getaccountdetailsbyaddress(address)
-        
-        self.assertNotEquals(account['name'], test_account_name)
+        Test getbalance() method, return all accounts
+        '''        
+        provider_id = 1
+        balance = self.connector.getBalance(provider_id)
+        correct_result = {provider_id: rawData['accounts']}
+        self.assertEquals(balance, correct_result)
         
     def test_moveamount(self):
         '''
@@ -376,7 +325,7 @@ class ConnectorsTests(TestCase):
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.moveamount(from_account, to_account, provider_id, amount, minconf, comment)
+        move_result = self.connector.moveAmount(from_account, to_account, provider_id, amount, minconf, comment)
         self.assertEquals(move_result, True)
         
     def test_moveamount_nonexisting_from_account(self):
@@ -384,14 +333,14 @@ class ConnectorsTests(TestCase):
         Test moveamount() method testing non-existing from account
         '''
         
-        from_account = "Idontexistretsakalia"
+        from_account = "Idontexistretsakalia"  # non-existing account
         to_account = "another account"
-        currency = 'btc'
+        provider_id = 1
         amount = "1"
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
+        move_result = self.connector.moveAmount(from_account, to_account, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
     def test_moveamount_nonexistant_to_account(self):
@@ -401,12 +350,12 @@ class ConnectorsTests(TestCase):
         
         from_account = "pipes"
         to_account = "Idontexistretsakalia"
-        currency = 'btc'
+        provider_id = 0
         amount = "1"
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
+        move_result = self.connector.moveAmount(from_account, to_account, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
        
     def test_moveamount_invalid_currency(self):
@@ -416,12 +365,12 @@ class ConnectorsTests(TestCase):
         
         from_account = "pipes"
         to_account = "another account"
-        currency = 'INV'
+        provider_id = 0
         amount = "1"
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
+        move_result = self.connector.moveAmount(from_account, to_account, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
          
     def test_moveamount_non_number_amount_1(self):
@@ -431,12 +380,12 @@ class ConnectorsTests(TestCase):
         
         from_account = "pipes"
         to_account = "another account"
-        currency = 'btc'
+        provider_id = 1
         amount = {}
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
+        move_result = self.connector.moveAmount(from_account, to_account, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
     def test_moveamount_non_number_amount_2(self):
@@ -446,12 +395,12 @@ class ConnectorsTests(TestCase):
         
         from_account = "pipes"
         to_account = "another account"
-        currency = 'btc'
+        provider_id = 1
         amount = True
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
+        move_result = self.connector.moveAmount(from_account, to_account, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
 
     def test_moveamount_non_number_amount_3(self):
@@ -461,12 +410,12 @@ class ConnectorsTests(TestCase):
         
         from_account = "pipes"
         to_account = "another account"
-        currency = 'btc'
+        provider_id = 1
         amount = ""
         minconf = 1
         comment = "test comment from django test"
 
-        move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
+        move_result = self.connector.moveAmount(from_account, to_account, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
     def test_moveamount_non_number_amount_4(self):
@@ -476,17 +425,17 @@ class ConnectorsTests(TestCase):
         
         from_account = "pipes"
         to_account = "another account"
-        currency = 'btc'
+        provider_id = 1
         amount = u""
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.moveamount(from_account, to_account, currency, amount, minconf, comment)
+        move_result = self.connector.moveAmount(from_account, to_account, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
-    def test_sendfrom_nonexistant_from_account(self):
+    def test_sendFrom_nonexistant_from_account(self):
         '''
-        Test sendfrom() method testing non-existing from account
+        Test sendFrom() method testing non-existing from account
         '''
         
         from_account = "Idontexistretsakalia"
@@ -496,12 +445,12 @@ class ConnectorsTests(TestCase):
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        move_result = self.connector.sendFrom(from_account, address, currency, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
-    def test_sendfrom_nonexistant_address(self):
+    def test_sendFrom_nonexistant_address(self):
         '''
-        Test sendfrom() method testing non-existing address
+        Test sendFrom() method testing non-existing address
         '''
         
         from_account = "pipes"
@@ -511,82 +460,82 @@ class ConnectorsTests(TestCase):
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        move_result = self.connector.sendFrom(from_account, address, currency, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
        
-    def test_sendfrom_invalid_currency(self):
+    def test_sendFrom_invalid_currency(self):
         '''
-        Test sendfrom() method testing invalid currency
+        Test sendFrom() method testing invalid currency
         '''
         
         from_account = "pipes"
         address = "address for sdfsdfs account"
-        currency = 'INV'
+        provider_id = 0
         amount = "1"
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        move_result = self.connector.sendFrom(from_account, address, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
-    def test_sendfrom_non_number_amount_1(self):
+    def test_sendFrom_non_number_amount_1(self):
         '''
-        Test sendfrom() method testing non-number amount
+        Test sendFrom() method testing non-number amount
         '''
         
         from_account = "pipes"
         address = "address for sdfsdfs account"
-        currency = 'btc'
+        provider_id = 1
         amount = {}
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        move_result = self.connector.sendFrom(from_account, address, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
-    def test_sendfrom_non_number_amount_2(self):
+    def test_sendFrom_non_number_amount_2(self):
         '''
-        Test sendfrom() method testing non-number amount
+        Test sendFrom() method testing non-number amount
         '''
         
         from_account = "pipes"
         address = "address for sdfsdfs account"
-        currency = 'btc'
+        provider_id = 1
         amount = True
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        move_result = self.connector.sendFrom(from_account, address, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
 
-    def test_sendfrom_non_number_amount_3(self):
+    def test_sendFrom_non_number_amount_3(self):
         '''
-        Test sendfrom() method testing non-number amount
+        Test sendFrom() method testing non-number amount
         '''
         
         from_account = "pipes"
         address = "address for sdfsdfs account"
-        currency = 'btc'
+        provider_id = 1
         amount = ""
         minconf = 1
         comment = "test comment from django test"
 
-        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        move_result = self.connector.sendFrom(from_account, address, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
-    def test_sendfrom_non_number_amount_4(self):
+    def test_sendFrom_non_number_amount_4(self):
         '''
-        Test sendfrom() method testing non-number amount
+        Test sendFrom() method testing non-number amount
         '''
         
         from_account = "pipes"
         address = "address for sdfsdfs account"
-        currency = 'btc'
+        provider_id = 1
         amount = u""
         minconf = 1
         comment = "test comment from django test"
         
-        move_result = self.connector.sendfrom(from_account, address, currency, amount, minconf, comment)
+        move_result = self.connector.sendFrom(from_account, address, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
         
     def test_walletpassphrase_invalid_passphrase_1(self):
@@ -595,9 +544,9 @@ class ConnectorsTests(TestCase):
         '''
         
         passphrase = True
-        currency = 'btc'
+        provider_id = 1
         
-        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        unlock_exit = self.connector.walletPassphrase(passphrase, provider_id)
         
         self.assertNotEquals(unlock_exit, True)
         
@@ -607,9 +556,9 @@ class ConnectorsTests(TestCase):
         '''
         
         passphrase = {}
-        currency = 'btc'
+        provider_id = 1
         
-        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        unlock_exit = self.connector.walletPassphrase(passphrase, provider_id)
         
         self.assertNotEquals(unlock_exit, True)
         
@@ -619,9 +568,9 @@ class ConnectorsTests(TestCase):
         '''
         
         passphrase = None
-        currency = 'btc'
+        provider_id = 1
         
-        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        unlock_exit = self.connector.walletPassphrase(passphrase, provider_id)
         
         self.assertNotEquals(unlock_exit, True)
         
@@ -631,9 +580,9 @@ class ConnectorsTests(TestCase):
         '''
         
         passphrase = ""
-        currency = 'btc'
+        provider_id = 1
         
-        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        unlock_exit = self.connector.walletPassphrase(passphrase, provider_id)
         
         self.assertNotEquals(unlock_exit, True)
         
@@ -643,9 +592,9 @@ class ConnectorsTests(TestCase):
         '''
         
         passphrase = "testpassphrase"
-        currency = 'inv'
+        provider_id = 'inv'
         
-        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        unlock_exit = self.connector.walletPassphrase(passphrase, provider_id)
         
         self.assertNotEquals(unlock_exit, True)
         
@@ -655,9 +604,9 @@ class ConnectorsTests(TestCase):
         '''
         
         passphrase = "testpassphrase"
-        currency = ""
+        provider_id = ""
         
-        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        unlock_exit = self.connector.walletPassphrase(passphrase, provider_id)
         
         self.assertNotEquals(unlock_exit, True)
         
@@ -667,103 +616,95 @@ class ConnectorsTests(TestCase):
         '''
         
         passphrase = "testpassphrase"
-        currency = False
+        provider_id = False
         
-        unlock_exit = self.connector.walletpassphrase(passphrase, currency)
+        unlock_exit = self.connector.walletPassphrase(passphrase, provider_id)
         
         self.assertNotEquals(unlock_exit, True)
         
     def test_walletlock_invalid_currency_1(self):
         '''
-        Test walletlock
+        Test walletLock()
         '''
         
-        currency = "inv"
-        lock_exit = self.connector.walletlock(currency)
+        provider_id = "pip"
+        lock_exit = self.connector.walletLock(provider_id)
         
         self.assertNotEquals(lock_exit, True)
         
     def test_walletlock_invalid_currency_2(self):
         '''
-        Test walletlock
+        Test walletLock()
         '''
         
-        currency = ""
-        lock_exit = self.connector.walletlock(currency)
+        provider_id = ""
+        lock_exit = self.connector.walletLock(provider_id)
         
         self.assertNotEquals(lock_exit, True)
         
     def test_walletlock_invalid_currency_3(self):
         '''
-        Test walletlock
+        Test walletLock()
         '''
         
-        currency = False
-        lock_exit = self.connector.walletlock(currency)
+        provider_id = False
+        lock_exit = self.connector.walletLock(provider_id)
         
         self.assertNotEquals(lock_exit, True)
         
-    def test_gettransactiondetails(self):
+    def test_getTransaction(self):
         '''
-        Test gettransactiondetails()
+        Test getTransaction()
         '''
 
-        transaction = rawData['transactions']['pipes'][0]
+        correct_transaction = rawData['transactions']['pipes'][0]
+        txid = correct_transaction['txid']
         provider_id = 1
-        transaction_details = self.connector.gettransactiondetails(transaction, provider_id)
-        self.assertEquals(type(transaction_details.get('sender_address', False)), str)
+        transaction = self.connector.getTransaction(txid, provider_id)
+        self.assertEquals(transaction, correct_transaction)
         
-    def test_gettransactiondetails_invalid_currency_1(self):
+    def test_getTransaction_invalid_provider_id_1(self):
         '''
-        Test gettransactiondetails()
+        Test getTransaction() with invalid provider_id
         '''
 
         transaction = rawData['transactions']['pipes'][0]
-        currency = 'inv'
+        txid = transaction['txid']
+        provider_id = 0
         
-        transaction_details = self.connector.gettransactiondetails(transaction, currency)
-        self.assertNotEquals(transaction_details.get('code', None), None)
+        transaction = self.connector.getTransaction(txid, provider_id)
+        self.assertNotEquals(transaction.get('code', None), None)
 
-    def test_gettransactiondetails_invalid_currency_2(self):
+    def test_getTransaction_invalid_provider_id_2(self):
         '''
-        Test gettransactiondetails()
+        Test getTransaction() with invalid provider_id
         '''
 
         transaction = rawData['transactions']['pipes'][0]
-        currency = None
+        txid = transaction['txid']
+        provider_id = None
         
-        transaction_details = self.connector.gettransactiondetails(transaction, currency)
-        self.assertNotEquals(transaction_details.get('code', None), None)
+        transaction = self.connector.getTransaction(txid, provider_id)
+        self.assertNotEquals(transaction.get('code', None), None)
         
-    def test_gettransactiondetails_invalid_txid_1(self):
+    def test_getTransaction_invalid_txid_1(self):
         '''
-        Test gettransactiondetails()
+        Test getTransaction() with invalid txid
         '''
 
-        transaction = ""
-        currency = 'btc'
+        txid = "otinanai"
+        provider_id = 1
         
-        transaction_details = self.connector.gettransactiondetails(transaction, currency)
-        self.assertNotEquals(transaction_details.get('code', None), None)
+        transaction = self.connector.getTransaction(txid, provider_id)
+        self.assertNotEquals(transaction, None)
     
     def test_gettransactiondetails_invalid_txid_2(self):
         '''
         Test gettransactiondetails()
         '''
 
-        transaction = False
-        currency = 'btc'
+        txid = False
+        provider_id = 1
         
-        transaction_details = self.connector.gettransactiondetails(transaction, currency)
-        self.assertNotEquals(transaction_details.get('code', None), None)
-
-    def test_gettransactiondetails_invalid_txid_3(self):
-        '''
-        Test gettransactiondetails()
-        '''
-
-        transaction = "dsfasdfasdf"
-        currency = 'btc'
-        
-        transaction_details = self.connector.gettransactiondetails(transaction, currency)
-        self.assertNotEquals(transaction_details.get('code', None), None)
+        transaction = self.connector.getTransaction(txid, provider_id)
+        self.assertNotEquals(transaction, None)

@@ -281,25 +281,19 @@ class Connector(object):
             return False
     
     @timeit
-    def getBalance(self, selected_provider_id=0, account_name="*"):
+    def getBalance(self, provider_id=0, account_name="*"):
         '''
         Get balance for each provider
         '''
         balances = {}
         
-        if selected_provider_id > 0:
-            provider_ids = [selected_provider_id]
-        else:
-            provider_ids = self.config.keys()
-        
-        for provider_id in provider_ids:
-            if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
-                try:
-                    balances[provider_id] = misc.longNumber(self.services[provider_id].getbalance(account_name))
-                except Exception as e:
-                    # in case of an Exception continue on to the next currency service (xxxcoind)
-                    self.errors.append({'message': 'Error occurred while doing getbalance (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
-                    self.removeCurrencyService(provider_id)
+        if self.config.get(provider_id, False) and self.config[provider_id]['enabled'] is True:
+            try:
+                balances[provider_id] = self.services[provider_id].getbalance(account_name)
+            except Exception as e:
+                # in case of an Exception continue on to the next currency service (xxxcoind)
+                self.errors.append({'message': 'Error occurred while doing getbalance (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
+                self.removeCurrencyService(provider_id)
         
         return balances
    
@@ -357,7 +351,7 @@ class Connector(object):
         if provider_id not in self.services.keys():
             return {'message': 'Non-existing currency provider id %s' % provider_id, 'code':-100}
         
-        if not misc.isFloat(amount) or type(amount) is bool:
+        if not misc.isFloat(amount) or type(amount) is not bool:
             return {'message': 'Amount is not a number', 'code':-102}
 
         if type(comment) not in [str, unicode]  or type(comment_to) not in [str, unicode]:
