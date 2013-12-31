@@ -8,7 +8,10 @@ def longNumber(x):
     '''
     Convert number coming from the JSON-RPC to a human readable format with 8 decimal
     '''
-    return "{:.8f}".format(x)
+    if type(x) is str:
+        return x
+    else:
+        return "{:.8f}".format(x)
 
 def twitterizeDate(ts):
     '''

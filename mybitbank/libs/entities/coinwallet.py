@@ -2,6 +2,7 @@ import hashlib
 
 from mybitbank.apps.accounts.models import accountFilter
 from mybitbank.libs.connections import connector
+from mybitbank.libs import misc
 from cacher import Cacher
 from coinaddress import CoinAddress
 from cointransaction import CoinTransaction
@@ -116,7 +117,7 @@ class CoinWallet(object):
         # store result in cache
         self._cache.store('balance', cache_hash, balance)
         
-        return balance.get(self.provider_id, "-")
+        return misc.longNumber(balance.get(self.provider_id, "-"))
     
     def getParamHash(self, param=""):
         '''
