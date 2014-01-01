@@ -1,0 +1,51 @@
+{% load dashboard_extras %}
+
+<ul class="nav nav-tabs">
+	<li class=""><a href="{% url 'accounts:details_with_transactions' account.provider_id account.identifier 1 %}"><strong>Transactions</strong></a></li>
+	<li class="active grey-tab"><a href="{% url 'accounts:details_with_addresses' account.provider_id account.identifier 1 %}"><strong>Addresses</strong></a></li>
+</ul>
+
+
+<table class="table table-hover bordered">
+<thead>
+<tr style="background-color:#f5f5f5;">
+	<th>Addresses</th>
+	<th>Aliases</th>
+	<th>QRcode</th>
+</tr>
+</thead>
+  	{% for address in account.addresses %}
+  	<tr>
+  		<td width="200"><span class="address-label label-default">{{ account.currency_symbol }} {{ address }}</span></td>
+  		<td>
+  		{% if address.alias %}
+		<div id="link_{{ address }}"><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> <a href="javascript:void(0)" onclick="editAlias('{{ address }}')">{{ address.alias }}</a></span></div>
+  		{% else %}
+  			<div id="link_{{ address }}"><span class="faded addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> <a href="javascript:void(0)" onclick="editAlias('{{ address }}')">add an alias</a></span></div>
+  		{% endif %}
+  			<div class="no-display" id="edit_{{ address }}">
+			<form onsubmit="sendAddressAlias('{{ address }}'); return false;" class="form-inline" role="form" id="set_alias_form_{{ address }}" action="{% url 'accounts:set_address_alias' %}">
+			  {% csrf_token %}
+			  <div class="form-group">
+			    <input type="text" class="form-control tiny-text-field" name="alias" id="new_alias_{{ address }}" placeholder="enter alias">
+			  </div>
+			  <input type="hidden" name="address" value="{{ address }}">
+			  <button type="button" onclick="sendAddressAlias('{{ address }}')" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok-circle"></span></button>
+			  <button type="button" onclick="$('div#edit_{{ address }}').toggle(); $('div#link_{{ address }}').toggle(); return false;" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove-circle"></span></button>
+			</form>
+		</div>
+  		</td>
+  		<td>
+  		<button data-toggle="modal" data-target="#myModal" title="show QR code" type="button" onclick="updateQRImage('{{ address }}')" class="btn btn-success btn-xs"><i class="fa fa-qrcode"></i></span></button>
+  		</td>
+  	</tr>
+  	{% endfor %}
+  	<tr>
+  	<td>
+  		<form method="post" class="form-inline" role="form" id="create_new_address_form" action="{% url 'accounts:create_new_address' account.provider_id account.identifier %}">
+  		{% csrf_token %}
+  		<input type="submit" class="btn btn-info btn-xs" type="button" name="fsdf" value="+ create new addess"/>
+  		</form>
+  	</td>
+  	</tr>
+</table>

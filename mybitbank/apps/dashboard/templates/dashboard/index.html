@@ -155,11 +155,11 @@
 					{% endif %}
 						<td>
 						{% if transaction.category == 'receive'%}
-						<a href="{% url 'accounts:details' transaction.account.provider_id transaction.account.identifier %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
+						<a href="{% url 'accounts:details_with_transactions' transaction.account.provider_id transaction.account.identifier 1 %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
 						{% elif transaction.category == 'send'%}
-						<a href="{% url 'accounts:details' transaction.account.provider_id transaction.account.identifier %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
+						<a href="{% url 'accounts:details_with_transactions' transaction.account.provider_id transaction.account.identifier 1 %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
 						{% elif transaction.category == 'move'%}
-						<a href="{% url 'accounts:details' transaction.otheraccount.provider_id transaction.otheraccount.identifier %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.otheraccount|getaccountname }}</strong></a>
+						<a href="{% url 'accounts:details_with_transactions' transaction.otheraccount.provider_id transaction.otheraccount.identifier 1 %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.otheraccount|getaccountname }}</strong></a>
 						{% endif %}
 						</td>
 						<td><span class="glyphicon {{ transaction.icon }}"></span></td>

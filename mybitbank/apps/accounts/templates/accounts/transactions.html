@@ -1,0 +1,115 @@
+{% load dashboard_extras %}
+
+<ul class="nav nav-tabs">
+	<li class="active grey-tab"><a href="{% url 'accounts:details_with_transactions' account.provider_id account.identifier 1 %}"><strong>Transactions</strong></a></li>
+	<li class=""><a href="{% url 'accounts:details_with_addresses' account.provider_id account.identifier 1 %}"><strong>Addresses</strong></a></li>
+</ul>
+
+<table class="table table-hover bordered">
+   <thead>
+     <tr class="" style="background-color:#f5f5f5;">
+         <th width="27"></th>
+         <th class="hidden-xs" width="267">To</th>
+         <th class="hidden-xs" width="267">From</th>
+         <th width="160">Comment</th>
+         <th width="40" class="hidden-xs text-center">Conf.</th>
+         <th width="35" class="text-center">Info</th>
+         <th width="100" class="text-center">When</th>
+         <th width="150" class="text-right">Amount</th>
+     </tr>
+    </thead>
+    <tr style="display:none;">
+       <td>
+       bogus row
+       </td>
+    </tr>
+     {% if transactions %}
+     {% for transaction in transactions %} 
+     {% if transaction.confirmations > 6 or transaction.category == "move" %}
+       <tr>
+     {% else %}
+       <tr style="opacity: 0.4;">
+     {% endif %}
+     
+      <td>
+        <div class="text-center">
+        {% if transaction.category == 'receive' %}
+        <span data-toggle="tooltip" title="{{ transaction.category }}" class="category-icon glyphicon glyphicon-circle-arrow-down"></span>
+        {% elif transaction.category == 'send' %}
+        <span data-toggle="tooltip" title="{{ transaction.category }}" class="category-icon glyphicon glyphicon-circle-arrow-up"></span>
+        {% elif transaction.category == 'move' %}
+        <span data-toggle="tooltip" title="{{ transaction.category }}" class="category-icon glyphicon glyphicon-circle-arrow-right"></span>
+        {% endif %}
+        </div>
+        <div class="visible-xs text-center"><span class="glyphicon {{ transaction.icon }}"></span></div>
+      </td>
+     
+     {% if transaction.category = 'move' %}
+     		<td class="hidden-xs"><span style="color:#ccc;">this account</span></td>
+     {% elif transaction.category == 'receive' %}
+  {% if transaction.address.alias %}
+   	<td class="hidden-xs" nowrap><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> {{ transaction.address.alias }}</span></td>
+     	  {% else %}
+     	    <td class="hidden-xs" nowrap><span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span></td>
+     	  {% endif %}
+      {% elif transaction.category == 'send' %}
+      
+       {% if transaction.addressbook_name %}
+       	<td class="hidden-xs" nowrap><span class="addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.addressbook_name }}</span></td>
+       {% else %}
+       	<td class="hidden-xs" nowrap><span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span></td>
+       {% endif %}
+     
+     {% endif %}
+
+         {% if transaction.category == 'receive' %}
+          {% if transaction.source_address.getAddressBookName %}
+          	<td class="hidden-xs" nowrap><span class="addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.source_address|getaddressbookname }} <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="{{ sender_address_tooltip_text }}"></span></span></td>
+          {% else %}
+          	<td class="hidden-xs" nowrap><span class="sender-address address-label label-default">{{ transaction.currency_symbol }} {{ transaction.details.sender_address }} <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="{{ sender_address_tooltip_text }}"></span></span></td>
+          {% endif %}
+         
+         {% elif transaction.category == 'send' %}
+         
+          <td class="hidden-xs fixed-width-font"><span style="color:#ccc;">this account</span></td>
+         
+         {% elif transaction.category == 'move' %}
+         	<td class="hidden-xs" nowrap><a href="{% url 'accounts:details_with_transactions' transaction.otheraccount.provider_id transaction.otheraccount.identifier 1 %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.otheraccount|getaccountname }}</strong></a></td>
+         {% endif %}
+         
+         <td>{% if transaction.comment %}{{ transaction.comment }}{% else %}-{% endif %}</td>    
+
+         <td class="hidden-xs text-center"><span style="color: {{ transaction.status_color }};" class="bigger-icon glyphicon {{ transaction.status_icon }}" title="{{ transaction.tooltip }}" data-toggle="tooltip"></span></td>
+         <td class="text-center">{% if transaction.txid %}<a href="{% url 'transactions:details' transaction.provider_id transaction.txid %}"><span data-toggle="tooltip" title="View transaction details" class="bigger-icon glyphicon glyphicon-info-sign"></span></a>{% endif %}</td>
+         <td width="120" class="text-center">{{ transaction.time_pretty }}</td>
+         <td width="200" class="text-right" style="font-family: courier;"><span class="amount {% if transaction.amount > 0 %}in{% else %}out{% endif %}">{{ transaction.amount }}</span> {{ transaction.currency|upper }}</td>
+     </tr>
+     {% endfor %}
+     {% else %}
+     <tr>
+         <td colspan=8><center><em>No data</em></center></td>
+     </tr>
+     {% endif %}
+ </table>
+
+     <div class="text-center panel-body">
+     <ul class="pagination no-margin">
+       <li {% if current_page == prev_page %}class="disabled"{% endif %}><a href="{% url 'accounts:details_with_transactions' account.provider_id account.identifier prev_page %}">&laquo;</a></li>
+       <li><a href="{% url 'accounts:details_with_transactions' account.provider_id account.identifier levels.0.2 %}">-1000</a></li>
+       <li><a href="{% url 'accounts:details_with_transactions' account.provider_id account.identifier levels.0.1 %}">-100</a></li>
+       <li><a href="{% url 'accounts:details_with_transactions' account.provider_id account.identifier levels.0.0 %}">-10</a></li>
+       <li><a href="{% url 'accounts:details_with_transactions' account.provider_id account.identifier 1 %}">1st page</a></li>
+       <li><a href="{% url 'accounts:details_with_transactions' account.provider_id account.identifier levels.1.0 %}">+10</a></li>
+       <li><a href="{% url 'accounts:details_with_transactions' account.provider_id account.identifier levels.1.1 %}">+100</a></li>
+       <li><a href="{% url 'accounts:details_with_transactions' account.provider_id account.identifier levels.1.2 %}">+1000</a></li>
+       <li {% if transactions|length < transactions_per_page %}class="disabled"{% endif %}><a href="{% url 'accounts:details_with_transactions' account.provider_id account.identifier next_page %}">&raquo;</a></li>
+     </ul>
+     </div>
+    
+	 <div class="well well-sm row" style="margin: 20px;">
+	 	<div class="col-md-1"><strong>Legend:</strong></div>
+  	 	<div class="col-md-2"><span class="addressalias-label address-label label-default"><span class="glyphicon glyphicon-tag very-small-info-icon"></span> local address alias</span></div>
+  	 	<div class="col-md-2"><span class="addressbook-label address-label label-default">$ address book entry</span></div>
+  	 	<div class="col-md-4"><span class="sender-address address-label label-default">$ resolved address from ScriptSig <span class="small-info-icon glyphicon glyphicon-info-sign" title="" data-toggle="tooltip" data-original-title="{{ sender_address_tooltip_text }}"></span></span></div>
+  	 	<div class="col-md-2"><a href="javascript:void(0)" class="btn btn-default btn-xs">$ <strong>account name</strong></a></div>
+  	 </div>

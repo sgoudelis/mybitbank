@@ -1,5 +1,6 @@
 import datetime
 import json
+import forms
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -9,7 +10,6 @@ from django.shortcuts import render
 from django.utils.timezone import utc
 from django.utils.translation import ugettext as _
 
-import forms
 from models import addressAliases
 from mybitbank.apps.addressbook.models import savedAddress
 from mybitbank.libs import events, misc
@@ -122,8 +122,13 @@ def create(request):
     context = getAddAccountFormContext(account_name="", form=form)
     return render(request, 'accounts/add.html', context)
     
+    
+def detailsCommonContext(request, provider_id, account_identifier, page=1):
+    pass
+    
+    
 @login_required        
-def details(request, selected_provider_id, account_identifier="pipes", page=1):
+def details_with_addresses(request, provider_id, account_identifier="pipes", page=1):
     '''
     Handler for the account details
     '''
@@ -131,24 +136,56 @@ def details(request, selected_provider_id, account_identifier="pipes", page=1):
     # set the request in the connector object
     connector.request = request
     
+    provider_id = int(provider_id)
+    
+    # add a list of pages in the view
+    sections = misc.getSiteSections(current_section)
+    
+    # get a wallet
+    wallet = getWalletByProviderId(connector, provider_id)
+    
+    # get account details
+    account = wallet.getAccountByIdentifier(account_identifier)
+    
+    page_title = _('Account details for "%s"') % (account['name'])
+    
+    context = {
+               'globals': MainConfig['globals'],
+               'request': request,
+               'system_alerts': connector.alerts,
+               'system_errors': connector.errors,
+               'breadcrumbs': misc.buildBreadcrumbs(current_section, '', account['name']),
+               'page_title': page_title,
+               'active_tab': 'addresses',
+               'current_page': page,
+               'page_sections': sections,
+               'wallet': wallet,
+               'account': account,
+               }
+    
+    return render(request, 'accounts/details.html', context)
+
+@login_required        
+def details_with_transactions(request, provider_id, account_identifier="pipes", page=1):
+    '''
+    Handler for the account details with transactions
+    '''
+    
+    # set the request in the connector object
+    connector.request = request
+    
     transactions_per_page = 10
-    selected_provider_id = int(selected_provider_id)
+    provider_id = int(provider_id)
     page = int(page)
     
     # add a list of pages in the view
     sections = misc.getSiteSections(current_section)
     
     # get a wallet
-    wallet = getWalletByProviderId(connector, selected_provider_id)
+    wallet = getWalletByProviderId(connector, provider_id)
     
     # get account details
     account = wallet.getAccountByIdentifier(account_identifier)
-    
-    # get address book entries
-    addressBookAddresses = savedAddress.objects.filter(status__gt=1)
-    saved_addresses = {}
-    for saved_address in addressBookAddresses:
-        saved_addresses[saved_address.address] = saved_address.name
     
     transactions = []
     if account:
@@ -165,6 +202,7 @@ def details(request, selected_provider_id, account_identifier="pipes", page=1):
                'system_errors': connector.errors,
                'breadcrumbs': misc.buildBreadcrumbs(current_section, '', account['name']),
                'page_title': page_title,
+               'active_tab': 'transactions',
                'current_page': page,
                'next_page': (page + 1),
                'prev_page': max(1, page - 1),
@@ -216,7 +254,7 @@ def setAddressAlias(request):
     return HttpResponse(json_str, mimetype="application/x-javascript")
 
 @login_required
-def createNewAddress(request, selected_provider_id, account_identifier):
+def createNewAddress(request, provider_id, account_identifier):
     '''
     Create a new address for the account of account_identifier
     '''
@@ -224,14 +262,14 @@ def createNewAddress(request, selected_provider_id, account_identifier):
     # set the request in the connector object
     connector.request = request
     
-    selected_provider_id = int(selected_provider_id)
-    wallet = getWalletByProviderId(connector, selected_provider_id)
+    provider_id = int(provider_id)
+    wallet = getWalletByProviderId(connector, provider_id)
     if request.method == 'POST': 
         account = wallet.getAccountByIdentifier(account_identifier)
         if account:
             new_address = connector.getNewAddress(account['provider_id'], account['name'])
             messages.success(request, 'New address "%s" created for account "%s"' % (new_address, account['name']), extra_tags="success")
             events.addEvent(request, 'New address "%s" created for account "%s"' % (new_address, account['name']), 'info')
-        return HttpResponseRedirect(reverse('accounts:details', kwargs={'selected_provider_id': selected_provider_id, 'account_identifier': account_identifier}))
+        return HttpResponseRedirect(reverse('accounts:details_with_addresses', kwargs={'provider_id': provider_id, 'account_identifier': account_identifier, 'page': 1}))
     
     

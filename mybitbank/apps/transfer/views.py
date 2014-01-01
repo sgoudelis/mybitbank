@@ -1,10 +1,11 @@
+import forms
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-import forms
 from mybitbank.apps.addressbook.models import savedAddress
 from mybitbank.libs import events, misc
 from mybitbank.libs.config import MainConfig

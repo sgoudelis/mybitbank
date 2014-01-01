@@ -48,7 +48,7 @@
 
                         <td class="hidden-xs">
                         	{% if transaction.category == "move" %}
-                        	<a href="{% url 'accounts:details' transaction.account.provider_id transaction.account.identifier %}" class="btn btn-default btn-xs">{{ transaction.account.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
+                        	<a href="{% url 'accounts:details_with_transactions' transaction.account.provider_id transaction.account.identifier 1 %}" class="btn btn-default btn-xs">{{ transaction.account.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
                         	{% elif transaction.category == "send" %}
                         		{% if transaction.address|getaddressbookname %}
                         			<span class="addressbook-label address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address|getaddressbookname }}</span>
@@ -56,7 +56,7 @@
                         			<span class="address-label label-default">{{ transaction.currency_symbol }} {{ transaction.address }}</span>
                         		{% endif %}
                         	{% elif transaction.category == "receive" %}
-                        	<a href="{% url 'accounts:details' transaction.account.provider_id transaction.account.identifier %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
+                        	<a href="{% url 'accounts:details_with_transactions' transaction.account.provider_id transaction.account.identifier 1 %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
                         	{% endif %}
                         </td>
                         
@@ -68,10 +68,10 @@
 	                        		<span class="sender-address address-label label-default">{{ transaction.currency_symbol }} {{ transaction.source_address }} <span data-toggle="tooltip" title="{{ sender_address_tooltip_text }}" class="small-info-icon glyphicon glyphicon-info-sign"></span></span>
 	                        	{% endif %}
 	                        {% elif transaction.category == "send" %}
-	                        <a href="{% url 'accounts:details' transaction.account.provider_id transaction.account.identifier %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
+	                        <a href="{% url 'accounts:details_with_transactions' transaction.account.provider_id transaction.account.identifier 1 %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.account|getaccountname }}</strong></a>
 	                        
 	                        {% elif transaction.category == "move" %}
-	                        <a href="{% url 'accounts:details' transaction.otheraccount.provider_id transaction.otheraccount.identifier %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.otheraccount|getaccountname }}</strong></a>
+	                        <a href="{% url 'accounts:details_with_transactions' transaction.otheraccount.provider_id transaction.otheraccount.identifier 1 %}" class="btn btn-default btn-xs">{{ transaction.currency_symbol }} <strong>{{ transaction.otheraccount|getaccountname }}</strong></a>
 	                        {% endif %}
 	                    </td>
                         

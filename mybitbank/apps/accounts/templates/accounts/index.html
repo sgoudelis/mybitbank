@@ -34,7 +34,7 @@
                     {% for account in accounts %}
                     <tr {% if account.isHidden %}class="no-display" name="hidden_account"{% endif %}>
                         <td>
-                        	<a href="/accounts/details/{{ account.provider_id }}/{{ account.identifier }}" class="btn btn-default btn-xs">{{ account.currency_symbol }} <strong>{{ account|getaccountname }}</a></strong>
+                        	<a href="{% url 'accounts:details_with_transactions' account.provider_id account.identifier 1 %}" class="btn btn-default btn-xs">{{ account.currency_symbol }} <strong>{{ account|getaccountname }}</a></strong>
                         </td>
                         <td class="hidden-xs">
                         {% if account.addresses %}
