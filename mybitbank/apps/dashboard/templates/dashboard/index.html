@@ -142,6 +142,10 @@
 					</tr>
 				</thead>
 				<tbody>
+				<tr>
+					<td style="display:none;">
+					</td>
+				</tr>
 				{% for transaction in transactions %}
 				
 					{% if transaction.confirmations < 6 and transaction.category != 'move' %}
