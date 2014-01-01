@@ -147,7 +147,10 @@ class Connector(object):
         '''
         Convert number coming from the JSON-RPC to a human readable format with 8 decimal
         '''
-        return "{:.8f}".format(x)
+        if type(x) is str:
+            return x
+        else:
+            return "{:.8f}".format(x)
     
     def getParamHash(self, param=""):
         '''
@@ -219,6 +222,7 @@ class Connector(object):
                         fresh_accounts[provider_id][fresh_account_name] = self.longNumber(fresh_account_balance)
                     
                 except Exception, e:
+                    raise
                     # in case of an error, store the error, remove the service and move on
                     self.errors.append({'message': 'Error occurred while doing listaccounts (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                     self.removeCurrencyService(provider_id)
@@ -351,8 +355,8 @@ class Connector(object):
 
         if provider_id not in self.services.keys():
             return {'message': 'Non-existing currency provider id %s' % provider_id, 'code':-100}
-        
-        if not misc.isFloat(amount) or type(amount) is not bool:
+
+        if not misc.isFloat(amount) or type(amount) is bool:
             return {'message': 'Amount is not a number', 'code':-102}
 
         if type(comment) not in [str, unicode]  or type(comment_to) not in [str, unicode]:
@@ -373,7 +377,7 @@ class Connector(object):
             except ValueError, e:
                 return {'message': e, 'code':-1}
             except Exception, e: 
-                return e.error
+                return e
             
             return reply
         else:

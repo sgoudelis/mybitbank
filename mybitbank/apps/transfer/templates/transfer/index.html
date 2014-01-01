@@ -56,7 +56,9 @@
                   <div class="form-group {% if form.from_address.errors %}has-error{% endif %}">
                     <label for="passphrase"><h5>Passphrase</h5></label>
                     <input type="password" class="form-control fixed-width-font2" id="passphrase" name="passphrase" placeholder="passphrase" value="">
+                    {% if form.passphrase.errors %}
                     <span class="red-font">{{ form.passphrase.errors|striptags }}</span>
+                    {% endif %}
                   </div>
               </div>
             </div>
@@ -76,7 +78,9 @@
                 {% endfor %}
                 {% endif %}
                 </select>
-                <span class="red-font">{{ form.from_account.errors|striptags }}</span>
+                {% if form.from_account.errors %}
+                <span id="error_message_from_account" class="red-font">{{ form.from_account.errors|striptags }}</span>
+                {% endif %}
                 </div>
               </div>
 			  <!--
@@ -101,7 +105,7 @@
                   <div class="form-group {% if form.to_address.errors %}has-error{% endif %}">
                     <label for="to_address">To</label>
                     <input type="text" class="text-center form-control fixed-width-font2" id="to_address" name="to_address" placeholder="type address" value="{{ form.to_address.value }}">
-                    <span class="red-font">{{ form.to_address.errors|striptags }}</span>
+                    <span id="error_message_to_address" class="red-font">{{ form.to_address.errors|striptags }}</span>
                   </div>
               </div>
               <div class="col-md-6">
@@ -140,7 +144,9 @@
                   <span class="input-group-addon"><span class="glyphicon glyphicon-comment"></span></span>
                   <input placeholder="store what the transaction is for" type="text" class="form-control" name="comment" value="{{ form.comment.value }}">
                 </div>
+                {% if form.comment.errors %}
                 <span class="red-font">{{ form.comment.errors|striptags }}</span>
+                {% endif %}
               </div></div>
               <div class="col-md-6"></div>
             </div>
@@ -169,7 +175,7 @@
                   <span class="input-group-addon">{{ currency_symbols|keyvalue:selected_provider_id }}</span>
                   <input type="text" class="form-control" name="amount" style="text-align:right;" value="{{ form.amount.value }}">
                 </div>
-                <span class="red-font">{{ form.amount.errors|striptags }}</span>
+                <span id="error_message_amount" class="red-font">{{ form.amount.errors|striptags }}</span>
               </div></div>
               <div class="col-md-6"></div>
             </div>

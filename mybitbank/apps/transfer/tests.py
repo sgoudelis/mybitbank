@@ -1,11 +1,7 @@
-'''
-Bogus currency services
-'''
-
 import StringIO
-from decimal import Decimal
 import io
 
+from mybitbank.libs.misc.stubconnector import ServiceProxyStubBTC, ServiceProxyStubBTCWithPass
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -15,7 +11,7 @@ from lxml import etree
 
 from mybitbank.libs.connections import connector
 
-
+'''
 rawData = {
            'passphrase': 'testpassphrase',
            'new_account_address': "new account address",
@@ -166,43 +162,7 @@ class ServiceProxyStubBTC(object):
     def getrawtransaction(self, txid, verbose=1):
         return self._rawData['rawtransaction'][0]
 
-class ServiceProxyStubBTCWithPass(object):
-    def __init__(self):
-        self._rawData = rawData
-        
-    def listaccounts(self):
-        return self._rawData['accounts']
-
-    def getaddressesbyaccount(self, account_name):
-        try:
-            return self._rawData['addresses'][account_name]
-        except:
-            return False
-        
-    def listtransactions(self, account_name, count=10, start=0):
-        return self._rawData['transactions'][account_name]
-
-    def getnewaddress(self, account_name):
-        return self._rawData['new_account_address']
-    
-    def getbalance(self):
-        return self._rawData['balance']
-    
-    def move(self, from_account, to_account, amount, minconf, comment):
-        return True
-    
-    def sendfrom(self, from_account, to_address, amount, minconf, comment, comment_to):
-        return {'code':-13, 'message': u'Error: Please enter the wallet passphrase with walletpassphrase first.'}
-
-    def walletpassphrase(self, passphrase, timeout):
-        return True
-    
-    def walletlock(self):
-        return True
-    
-    def getrawtransaction(self, txid, verbose=1):
-        return self._rawData['rawtransaction'][0]
-
+'''
 
 class TransferIndexTests(TestCase):
     def setUp(self):
@@ -220,7 +180,9 @@ class TransferIndexTests(TestCase):
                              'network': "testnet",
                              'enabled': True,
                            }, }
-                
+            
+        connector.alerts = {}
+        
         user = User.objects.create_user('testing', 'testing@testingpipes.com', 'testingpassword')
         user.save()
 
@@ -264,11 +226,11 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        from_account_options = html_tree.xpath("//select[@id='from_address']/option")
-        to_account_options = html_tree.xpath("//select[@id='to_account_menu']/option")
+        from_account_options = html_tree.xpath("//select[@id='from_account']/option")
+        to_account_options = html_tree.xpath("//select[@id='to_account']/option")
 
         self.assertEquals(len(from_account_options), 7)
-        self.assertEquals(len(to_account_options), 6)
+        self.assertEquals(len(to_account_options), 7)
         
     def test_tranfer_submit_XSRF_failure(self):
         '''
@@ -319,9 +281,9 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/div/div/ul[@class='errorlist']"), []) 
-        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[3]/div/div/ul[@class='errorlist']"), [])
-        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[6]/div/div/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath('//*[@id="error_message_from_account"]'), []) 
+        self.assertNotEquals(html_tree.xpath('//*[@id="error_message_to_address"]'), [])
+        self.assertNotEquals(html_tree.xpath('//*[@id="error_message_amount"]'), [])
         
     def test_tranfer_submit_with_from_account_value(self):
         '''
@@ -516,8 +478,7 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
 
-        self.assertNotEquals(html_tree.xpath("//div/div/ul[@class='errorlist']"), [])
-        self.assertNotEquals(html_tree.xpath("//div/div/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath('//*[@id="error_message_to_address"]'), [])
         
     def test_tranfer_submit_required_pass(self):
         '''
@@ -535,7 +496,7 @@ class TransferIndexTests(TestCase):
                     'comment': "",
                     'comment_to': "",
                     'csrfmiddlewaretoken': "",
-                    'from_address': "mxgWFbqGPywQUKNXdAd3G2EH6Te1Kag5MP",
+                    'from_account': "my test BTC account",
                     'provider_id': provider_id,
                     'to_address': "mox7n3wfu9hrT3Cn24RBTDce1wiHEP1NQp"
                     }
@@ -543,7 +504,7 @@ class TransferIndexTests(TestCase):
         response = client.post(reverse('transfer:send', kwargs={'selected_provider_id': provider_id}), post_data)
         response_html = self.stripHeaders(response)
         html_tree = self.validateHTML(response_html)
-
+        print response_html
         # validate HTML
         self.assertNotEquals(html_tree, False)
         self.assertNotEquals(html_tree.xpath("//*[@id='passphrase']"), [])

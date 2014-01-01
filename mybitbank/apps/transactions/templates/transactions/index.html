@@ -33,6 +33,11 @@
                         <th width="180" style="background-color:#f5f5f5;" class="text-right">Amount</th>
                     </tr>
                    </thead>
+                   <tr style="display:none;">
+	                   <td>
+	                   bogus row
+	                   </td>
+                   </tr>
                     {% if transactions %}
                     {% for transaction in transactions %} 
                     {% if transaction.confirmations >= 6 or transaction.category == "move" %}

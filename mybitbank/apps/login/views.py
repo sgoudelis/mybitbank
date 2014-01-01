@@ -1,4 +1,5 @@
 import socket
+import forms
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -7,7 +8,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import ugettext as _
 
-import forms
 from mybitbank.libs import events, misc
 from mybitbank.libs.config import MainConfig
 from mybitbank.libs.connections import connector
@@ -22,12 +22,14 @@ def index(request):
     
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse('dashboard:index'))
-        
+    
     page_title = _("Login")
+
     context = {
                'globals': MainConfig['globals'],
                'breadcrumbs': misc.buildBreadcrumbs(current_section, 'all'),
                'system_errors': connector.errors,
+               'request': request,
                'page_title': page_title,
                'next_url': request.GET.get('next', reverse('dashboard:index')),
                }

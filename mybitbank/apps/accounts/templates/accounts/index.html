@@ -25,6 +25,11 @@
                         <th style="background-color:#f5f5f5;" class="text-right">{% trans "Balance" %}</th>
                     </tr>
                     </thead>
+                    <tr style="display:none;">
+	                   <td>
+	                   bogus row
+	                   </td>
+                   </tr>
                     {% if accounts %}
                     {% for account in accounts %}
                     <tr {% if account.isHidden %}class="no-display" name="hidden_account"{% endif %}>

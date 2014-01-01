@@ -43,6 +43,14 @@
 	                </div>
 	            </div>
                 <div class="panel-body">
+                
+                {% if not request.is_secure %}
+	            <div class="alert alert-dismissable alert-danger">
+				  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				  Warning! Connection not secure!
+				</div>
+				{% endif %}
+                
 				<form role="form" action="{% url 'login:processLogin' %}" method="post">
 				{% csrf_token %}
 				<input type="hidden" name="next_url" value="{{ next_url }}"/>
@@ -53,8 +61,8 @@
 				  </div>
 				  {% if form.username.errors %}
 				  <div class="red-font">{{ form.username.errors|striptags }}</div>
-				  <br/>
 				  {% endif %}
+				  <div class="row">&nbsp;</div>
 				  <label for="username">{% trans "Password" %}</label>
 				  <div class="form-group {% if form.password.errors %}has-error{% endif %} input-group">
 				    <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
