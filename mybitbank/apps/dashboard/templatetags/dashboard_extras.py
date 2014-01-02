@@ -58,7 +58,7 @@ def getnumberofalerts(system_alerts):
     Measure the number of system alerts
     '''
     num = 0
-    for system_alert_type, system_alert_per_type in system_alerts.items():
+    for system_alert_per_type in system_alerts.itervalues():
         num = num + len(system_alert_per_type)
     return num
     

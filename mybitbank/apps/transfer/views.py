@@ -97,7 +97,8 @@ def send(request, selected_provider_id):
         # we have a POST request
         form = forms.SendCurrencyForm(request.POST)
         
-        if form.is_valid(): 
+        if form.is_valid():
+            print "is valid"
             # all validation rules pass
             from_account_identifier = form.cleaned_data['from_account']
             to_address = form.cleaned_data['to_address']
@@ -130,6 +131,7 @@ def send(request, selected_provider_id):
             to_account = wallet.getAccountByAddress(to_address)
             # if to_account is set then it is a local move, do a move()
             if to_account:
+                print "move"
                 # this address/account is hosted locally, do a move
                 move_exit = connector.moveAmount(
                                                  from_account=from_account['name'],
@@ -147,6 +149,7 @@ def send(request, selected_provider_id):
                 
             else:
                 # otherwise do a sendfrom(), it is a regular transaction
+                print "sendfrom"
                 if passphrase:
                     # a passphrase was given, unlock wallet first
                     unlock_exit = connector.walletPassphrase(passphrase, provider_id)

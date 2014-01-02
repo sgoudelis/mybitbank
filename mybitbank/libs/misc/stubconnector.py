@@ -159,7 +159,6 @@ class ServiceProxyStubBTC(object):
         return self._rawData['rawtransactions'][0]
     
     
-    
 class ServiceProxyStubBTCWithPass(object):
     def __init__(self):
         self._rawData = rawData

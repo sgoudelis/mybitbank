@@ -3,6 +3,7 @@ import hashlib
 import signal
 import time
 
+from httplib import CannotSendRequest
 from django.utils.timezone import utc
 
 from mybitbank.libs import events
@@ -220,9 +221,7 @@ class Connector(object):
                     fresh_accounts[provider_id] = self.services[provider_id].listaccounts()
                     for fresh_account_name, fresh_account_balance in fresh_accounts[provider_id].items():
                         fresh_accounts[provider_id][fresh_account_name] = self.longNumber(fresh_account_balance)
-                    
-                except Exception, e:
-                    raise
+                except (Exception, CannotSendRequest) as e:
                     # in case of an error, store the error, remove the service and move on
                     self.errors.append({'message': 'Error occurred while doing listaccounts (provider id: %s, error: %s)' % (provider_id, e), 'when': datetime.datetime.utcnow().replace(tzinfo=utc)})
                     self.removeCurrencyService(provider_id)
