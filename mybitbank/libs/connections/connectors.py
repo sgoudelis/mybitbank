@@ -67,7 +67,7 @@ class Connector(object):
         Constructor, load config 
         '''
         
-        mybitbank.jsonrpc.HTTP_TIMEOUT = 2
+        mybitbank.libs.jsonrpc.HTTP_TIMEOUT = 2
         
         try:
             import walletconfig
