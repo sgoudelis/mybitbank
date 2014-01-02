@@ -2,6 +2,7 @@ import datetime
 import hashlib
 import signal
 import time
+import mybitbank.libs.jsonrpc
 
 from httplib import CannotSendRequest
 from django.utils.timezone import utc
@@ -65,6 +66,9 @@ class Connector(object):
         '''
         Constructor, load config 
         '''
+        
+        mybitbank.jsonrpc.HTTP_TIMEOUT = 2
+        
         try:
             import walletconfig
             currency_configs = walletconfig.config
