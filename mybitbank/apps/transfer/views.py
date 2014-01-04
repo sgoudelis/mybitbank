@@ -98,7 +98,6 @@ def send(request, selected_provider_id):
         form = forms.SendCurrencyForm(request.POST)
         
         if form.is_valid():
-            print "is valid"
             # all validation rules pass
             from_account_identifier = form.cleaned_data['from_account']
             to_address = form.cleaned_data['to_address']
@@ -131,7 +130,6 @@ def send(request, selected_provider_id):
             to_account = wallet.getAccountByAddress(to_address)
             # if to_account is set then it is a local move, do a move()
             if to_account:
-                print "move"
                 # this address/account is hosted locally, do a move
                 move_exit = connector.moveAmount(
                                                  from_account=from_account['name'],
@@ -149,7 +147,6 @@ def send(request, selected_provider_id):
                 
             else:
                 # otherwise do a sendfrom(), it is a regular transaction
-                print "sendfrom"
                 if passphrase:
                     # a passphrase was given, unlock wallet first
                     unlock_exit = connector.walletPassphrase(passphrase, provider_id)
@@ -205,8 +202,14 @@ def send(request, selected_provider_id):
                 messages.success(request, 'Transfer of %s %s initialized with transaction id %s' % (amount, connector.config[provider_id]['currency'].upper(), sendfrom_exit), extra_tags="success")
                 events.addEvent(request, 'Transfer initialized from "%s" to "%s" of %s %s' % (from_account['name'], to_address, amount, connector.config[provider_id]['currency'].upper()), 'info')
                 return HttpResponseRedirect(reverse('transactions:details', kwargs={'provider_id': provider_id, 'txid':sendfrom_exit}))  # Redirect after POST
+        
+        else:
+            # form not valid
+            messages.warning(request, 'Form validation failed! Please investigate!', extra_tags="warning")
+            form = forms.SendCurrencyForm()
             
     else:
+        # request not a POST
         form = forms.SendCurrencyForm()
         
     context = commonContext(request=request, selected_provider_id=selected_provider_id, form=form)

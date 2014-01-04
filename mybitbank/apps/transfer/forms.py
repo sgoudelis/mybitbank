@@ -56,7 +56,7 @@ class SendCurrencyForm(forms.Form):
     
     from_account = CoinAccount(initial="")
     to_address = CoinAddress(initial="")
-    to_account = CoinAccount(initial="")
+    to_account = CoinAccount(initial="", required=False)
     comment = forms.CharField(initial="", required=False)
     comment_to = forms.CharField(initial="", required=False)
     amount = CoinAmount(initial=0, required=True)
