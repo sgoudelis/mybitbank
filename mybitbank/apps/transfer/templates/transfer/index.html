@@ -74,7 +74,7 @@
                 <option onclick="javascript:updateTransferDialog('', '0.00000000', '');" value="">select an account</option>
                 {% if accounts %}
                 {% for account in accounts %}
-                      <option value="{{ account.identifier }}" class="dark-font fixed-width-font2" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'from_account');" {% if form.from_account.value == account.identifier %}selected{% endif %}>{{ account|getaccountname }} - {{ account.currency_symbol }}{{ account.balance }} - {{ account.addresses.0 }}</option>
+                      <option value="{{ account.identifier }}" class="dark-font fixed-width-font2" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'from_account');" {% if form.from_account.value == account.identifier %}selected{% endif %}>{{ account|getaccountname }} - {{ account.currency_symbol }}{{ account.balance }} - {{ account.addresses.0 }} ({{ account.addresses|length }})</option>
                 {% endfor %}
                 {% endif %}
                 </select>
@@ -115,7 +115,7 @@
                 {% if accounts %}
                 	<optgroup class="black-font" label="local accounts"></optgroup>
                 {% for account in accounts %}
-                	<option value="{{ account.addresses.0 }}" class="dark-font fixed-width-font2" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'to_address');" >{{ account|getaccountname }} - {{ account.currency_symbol }}{{ account.balance }} - {{ account.addresses.0 }}</option>
+                	<option value="{{ account.addresses.0 }}" class="dark-font fixed-width-font2" onclick="javascript:updateTransferDialog('{{ account.addresses.0 }}', '{{ account.balance }}', 'to_address');" >{{ account|getaccountname }} - {{ account.currency_symbol }}{{ account.balance }} - {{ account.addresses.0 }} ({{ account.addresses|length }})</option>
                 {% endfor %}
                 {% if addressbook_addresses %}
                 	<optgroup class="black-font" label="from addressbook"></optgroup>

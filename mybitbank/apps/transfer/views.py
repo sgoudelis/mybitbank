@@ -205,8 +205,8 @@ def send(request, selected_provider_id):
         
         else:
             # form not valid
-            messages.warning(request, 'Form validation failed! Please investigate!', extra_tags="warning")
-            form = forms.SendCurrencyForm()
+            #messages.error(request, 'There were some errors processing this form!', extra_tags="error")
+            print "Error processing form!"
             
     else:
         # request not a POST

@@ -21,7 +21,8 @@ def getalerticon(arg):
              'info': 'info-sign',
              'alert': 'remove',
              'warning': 'exclamation-sign',
-             'success': 'ok'
+             'success': 'ok',
+             'error': 'minus-sign',
              }
     return types[arg]
 
