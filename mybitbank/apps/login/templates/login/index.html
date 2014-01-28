@@ -43,17 +43,16 @@
 	                  <div class="col-xs-6 text-right"></div>
 	                </div>
 	            </div>
-                <div class="panel-body">
-                
-                {% if not request|issecure %}
-	            <div class="alert alert-danger">
+	            {% if not request|issecure %}
+	            <div class="fat-row alert-danger">
 				  <div class="row"><div class="col-md-1 tiny-col"><span class="glyphicon glyphicon-minus-sign message-icon"></span></div><div class="col-md-9 alert-message">No SSL connection detected!</div></div>
 				</div>
 				{% else %}
-				<div class="alert alert-success">
+				<div class="fat-row alert-success">
 				  <div class="row"><div class="col-md-1 tiny-col"><span class="glyphicon glyphicon-lock message-icon"></span></div><div class="col-md-9 alert-message">Secure connection detected!</div></div>
 				</div>
 				{% endif %}
+                <div class="panel-body">
                 
 				<form role="form" action="{% url 'login:processLogin' %}" method="post">
 				{% csrf_token %}

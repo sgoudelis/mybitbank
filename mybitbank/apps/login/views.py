@@ -105,6 +105,7 @@ def processLogin(request):
                    'page_title': page_title,
                    'form': login_form,
                    'main_error': auth_message,
+                   'request': request,
                    }
         
     return render(request, 'login/index.html', context)

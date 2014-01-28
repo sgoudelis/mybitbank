@@ -430,3 +430,7 @@ span.amount.out {
     border-color: #B7C7A7;
     color: #333333;
 }
+
+.fat-row {
+	padding: 10px;
+}
