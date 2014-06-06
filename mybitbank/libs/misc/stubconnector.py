@@ -142,7 +142,7 @@ class ServiceProxyStubBTC(object):
     def move(self, from_account, to_account, amount, minconf, comment):
         return True
     
-    def sendFrom(self, from_account, to_address, amount, minconf, comment, comment_to):
+    def sendfrom(self, from_account, to_address, amount, minconf, comment, comment_to):
         return True
 
     def walletpassphrase(self, passphrase, timeout):

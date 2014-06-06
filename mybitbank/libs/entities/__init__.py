@@ -15,9 +15,19 @@ def getWalletByProviderId(connector, provider_id):
     '''
     Return the wallet for the provider_id
     '''
+    
+    '''
     wallets = getWallets(connector)
     for wallet in wallets:
         if wallet.provider_id == provider_id:
             return wallet
     else:
         return None
+    '''
+    
+    if connector.config.get(provider_id):
+        wallet = CoinWallet(connector.config.get(provider_id))
+    else:
+        wallet = CoinWallet([])
+    
+    return wallet

@@ -158,9 +158,8 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/div/div/ul[@class='errorlist']"), []) 
-        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[3]/div/div/ul[@class='errorlist']"), [])
-        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[6]/div/div/ul[@class='errorlist']"), [])
+        self.assertNotEquals(html_tree.xpath('//*[@id="error_message_to_address"]'), [])
+        self.assertNotEquals(html_tree.xpath('//*[@id="error_message_amount"]'), [])
        
     def test_tranfer_submit_with_to_account_value(self):
         '''
@@ -188,9 +187,8 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/div/div/ul[@class='errorlist']"), []) 
-        self.assertEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[3]/div/div/ul[@class='errorlist']"), [])
-        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[6]/div/div/ul[@class='errorlist']"), []) 
+        self.assertNotEquals(html_tree.xpath('//*[@id="error_message_from_account"]'), [])
+        self.assertNotEquals(html_tree.xpath('//*[@id="error_message_amount"]'), []) 
         
     def test_tranfer_submit_with_from_to_values(self):
         '''
@@ -218,9 +216,7 @@ class TransferIndexTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[2]/div/div/ul[@class='errorlist']"), []) 
-        self.assertEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[3]/div/div/ul[@class='errorlist']"), [])
-        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[6]/div/div/ul[@class='errorlist']"), []) 
+        self.assertNotEquals(html_tree.xpath('//*[@id="error_message_amount"]'), []) 
         
     def test_tranfer_submit_with_from_to_same_values(self):
         '''
@@ -260,12 +256,13 @@ class TransferIndexTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'amount': 3,
+                    'amount': 1,
                     'comment': "",
                     'comment_to': "",
                     'csrfmiddlewaretoken': "",
                     'from_account': "23a3862ba3a94184560b6fa5a5d137573122df20",
                     'provider_id': provider_id,
+                    'to_account': "mox7nxwfu9hrTQCn24RBTDce1wiHEP1NQp",
                     'to_address': "mox7nxwfu9hrTQCn24RBTDce1wiHEP1NQp"
                     }
         
@@ -282,7 +279,7 @@ class TransferIndexTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'amount': 3,
+                    'amount': 1,
                     'comment': "",
                     'comment_to': "",
                     'csrfmiddlewaretoken': "",

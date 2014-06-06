@@ -332,21 +332,6 @@ class ConnectorsTests(TestCase):
         
         move_result = self.connector.sendFrom(from_account, address, provider_id, amount, minconf, comment)
         self.assertNotEquals(move_result, True)
-        
-    def test_sendFrom_non_number_amount_2(self):
-        '''
-        Test sendFrom() method testing non-number amount
-        '''
-        
-        from_account = "pipes"
-        address = "address for sdfsdfs account"
-        provider_id = 1
-        amount = True
-        minconf = 1
-        comment = "test comment from django test"
-        
-        move_result = self.connector.sendFrom(from_account, address, provider_id, amount, minconf, comment)
-        self.assertNotEquals(move_result, True)
 
     def test_sendFrom_non_number_amount_3(self):
         '''

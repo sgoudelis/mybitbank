@@ -278,7 +278,7 @@ class LoginTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div/div/div/div[2]/form/ul[@class='errorlist']"), []) 
+        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div/div/div/div[3]/form/div[2]"), []) 
     
     def test_login_username_returned(self):
         '''
@@ -323,7 +323,7 @@ class LoginTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div/div/div/div[2]/form/ul[@class='errorlist']"), []) 
+        self.assertNotEquals(html_tree.xpath("/html/body/div/div/div/div/div/div[3]/form/div[4]"), []) 
 
     def test_login_success(self):
         '''
