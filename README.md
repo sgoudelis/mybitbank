@@ -24,22 +24,82 @@ Your Personal CryptoCoin Bank
 2. Proper account details page and preferences
 3. Add aliasing support for accounts
 4. Add transfer fee in transfer dialog page
-5. 
 
 
+=== Instalation on ubuntu 13.04
 
-### Required setup
-
-You should update pip and install project requirements.
+Install git
 
 ```
-easy_install --upgrade pip
-pip install -r requirements.txt
+sudo apt-get install git
 ```
 
-#### GeoIP
+Clone repository
 
-Install the GeoCity C library. You can get it from [MaxMind](http://www.maxmind.com/app/c).
+```
+git clone https://github.com/sgoudelis/mybitbank.git
+```
+
+Change directory
+
+```
+cd mybitbank
+```
+
+List brances
+
+```
+git branch -v -a
+```
+
+Checkout latest stable branch (now 0.1)
+
+```
+git checkout -b 0.1 origin/0.1
+```
+
+Install python-pip
+
+```
+sudo apt-get install python-pip
+```
+
+Install Django
+
+```
+sudo pip install django==1.5.4
+```
+
+You can use other methods to install Django of course. Currenlty Django 1.5.4 is the minimum requirement. 
+
+Install south
+
+```
+sudo pip install south
+```
+
+Install python-dateutil
+
+```
+sudo apt-get install python-dateutil
+```
+
+Install GeoIP
+
+Django supports GeoIP but its implementation is just a wrapper. The libgeoip library still needs to be install system-wide.
+
+```
+sudo apt-get install python-dev
+sudo apt-get install libgeoip-dev
+sudo pip install geoip
+```
+
+Then download GeoIP City datasets in binary format from [MaxMind](http://dev.maxmind.com/geoip/legacy/geolite/) uncompress and put them in `~/.geoip/` folder.
+ 
+
+You may also need to comment out the following line in 'mybitbank/settings.py' if you are on Ubuntu, or keep it for Mac OS
+
+GEOIP_LIBRARY_PATH = '/opt/local/lib/libGeoIP.dylib'
 
 On Mac OS X, you can install using [homebrew](http://github.com/mxcl/homebrew):
 ```
@@ -51,26 +111,42 @@ sudo port install libgeoip
 ```
 
 
-Download GeoIP City datasets in binary format from [MaxMind](http://dev.maxmind.com/geoip/legacy/geolite/) uncompress and put them in `.geoip/` folder.
+
+=== Configuration
+
+Configure the Django settings.py file. Please configure as you see fit. This is a Django settings file.
+
+Copy template file 'mybitbank/settings-template.py' into 'mybitbank/settings.py'.
 
 ```
-cd .geoip
-wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
-gzip -d GeoLiteCity.dat.gz
+cp mybitbank/settings-template.py mybitbank/settings.py
 ```
 
+Also configure the database parameters in `mybitbank/settings.py`
 
-### Configuration
 
-Copy template file `mybitbank/settings-template.py` into `mybitbank/settings.py`.
 
-Copy teamplate file `connections/config-template.py` into ` connections/config.py`
+Configure xxxcoind instances
 
-Edit file `mybitbank/settings.py` and setup your db connection. _(TODO: more details)_
+Copy and configure a walletconfig.py file. This file contains parameters on where to find the xxxcoind instances (bitcoind, litecoind, etc.). Configure at your discretion.
 
-Then run `./manage.py syncdb` to create the necessary tables.
+```
+cp mybitbank/libs/connections/walletconfig-template.py mybitbank/libs/connections/walletconfig.py
+```
 
-Add your daemons in ` connections/config.py` _(TODO: more details)_
+Configure Django application database parameters
+
+Make sure that 'mybitbank/settings.py' has proper database parameters (if you are using sqlite3 make sure you define a filepath to the sqlite3 file). 
+
+```
+python ./manage.py syncdb
+```
+
+When asked to install a superuse, create one.
+
+```
+python ./manage.py migrate
+```
 
 
 ---
