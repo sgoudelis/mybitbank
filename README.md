@@ -26,7 +26,7 @@ Your Personal CryptoCoin Bank
 4. Add transfer fee in transfer dialog page
 
 
-=== Instalation on ubuntu 13.04
+### Instalation on ubuntu 13.04
 
 Install git
 
@@ -112,7 +112,7 @@ sudo port install libgeoip
 
 
 
-=== Configuration
+### Configuration
 
 Configure the Django settings.py file. Please configure as you see fit. This is a Django settings file.
 
