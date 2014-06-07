@@ -17,6 +17,7 @@ Your Personal CryptoCoin Bank
 10. Build on Django. Support for Django application accounts
 11. Show balance in USD
 12. Provision for unresponsive xxxcoind instances
+13. Support wallets with passphrases
 
 
 ### Todos
@@ -25,7 +26,9 @@ Your Personal CryptoCoin Bank
 2. Proper account details page and preferences
 3. Add aliasing support for accounts
 4. Add transfer fee in transfer dialog page
-5. 
+5. Add two-factor authentication (?)
+6. Support client-side raw transaction generation
+
 
 ### Known issues
 
