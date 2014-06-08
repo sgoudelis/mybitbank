@@ -92,7 +92,7 @@ sudo apt-get install python-dateutil
 
 Install GeoIP
 
-Django supports GeoIP but its implementation is just a wrapper. The libgeoip library still needs to be install system-wide.
+Django supports GeoIP but its implementation is just a wrapper. The libgeoip library still needs to be installed system-wide.
 
 ```
 sudo apt-get install python-dev
