@@ -32,7 +32,7 @@ Your Personal CryptoCoin Bank
 
 
 
-### Instalation on ubuntu 13.04
+### Installation on ubuntu 13.04
 
 Install git
 
