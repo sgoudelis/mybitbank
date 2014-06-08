@@ -16,7 +16,8 @@ Your Personal CryptoCoin Bank
 9. Aliases support for addresses. You keep forgeting addresses? Use an alias
 10. Build on Django. Support for Django application accounts
 11. Show balance in USD
-
+12. Provision for unresponsive xxxcoind instances
+13. Support wallets with passphrases
 
 ### Todos
 
@@ -24,11 +25,13 @@ Your Personal CryptoCoin Bank
 2. Proper account details page and preferences
 3. Add aliasing support for accounts
 4. Add transfer fee in transfer dialog page
-5. many more
+5. Add two-factor authentication (?)
+6. Support client-side raw transaction generation
+
 
 ### Known issues
 
-1. When any of the coin instances (bitcoind, litecoind, etc) is downloading blocks, the instance becomes unresponsive for some time. During this time the page will also appear to hang but only for 10 seconds. After 10 seconds (configurable) of timeout the page will disable the coin service for another 10 seconds. This happens so that subsequent calls to the same coin service will be ignored for those 10 seconds, speeding up the page load times.
+1. When any of the coin instances (bitcoind, litecoind, etc) is downloading blocks, the instance becomes unresponsive for some time. During this time the page will also appear to hang but only for 10 seconds. After 10 seconds (configurable) of timeout the page will disable the coin service for another 10 seconds. This happens so that subsequent calls to the same coin service will be ignored for those 10 seconds, speeding up the page load times. 
 
 
 
@@ -160,3 +163,5 @@ python ./manage.py migrate
 ## Licence
 
 mybitbank is a free software distributed under the terms of the MIT license
+
+
