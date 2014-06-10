@@ -1,0 +1,7 @@
+Django==1.5.4
+South==0.8.4
+base58==0.2.1
+jsonrpc==1.2
+lxml==2.3.1
+python-dateutil==1.5
+
