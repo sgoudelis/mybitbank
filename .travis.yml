@@ -6,10 +6,16 @@ env:
 install:
   - pip install -q Django==$DJANGO
   - pip install -q south
+  - pip install -q python-dateutil
+  - pip install -q lxml
 before_script:
   - cp mybitbank/settings-template.py mybitbank/settings.py
   - cp mybitbank/libs/connections/walletconfig-template.py mybitbank/libs/connections/walletconfig.py
-  - python ./manage.py syncdb
+  - python ./manage.py syncdb --noinput
   - python ./manage.py migrate
 script:
   - python ./manage.py test connections
+  - python ./manage.py test login
+  - python ./manage.py test transfer
+
+      
