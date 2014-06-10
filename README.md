@@ -2,9 +2,7 @@
 ---
 Your Personal CryptoCoin Bank
 
-
 [![Build Status](https://travis-ci.org/sgoudelis/mybitbank.svg?branch=master)](https://travis-ci.org/sgoudelis/mybitbank)
-
 
 ### Features
 
@@ -112,7 +110,16 @@ Install python-dateutil
 sudo apt-get install python-dateutil
 ```
 
-Install GeoIP
+Or just do a:
+
+```
+pip install -r requirements.txt
+```
+
+The above will install all needed components.
+
+
+#### Install GeoIP
 
 Django supports GeoIP but its implementation is just a wrapper. The libgeoip library still needs to be installed system-wide.
 
@@ -175,7 +182,6 @@ When asked to install a superuse, create one.
 ```
 python ./manage.py migrate
 ```
-
 
 ---
 
