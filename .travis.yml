@@ -5,8 +5,11 @@ env:
   - DJANGO=1.5.4
 install:
   - pip install -q Django==$DJANGO
-  - pip install south
+  - pip install -q south
 before_script:
-
+  - cp mybitbank/settings-template.py mybitbank/settings.py
+  - cp mybitbank/libs/connections/walletconfig-template.py mybitbank/libs/connections/walletconfig.py
+  - python ./manage.py syncdb
+  - python ./manage.py migrate
 script:
   - python ./manage.py test connections
