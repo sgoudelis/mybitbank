@@ -6,6 +6,7 @@ env:
 install:
   - pip install -q Django==$DJANGO
   - pip install -q south
+  - apt-get install python-dateutil
 before_script:
   - cp mybitbank/settings-template.py mybitbank/settings.py
   - cp mybitbank/libs/connections/walletconfig-template.py mybitbank/libs/connections/walletconfig.py
