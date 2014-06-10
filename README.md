@@ -3,6 +3,10 @@
 Your Personal CryptoCoin Bank
 
 
+Travis-CI status 
+[![Build Status](https://travis-ci.org/sgoudelis/mybitbank.svg?branch=master)](https://travis-ci.org/sgoudelis/mybitbank)
+
+
 ### Features
 
 1. Support multiple bitcoind (or other coins) instances at the same time (through a config file)
