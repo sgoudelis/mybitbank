@@ -4,9 +4,9 @@ python:
 env:
   - DJANGO=1.5.4
 install:
-  - pip install -q Django==$DJANGO --use-mirrors
-  - pip install -q -e . --use-mirrors
+  - pip install -q Django==$DJANGO
+  - pip install south
 before_script:
 
 script:
-  - python setup.py test
+  - python ./manage.py test connections
