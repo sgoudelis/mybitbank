@@ -19,6 +19,22 @@ Your Personal CryptoCoin Bank
 12. Provision for unresponsive xxxcoind instances
 13. Support wallets with passphrases
 
+### Screenshots
+
+
+Dashboard
+![Alt text](/doc/dashboard-screen.jpg "Dashboard")
+
+Accounts
+![Alt text](/doc/accounts-screen.jpg "Accounts")
+
+Transactions
+![Alt text](/doc/transactions-screen.jpg "Transaction")
+
+Transfer
+![Alt text](/doc/transfer-screen.jpg "Transfer")
+
+
 ### Todos
 
 1. Proper settings page (for adding/editing xxxcoind instance parameters)
