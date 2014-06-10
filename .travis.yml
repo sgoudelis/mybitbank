@@ -10,7 +10,7 @@ install:
 before_script:
   - cp mybitbank/settings-template.py mybitbank/settings.py
   - cp mybitbank/libs/connections/walletconfig-template.py mybitbank/libs/connections/walletconfig.py
-  - python ./manage.py syncdb
+  - python ./manage.py syncdb --noinput
   - python ./manage.py migrate
 script:
   - python ./manage.py test connections
