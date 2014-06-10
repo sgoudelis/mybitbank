@@ -21,7 +21,18 @@ Your Personal CryptoCoin Bank
 
 ### Screenshots
 
+
+Dashboard
 ![Alt text](/doc/dashboard-screen.jpg "Dashboard")
+
+Accounts
+![Alt text](/doc/accounts-screen.jpg "Accounts")
+
+Transactions
+![Alt text](/doc/transactions-screen.jpg "Transaction")
+
+Transfer
+![Alt text](/doc/transfer-screen.jpg "Transfer")
 
 
 ### Todos
