@@ -215,4 +215,6 @@ Please take a look at the apache/ folder for a sample configuration to run mybit
 
 mybitbank is a free software distributed under the terms of the MIT license
 
+## Donations
 
+You can send donations to 1398vTCqE8gjmmDq9Cw3Z94V3oxbe8bW4o
