@@ -217,4 +217,7 @@ mybitbank is a free software distributed under the terms of the MIT license
 
 ## Donations
 
-You can send donations to 1398vTCqE8gjmmDq9Cw3Z94V3oxbe8bW4o
+You can send donations to:
+1. BTC 1398vTCqE8gjmmDq9Cw3Z94V3oxbe8bW4o
+2. LTC LYGoNiZGC1vvq9SoVo3o3Ru8gML8XPCrBe
+
