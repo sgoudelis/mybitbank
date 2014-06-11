@@ -2,6 +2,8 @@
 ---
 Your Personal CryptoCoin Bank
 
+Visit the Reddit UBER-MEGA thread [here title](http://www.reddit.com/r/Bitcoin/comments/27v3mw/i_just_released_mybitbank_project_on_github/ "here")
+
 [![Build Status](https://travis-ci.org/sgoudelis/mybitbank.svg?branch=master)](https://travis-ci.org/sgoudelis/mybitbank)
 
 ### Features
