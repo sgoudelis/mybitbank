@@ -200,6 +200,6 @@ LOGIN_URL = '/login'
 
 GEOIP_PATH = '.geoip/'
 
-GEOIP_LIBRARY_PATH = '/opt/local/lib/libGeoIP.dylib'
+#GEOIP_LIBRARY_PATH = '/opt/local/lib/libGeoIP.dylib'
 
 AUTH_PROFILE_MODULE = "mybitbank.apps.login.Setting"
