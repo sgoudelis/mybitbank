@@ -269,7 +269,7 @@ class CreateAccountTests(TestCase):
         client.login(username='testing', password='testingpassword')
         
         post_data = {
-                    'account_name': None,
+                    'account_name': "",
                     'provider_id': None,
                     'csrfmiddlewaretoken': "",
                     }
@@ -281,7 +281,7 @@ class CreateAccountTests(TestCase):
         # validate HTML
         self.assertNotEquals(html_tree, False)
         
-        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div/ul[@class='errorlist']"), []) 
+        self.assertNotEquals(html_tree.xpath("/html/body/div/form/div/div[2]/div[1]/span"), []) 
         
     def test_create_accounts_proper_values(self):
         '''
