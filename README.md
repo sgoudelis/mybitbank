@@ -46,6 +46,8 @@ Visit the Reddit UBER-MEGA thread [here](http://www.reddit.com/r/Bitcoin/comment
 4. Add transfer fee in transfer dialog page
 5. Add two-factor authentication (?)
 6. Support client-side raw transaction generation
+7. Internationalization
+8. Support for multisig addresses
 
 
 ### Known issues
