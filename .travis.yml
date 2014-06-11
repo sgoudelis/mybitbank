@@ -4,7 +4,7 @@ python:
 env:
   - DJANGO=1.5.4
 install:
-  - wget -o .geoip http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+  - wget -P ~/.geoip/ http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
   - sudo apt-get install python-dev
   - sudo apt-get install libgeoip-dev
   - sudo pip install geoip
