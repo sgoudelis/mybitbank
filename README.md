@@ -90,10 +90,10 @@ List brances
 git branch -v -a
 ```
 
-Checkout latest stable branch (now 0.1)
+Checkout latest stable branch (use master for now)
 
 ```
-git checkout -b 0.1 origin/0.1
+git checkout origin/master
 ```
 
 Install python-pip
