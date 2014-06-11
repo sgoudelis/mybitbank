@@ -195,6 +195,16 @@ When asked to install a superuse, create one.
 python ./manage.py migrate
 ```
 
+You can start up the Django development web server (not recommended for production deployments) to test your deployment.
+
+```
+python ./manage.py runserver localhost:8000
+```
+
+Visit the page http://localhost:8000/
+
+
+
 #### Apache configuration
 
 Please take a look at the apache/ folder for a sample configuration to run mybitbank as a WSGI application. Take care to update the directory paths in the config files.
