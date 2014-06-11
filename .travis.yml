@@ -4,6 +4,9 @@ python:
 env:
   - DJANGO=1.5.4
 install:
+  - sudo apt-get install python-dev
+  - sudo apt-get install libgeoip-dev
+  - sudo pip install geoip
   - pip install -r requirements.txt
 before_script:
   - cp mybitbank/settings-template.py mybitbank/settings.py
