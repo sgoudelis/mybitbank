@@ -49,6 +49,12 @@ Visit the Reddit UBER-MEGA thread [here](http://www.reddit.com/r/Bitcoin/comment
 7. Internationalization
 8. Support for multisig addresses
 
+### Sceurity concerns 
+
+1. When seting up, consider using a different account to running your xxxcoinds. Using your desktop account to run bitcoind may not be wise.
+2. Adding passphrases in wallets is highly advised. Mybitbank supports passphrases.
+3. Avoid using the built-in web server provided by Django for production environments. Please see in the apache/ folder for sample configs to setup mybitbank on Apache.
+4. Setup your Apache deployment with SSL/HTTPS. Mybitbank will complain if it detects that you are not over SSL/HTTPS.
 
 ### Known issues
 
@@ -56,7 +62,7 @@ Visit the Reddit UBER-MEGA thread [here](http://www.reddit.com/r/Bitcoin/comment
 
 
 
-### Installation on ubuntu 13.04
+### Installation on Ubuntu 13.04 (and probably other versions as well)
 
 Install git
 
@@ -186,6 +192,10 @@ When asked to install a superuse, create one.
 ```
 python ./manage.py migrate
 ```
+
+#### Apache configuration
+
+Please take a look at the apache/ folder for a sample configuration to run mybitbank as a WSGI application.
 
 ---
 
