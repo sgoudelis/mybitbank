@@ -2,7 +2,7 @@
 ---
 ## Your Personal CryptoCoin Bank (for bitcoin, litecoin, feathercoin, ppcoin, namecoin, auroracoin and more)
 
-You want to be in-charge of your bitcoin/altcoin safe-keeping in your own self-hosted bank ? Mybitbank was made with the intention of providing access to the functionality of bitcoind and others through a web interface, deployed in a home server enviroment, isolated for larger networks. 
+You want to be in-charge of your bitcoin/altcoin safe-keeping in your own self-hosted bank ? Mybitbank was made with the intention of providing access to the functionality of bitcoind and others through a web interface, deployed in a home server environment, isolated for larger networks. 
 
 Visit the Reddit UBER-MEGA thread [here](http://www.reddit.com/r/Bitcoin/comments/27v3mw/i_just_released_mybitbank_project_on_github/ "Reddit")
 
