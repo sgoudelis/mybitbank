@@ -15,38 +15,156 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>Mybitbank</h1>
-        <p>Personal CryptoCoin Bank</p>
 
-        <p class="view"><a href="https://github.com/sgoudelis/mybitbank">View the Project on GitHub <small>sgoudelis/mybitbank</small></a></p>
+<h1>
+<a href="#mybitbank" class="anchor" name="user-content-mybitbank"><span class="octicon octicon-link"></span></a>mybitbank</h1>
 
+<hr><h2>
+<a href="#your-personal-cryptocoin-bank-for-bitcoin-litecoin-feathercoin-ppcoin-namecoin-dogecoin-auroracoin-and-more" class="anchor" name="user-content-your-personal-cryptocoin-bank-for-bitcoin-litecoin-feathercoin-ppcoin-namecoin-dogecoin-auroracoin-and-more"><span class="octicon octicon-link"></span></a>Your Personal CryptoCoin Bank (for bitcoin, litecoin, feathercoin, ppcoin, namecoin, dogecoin, auroracoin and more)</h2>
 
-        <ul>
-          <li><a href="https://github.com/sgoudelis/mybitbank/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/sgoudelis/mybitbank/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/sgoudelis/mybitbank">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>
-<a name="mybitbank" class="anchor" href="#mybitbank"><span class="octicon octicon-link"></span></a>mybitbank</h1>
+<p><strong>MISSION STATEMENT:</strong> Do you want to be in-charge of your bitcoin/altcoin safe-keeping in your own self-hosted bank? Mybitbank was made with the intention of providing access to the functionality of bitcoind and others through a web interface, deployed in a home server environment, isolated from larger networks. Your rules, your responsibility. </p>
 
-<hr><p>Your Personal CryptoCoin Bank</p>
+<p>Visit the Reddit UBER-MEGA thread <a title="Reddit" href="http://www.reddit.com/r/Bitcoin/comments/27v3mw/i_just_released_mybitbank_project_on_github/">here</a>.</p>
+
+<p><a href="https://travis-ci.org/sgoudelis/mybitbank"><img style="max-width:100%;" data-canonical-src="https://travis-ci.org/sgoudelis/mybitbank.svg?branch=master" alt="Build Status" src="https://camo.githubusercontent.com/0cd245acf18ba98d7867f1d347469d4fd555aa46/68747470733a2f2f7472617669732d63692e6f72672f73676f7564656c69732f6d7962697462616e6b2e7376673f6272616e63683d6d6173746572"></a></p>
 
 <h3>
-<a name="required-setup" class="anchor" href="#required-setup"><span class="octicon octicon-link"></span></a>Required setup</h3>
+<a href="#features" class="anchor" name="user-content-features"><span class="octicon octicon-link"></span></a>Features</h3>
 
-<p>You should update pip and install project requirements.</p>
-
-<pre><code>easy_install --upgrade pip
-easy_install base58
-pip install -r requirements.txt
-</code></pre>
+<ol class="task-list">
+<li>Support multiple bitcoind (or other coins) instances at the same time (through a config file)</li>
+<li>Tested altcoin instances: litecoin, ppcoin, namecoin, dogecoin, feathercoin, novacoin, auroracoin</li>
+<li>View accounts, transactions for all coin types</li>
+<li>Addressbook for easy access to addresses</li>
+<li>Transfer coins </li>
+<li>Network map of connected peers with extra details</li>
+<li>Built with bootstap layout</li>
+<li>Mobile layout support through bootstrap</li>
+<li>Aliases support for addresses. You keep forgeting addresses? Use an alias</li>
+<li>Build on Django. Support for Django application accounts</li>
+<li>Show balance in USD</li>
+<li>Provision for unresponsive xxxcoind instances</li>
+<li>Support wallets with passphrases</li>
+</ol><h3>
+<a href="#screenshots" class="anchor" name="user-content-screenshots"><span class="octicon octicon-link"></span></a>Screenshots</h3>
 
 <h4>
-<a name="geoip" class="anchor" href="#geoip"><span class="octicon octicon-link"></span></a>GeoIP</h4>
+<a href="#dashboard" class="anchor" name="user-content-dashboard"><span class="octicon octicon-link"></span></a>Dashboard</h4>
 
-<p>Install the GeoCity C library. You can get it from <a href="http://www.maxmind.com/app/c">MaxMind</a>.</p>
+<p><a target="_blank" href="/sgoudelis/mybitbank/blob/master/doc/dashboard-screen.jpg"><img style="max-width:100%;" title="Dashboard" alt="Alt text" src="/sgoudelis/mybitbank/raw/master/doc/dashboard-screen.jpg"></a></p>
+
+<h4>
+<a href="#accounts" class="anchor" name="user-content-accounts"><span class="octicon octicon-link"></span></a>Accounts</h4>
+
+<p><a target="_blank" href="/sgoudelis/mybitbank/blob/master/doc/accounts-screen.jpg"><img style="max-width:100%;" title="Accounts" alt="Alt text" src="/sgoudelis/mybitbank/raw/master/doc/accounts-screen.jpg"></a></p>
+
+<h4>
+<a href="#transactions" class="anchor" name="user-content-transactions"><span class="octicon octicon-link"></span></a>Transactions</h4>
+
+<p><a target="_blank" href="/sgoudelis/mybitbank/blob/master/doc/transactions-screen.jpg"><img style="max-width:100%;" title="Transaction" alt="Alt text" src="/sgoudelis/mybitbank/raw/master/doc/transactions-screen.jpg"></a></p>
+
+<h4>
+<a href="#transfer" class="anchor" name="user-content-transfer"><span class="octicon octicon-link"></span></a>Transfer</h4>
+
+<p><a target="_blank" href="/sgoudelis/mybitbank/blob/master/doc/transfer-screen.jpg"><img style="max-width:100%;" title="Transfer" alt="Alt text" src="/sgoudelis/mybitbank/raw/master/doc/transfer-screen.jpg"></a></p>
+
+<h3>
+<a href="#todos" class="anchor" name="user-content-todos"><span class="octicon octicon-link"></span></a>Todos</h3>
+
+<ol class="task-list">
+<li>Proper settings page (for adding/editing xxxcoind instance parameters)</li>
+<li>Proper account details page and preferences</li>
+<li>Add aliasing support for accounts</li>
+<li>Add transfer fee in transfer dialog page</li>
+<li>Add two-factor authentication (?)</li>
+<li>Support client-side raw transaction generation</li>
+<li>Internationalization</li>
+<li>Support for multisig addresses</li>
+</ol><h3>
+<a href="#security-concerns" class="anchor" name="user-content-security-concerns"><span class="octicon octicon-link"></span></a>Security concerns</h3>
+
+<ol class="task-list">
+<li>When seting up, consider using a different account to run your xxxcoinds. Using your desktop account to run bitcoind may not be wise.</li>
+<li>Adding passphrases in wallets is highly advised. Mybitbank supports passphrases.</li>
+<li>Avoid using the built-in web server provided by Django for production environments. Please see in the apache/ folder for sample configs to setup mybitbank on Apache.</li>
+<li>Setup your Apache deployment with SSL/HTTPS. Mybitbank will complain if it detects that you are not over SSL/HTTPS.</li>
+</ol><h3>
+<a href="#known-issues" class="anchor" name="user-content-known-issues"><span class="octicon octicon-link"></span></a>Known issues</h3>
+
+<ol class="task-list">
+<li>When any of the coin instances (bitcoind, litecoind, etc) is downloading blocks, the instance becomes unresponsive for some time. During this time the page will also appear to hang but only for 10 seconds. After 10 seconds (configurable) of timeout the page will disable the coin service for another 10 seconds. This happens so that subsequent calls to the same coin service will be ignored for those 10 seconds, speeding up the page load times. </li>
+</ol><h3>
+<a href="#installation-on-ubuntu-1304-and-probably-other-versions-as-well" class="anchor" name="user-content-installation-on-ubuntu-1304-and-probably-other-versions-as-well"><span class="octicon octicon-link"></span></a>Installation on Ubuntu 13.04 (and probably other versions as well)</h3>
+
+<p>Install git</p>
+
+<pre><code>sudo apt-get install git
+</code></pre>
+
+<p>Clone repository</p>
+
+<pre><code>git clone https://github.com/sgoudelis/mybitbank.git
+</code></pre>
+
+<p>Change directory</p>
+
+<pre><code>cd mybitbank
+</code></pre>
+
+<p>List brances</p>
+
+<pre><code>git branch -v -a
+</code></pre>
+
+<p>Checkout latest stable branch (use master for now)</p>
+
+<pre><code>git checkout origin/master
+</code></pre>
+
+<p>Install python-pip</p>
+
+<pre><code>sudo apt-get install python-pip
+</code></pre>
+
+<p>Install Django</p>
+
+<pre><code>sudo pip install django==1.5.4
+</code></pre>
+
+<p>You can use other methods to install Django of course. Currenlty Django 1.5.4 is the minimum requirement. </p>
+
+<p>Install south</p>
+
+<pre><code>sudo pip install south
+</code></pre>
+
+<p>Install python-dateutil</p>
+
+<pre><code>sudo apt-get install python-dateutil
+</code></pre>
+
+<p>Or just do a:</p>
+
+<pre><code>pip install -r requirements.txt
+</code></pre>
+
+<p>The above will install all needed components.</p>
+
+<h4>
+<a href="#install-geoip" class="anchor" name="user-content-install-geoip"><span class="octicon octicon-link"></span></a>Install GeoIP</h4>
+
+<p>Django supports GeoIP but its implementation is just a wrapper. The libgeoip library still needs to be installed system-wide.</p>
+
+<pre><code>sudo apt-get install python-dev
+sudo apt-get install libgeoip-dev
+sudo pip install geoip
+</code></pre>
+
+<p>Then download GeoIP City datasets in binary format from <a href="http://dev.maxmind.com/geoip/legacy/geolite/">MaxMind</a> uncompress and put them in <code>~/.geoip/</code> folder.</p>
+
+<p>You may also need to comment out the following line in 'mybitbank/settings.py' if you are on Ubuntu, or keep it for Mac OS</p>
+
+<p>GEOIP_LIBRARY_PATH = '/opt/local/lib/libGeoIP.dylib'</p>
 
 <p>On Mac OS X, you can install using <a href="http://github.com/mxcl/homebrew">homebrew</a>:</p>
 
@@ -58,28 +176,59 @@ pip install -r requirements.txt
 <pre><code>sudo port install libgeoip
 </code></pre>
 
-<p>Download GeoIP City datasets in binary format from <a href="http://dev.maxmind.com/geoip/legacy/geolite/">MaxMind</a> uncompress and put them in <code>.geoip/</code> folder.</p>
+<h3>
+<a href="#configuration" class="anchor" name="user-content-configuration"><span class="octicon octicon-link"></span></a>Configuration</h3>
 
-<pre><code>cd .geoip
-wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
-gzip -d GeoLiteCity.dat.gz
+<p>Configure the Django settings.py file. Please configure as you see fit. This is a Django settings file.</p>
+
+<p>Copy template file 'mybitbank/settings-template.py' into 'mybitbank/settings.py'.</p>
+
+<pre><code>cp mybitbank/settings-template.py mybitbank/settings.py
 </code></pre>
 
-<h3>
-<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h3>
+<p>Also configure the database parameters in <code>mybitbank/settings.py</code></p>
 
-<p>Copy template file <code>mybitbank/settings-template.py</code> into <code>mybitbank/settings.py</code>.</p>
+<p>Configure xxxcoind instances</p>
 
-<p>Copy teamplate file <code>connections/config-template.py</code> into <code>connections/config.py</code></p>
+<p>Copy and configure a walletconfig.py file. This file contains parameters on where to find the xxxcoind instances (bitcoind, litecoind, etc.). Configure at your discretion.</p>
 
-<p>Edit file <code>mybitbank/settings.py</code> and setup your db connection. <em>(TODO: more details)</em></p>
+<pre><code>cp mybitbank/libs/connections/walletconfig-template.py mybitbank/libs/connections/walletconfig.py
+</code></pre>
 
-<p>Then run <code>./manage.py syncdb</code> to create the necessary tables.</p>
+<p>Configure Django application database parameters</p>
 
-<p>Add your daemons in <code>connections/config.py</code> <em>(TODO: more details)</em></p>
+<p>Make sure that 'mybitbank/settings.py' has proper database parameters (if you are using sqlite3 make sure you define a filepath to the sqlite3 file). </p>
+
+<pre><code>python ./manage.py syncdb
+</code></pre>
+
+<p>When asked to install a superuse, create one.</p>
+
+<pre><code>python ./manage.py migrate
+</code></pre>
+
+<p>You can start up the Django development web server (not recommended for production deployments) to test your deployment.</p>
+
+<pre><code>python ./manage.py runserver localhost:8000
+</code></pre>
+
+<p>Visit the page http://localhost:8000/</p>
+
+<h4>
+<a href="#apache-configuration" class="anchor" name="user-content-apache-configuration"><span class="octicon octicon-link"></span></a>Apache configuration</h4>
+
+<p>Please take a look at the apache/ folder for a sample configuration to run mybitbank as a WSGI application. Take care to update the directory paths in the config files.</p>
 
 <hr><h2>
-<a name="licence" class="anchor" href="#licence"><span class="octicon octicon-link"></span></a>Licence</h2>
+<a href="#licence" class="anchor" name="user-content-licence"><span class="octicon octicon-link"></span></a>Licence</h2>
+
+<p>mybitbank is a free software distributed under the terms of the MIT license</p>
+
+<h2>
+<a href="#donations" class="anchor" name="user-content-donations"><span class="octicon octicon-link"></span></a>Donations</h2>
+
+<p>You can send donations in <strong>BTC</strong> to <strong>1398vTCqE8gjmmDq9Cw3Z94V3oxbe8bW4o</strong> and <strong>LTC</strong> to <strong>LYGoNiZGC1vvq9SoVo3o3Ru8gML8XPCrBe</strong></p>
+
 
 <p>mybitbank is a free software distributed under the terms of the MIT license</p>
       </section>
