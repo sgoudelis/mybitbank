@@ -4,10 +4,10 @@ python:
 env:
   - DJANGO=1.5.4
 install:
-  - pip install -q Django==$DJANGO
-  - pip install -q south
-  - pip install -q python-dateutil
-  - pip install -q lxml
+  - sudo apt-get install python-dev
+  - sudo apt-get install libgeoip-dev
+  - sudo pip install geoip
+  - pip install -r requirements.txt
 before_script:
   - cp mybitbank/settings-template.py mybitbank/settings.py
   - cp mybitbank/libs/connections/walletconfig-template.py mybitbank/libs/connections/walletconfig.py
