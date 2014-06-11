@@ -49,7 +49,7 @@ Visit the Reddit UBER-MEGA thread [here](http://www.reddit.com/r/Bitcoin/comment
 7. Internationalization
 8. Support for multisig addresses
 
-### Sceurity concerns 
+### Security concerns 
 
 1. When seting up, consider using a different account to running your xxxcoinds. Using your desktop account to run bitcoind may not be wise.
 2. Adding passphrases in wallets is highly advised. Mybitbank supports passphrases.
