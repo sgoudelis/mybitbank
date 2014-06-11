@@ -197,7 +197,7 @@ python ./manage.py migrate
 
 #### Apache configuration
 
-Please take a look at the apache/ folder for a sample configuration to run mybitbank as a WSGI application.
+Please take a look at the apache/ folder for a sample configuration to run mybitbank as a WSGI application. Take care to update the directory paths in the config files.
 
 ---
 
