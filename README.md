@@ -1,6 +1,6 @@
 # mybitbank  
 ---
-Your Personal CryptoCoin Bank
+## Your Personal CryptoCoin Bank (for bitcoin, litecoin, feathercoin, ppcoin, namecoin, auroracoin and more)
 
 Visit the Reddit UBER-MEGA thread [here](http://www.reddit.com/r/Bitcoin/comments/27v3mw/i_just_released_mybitbank_project_on_github/ "Reddit")
 
