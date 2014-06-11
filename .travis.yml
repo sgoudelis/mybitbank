@@ -18,5 +18,10 @@ script:
   - python ./manage.py test connections
   - python ./manage.py test login
   - python ./manage.py test transfer
+  - python ./manage.py test accounts
+  - python ./manage.py test addressbook
+  - python ./manage.py test dashboard
+  - python ./manage.py test transactions
+  
 
       
