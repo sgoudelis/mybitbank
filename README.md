@@ -1,5 +1,5 @@
 # mybitbank  
----
+
 ## Your Personal CryptoCoin Bank (for bitcoin, litecoin, feathercoin, ppcoin, namecoin, dogecoin, auroracoin and more)
 
 **MISSION STATEMENT:** Do you want to be in charge of your bitcoin/altcoin safekeeping in your own self-hosted bank? Mybitbank was made with the intention of providing access to the functionality of bitcoind and others through a web interface, deployed in a home server environment, isolated from larger networks. Your rules, your responsibility. 
